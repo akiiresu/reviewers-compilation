@@ -43,7 +43,6 @@ body {
     display: flex;
     justify-content: baseline;
     flex-direction: row;
-    gap: 10px;
 }
 
 #subject-1 {
@@ -70,4 +69,24 @@ body {
 #disclaimer {
     color: slategrey;
     font-style: italic;
+}
+
+#back-btn {
+    border: none;
+    border-radius: 10px;
+    font-family: '0x Proto', monospace;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: rgb(213, 22, 22);
+    color: white;
+    padding: 10px;
+}
+
+#back-btn:hover {
+    background-color: rgb(237, 63, 63);
+}
+
+#back-btn:active {
+    background-color: rgb(196, 6, 6);
 }
