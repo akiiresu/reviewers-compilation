@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS0053 Summative 1 Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-sunk:#f3f6f9;
+  --ink:#19222e; --ink-soft:#5a6875; --rule:#d3dae1;
+  --accent:#1d5b8f; --right:#136b45; --right-bg:#e2f3ea;
+  --wrong:#a32a1f; --wrong-bg:#fbe8e5; --skip:#8a6a17; --skip-bg:#fbf1da;
+  --shadow:0 1px 0 rgba(25,34,46,.06), 0 10px 24px -18px rgba(25,34,46,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+    --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+    --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+    --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+  --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+  --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+  --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
+}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
+  border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+
+/* setup */
+.field{margin-bottom:1.5rem}
+.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
+.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+  border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
+  transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}
+.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}
+.switch span{font-size:.9rem}
+.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;
+  padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+
+/* nav */
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}
+.meter i.ok{background:var(--right)}
+.meter i.no{background:var(--wrong)}
+.meter i.sk{background:var(--skip)}
+.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.qhead button{font:inherit;background:none;border:none;color:var(--accent);cursor:pointer;padding:0;text-decoration:underline}
+.grid{display:none;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+  padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.grid.open{display:grid}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}
+.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}
+.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;margin-top:.2rem}
+.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;
+  color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
+  flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.choice.wrong .key{color:var(--wrong)}
+.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible,.qhead button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.verdict{margin-top:1rem;font-size:.9rem;display:none}
+.verdict.show{display:block}
+.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}
+.verdict.hit b{color:var(--right)}
+.verdict.miss b{color:var(--wrong)}
+.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.flagnote{margin-top:.8rem;font-size:.8rem;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:.6rem}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;
+  border-top:1px solid var(--rule);padding-top:1rem}
+.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace;width:100%}
+
+/* score */
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}
+.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}
+.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}
+.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}
+.miss.unans{border-color:var(--skip)}
+.miss p{margin:0;font-size:.92rem}
+.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}
+.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}
+.miss .truth{color:var(--right);font-size:.85rem}
+.allgood{color:var(--right);font-size:.92rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <span class="code">CS0053</span>
+    <h1>Programming Tools &amp; Techniques</h1>
+    <p>Summative Assessment 1 reviewer</p>
+  </header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">31 unique questions merged from the Summative 1 assessment and the Formative 1 &amp; 2 reviewer.</p>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+</div>
+
+<script>
+const BANK = [
+  {s:1,q:"Without development tools, programmers can still write code but may lose productivity and efficiency.",
+   c:["False", "True"],a:1},
+  {s:1,q:"Which statement about coding standards is TRUE?",
+   c:["They remove the need for debugging", "They are only useful for large organizations", "They automatically optimize program performance", "They make it easier for teams to collaborate on projects"],a:3},
+  {s:1,q:"Coding standards make it easier to maintain software over time.",
+   c:["True", "False"],a:0},
+  {s:1,q:"Software development tools are only used by expert programmers.",
+   c:["False", "True"],a:0},
+  {s:1,q:"Coding standards are important because they:",
+   c:["Automatically fix all bugs", "Help maintain code readability, consistency, and quality", "Ensure every developer uses the same programming language", "Eliminate the need for testing"],a:1},
+  {s:1,q:"Coding conventions are strict rules that must always be followed without exception.",
+   c:["True", "False"],a:1},
+  {s:1,q:"What is the main difference between coding standards and coding conventions?",
+   c:["Conventions apply only to one programming language, standards apply to all", "Standards are required rules, while conventions are more like guidelines", "Standards are for beginners, conventions are for experts", "Standards are optional, while conventions are mandatory"],a:1},
+  {s:1,q:"Why are coding standards important in team projects?",
+   c:["They automatically fix all bugs in a program", "They make code run faster", "They ensure that all developers write code in a consistent and understandable way", "They replace the need for testing"],a:2},
+  {s:1,q:"Coding standards and conventions are not necessary when working alone on small projects.",
+   c:["False", "True"],a:0},
+  {s:1,q:"Which of the following is an example of a coding convention?",
+   c:["Running unit tests on each commit", "Writing a project README file", "Always writing comments in uppercase letters", "Using camelCase for variable names in JavaScript"],a:3},
+  {s:1,q:"A benefit of using software development tools is:",
+   c:["Improved productivity and efficiency", "More manual work for the programmer", "Reduced collaboration among developers", "Increased errors in code"],a:0},
+  {s:1,q:"Photoshop is a tool commonly used to help maintain coding standards automatically?",
+   c:["False", "True"],a:0},
+  {s:1,q:"Which of the following is NOT considered a software development tool?",
+   c:["Integrated Development Environment (IDE)", "Version Control System", "Waterfall Model", "Debugger"],a:2},
+  {s:2,q:"What tool checks your code against coding standards and reports issues?",
+   c:["File Explorer", "Debugger", "Linter (e.g., ESLint)", "Compiler"],a:2},
+  {s:1,q:"Which of the following best describes a coding standard?",
+   c:["A personal style preference of the programmer", "A set of agreed-upon rules for writing consistent, maintainable code", "A debugging process to find and fix errors", "A tool that automatically generates code"],a:1},
+  {s:1,q:"What is the difference between coding standards and coding conventions?",
+   c:["Standards apply only to beginners, conventions apply to experts", "There is no difference", "Standards are formal rules; conventions are common practices or style preferences", "Standards are optional, conventions are mandatory"],a:2},
+  {s:2,q:"A debugger is a tool that helps programmers step through code to identify errors.",
+   c:["False", "True"],a:1},
+  {s:1,q:"Using consistent naming conventions makes programs easier for others to read.",
+   c:["False", "True"],a:1},
+  {s:2,q:"Breakpoints in an IDE are used for:",
+   c:["Formatting code automatically", "Improving code readability", "Running code without compiling", "Pausing program execution during debugging"],a:3},
+  {s:2,q:"Debuggers allow developers to step through code line by line to find errors.",
+   c:["True", "False"],a:0},
+  {s:2,q:"Which programming tool helps enforce coding standards automatically?",
+   c:["Debugger", "Compiler", "Interpreter", "Prettier"],a:3},
+  {s:2,q:"Which of the following is NOT a feature of an Integrated Development Environment (IDE)?",
+   c:["Version control system", "Code editor", "Debugger", "File explorer"],a:0},
+  {s:2,q:"If a developer wants to run and preview a web page instantly inside VS Code, which extension is best?",
+   c:["Prettier", "REST Client", "Docker", "Live Server"],a:3},
+  {s:2,q:"What is the primary purpose of an IDE?",
+   c:["To manage cloud deployments", "To replace version control tools like Git", "To compile code only", "To provide a complete environment for writing, testing, and debugging programs"],a:3},
+  {s:2,q:"An IDE combines editing, debugging, and project management tools in one application.",
+   c:["True", "False"],a:0},
+  {s:2,q:"All IDEs come with built-in version control and API testing features.",
+   c:["False", "True"],a:0},
+  {s:2,q:"The Prettier extension is mainly used for:",
+   c:["Managing Git repositories", "Running live servers", "Code formatting", "Debugging JavaScript"],a:2},
+  {s:2,q:"A linter is a tool used to optimize program performance.",
+   c:["False", "True"],a:0},
+  {s:2,q:"Which VS Code feature helps programmers by suggesting code completions?",
+   c:["Debugger", "Breakpoints", "Snippets", "IntelliSense"],a:3},
+  {s:2,q:"Extensions in VS Code can add features such as syntax highlighting, linting, or language support.",
+   c:["True", "False"],a:0},
+  {s:2,q:"Which extension allows you to automatically check and fix JavaScript/TypeScript code style issues?",
+   c:["Prettier", "Docker", "ESLint", "GitLens"],a:2}
+];
+
+const KEYS = ["A","B","C","D","E"];
+const stage = document.getElementById("stage");
+let opts = {set:"all", shuffleQ:true, shuffleC:true};
+let deck = [], at = 0, gridOpen = false;
+
+function pool(){
+  if(opts.set==="t1") return BANK.filter(q=>q.s===1);
+  if(opts.set==="t2") return BANK.filter(q=>q.s===2);
+  return BANK.slice();
+}
+function shuffled(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function buildDeck(list){
+  const qs = opts.shuffleQ ? shuffled(list) : list.slice();
+  deck = qs.map(q=>({ref:q, order:(opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i)), picked:null, skipped:false}));
+  at=0; gridOpen=false;
+}
+const answered = it => it.picked !== null;
+const stateOf = it => answered(it) ? (it.picked===it.ref.a?"ok":"no") : (it.skipped?"sk":"");
+const pendingIdx = () => deck.map((it,i)=>i).filter(i=>!answered(deck[i]));
+function nextPending(from){
+  for(let k=1;k<=deck.length;k++){const i=(from+k)%deck.length; if(!answered(deck[i])) return i;}
+  return -1;
+}
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  const n1=BANK.filter(q=>q.s===1).length, n2=BANK.filter(q=>q.s===2).length;
+  stage.innerHTML = `
+    <div class="field">
+      <p class="lede">Which set do you want to drill?</p>
+      <p class="hint">Every unique question from Summative 1 and the Formative 1 &amp; 2 reviewer, duplicates removed.</p>
+      <div class="segs">
+        <button class="seg" type="button" data-set="all" aria-pressed="false">Full Summative 1<span class="n">${n1+n2} questions</span></button>
+        <button class="seg" type="button" data-set="t1" aria-pressed="false">Standards &amp; tools<span class="n">${n1} questions &middot; standards &amp; conventions</span></button>
+        <button class="seg" type="button" data-set="t2" aria-pressed="false">IDEs &amp; VS Code<span class="n">${n2} questions &middot; IDEs &amp; VS Code</span></button>
+      </div>
+    </div>
+    <div class="field">
+      <p class="lede">Shuffling</p>
+      <label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}>
+        <span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+      <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}>
+        <span>Shuffle the choices<small>Stops you from remembering "the third one".</small></span></label>
+    </div>
+    <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+  const segs=[...stage.querySelectorAll(".seg")];
+  const paint=()=>segs.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===opts.set)));
+  segs.forEach(b=>b.addEventListener("click",()=>{opts.set=b.dataset.set;paint();}));
+  paint();
+  stage.querySelector("#sq").addEventListener("change",e=>opts.shuffleQ=e.target.checked);
+  stage.querySelector("#sc").addEventListener("change",e=>opts.shuffleC=e.target.checked);
+  stage.querySelector("#go").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+}
+
+/* ---------- question ---------- */
+function renderQuestion(){
+  const it=deck[at], q=it.ref, done=answered(it);
+  const right=deck.filter(d=>stateOf(d)==="ok").length;
+  const pend=pendingIdx().length;
+
+  const meter=deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("");
+  const jumps=deck.map((d,i)=>
+    `<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}"
+      aria-label="Go to question ${i+1}">${i+1}</button>`).join("");
+
+  stage.innerHTML = `
+    <div class="meter">${meter}</div>
+    <div class="qhead">
+      <span>Question ${at+1} / ${deck.length}</span>
+      <button type="button" id="togglegrid">${gridOpen?"Hide":"Jump to question"}</button>
+      <span>Topic ${q.s} &middot; ${right} correct</span>
+    </div>
+    <div class="grid ${gridOpen?"open":""}" id="grid">
+      ${jumps}
+      <div class="legend">
+        <s><b style="background:var(--right)"></b>correct</s>
+        <s><b style="background:var(--wrong)"></b>wrong</s>
+        <s><b style="background:var(--skip)"></b>skipped</s>
+        <s><b style="background:var(--rule)"></b>not seen</s>
+      </div>
+    </div>
+    <h2 class="qtext">${esc(q.q)}</h2>
+    <div class="choices">
+      ${it.order.map((orig,pos)=>`
+        <button class="choice" type="button" data-orig="${orig}" ${done?"disabled":""}>
+          <span class="key">${KEYS[pos]}</span>
+          <span class="txt">${esc(q.c[orig])}</span>
+        </button>`).join("")}
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <div class="nav">
+      <button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>
+      ${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}
+      <span class="spacer"></span>
+      <button class="btn sm" id="next" ${at===deck.length-1&&pend===0?"":""}>Next &#9654;</button>
+      <button class="btn ghost sm" id="finish">Finish &amp; score</button>
+      ${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:``}
+    </div>`;
+
+  stage.querySelector("#togglegrid").addEventListener("click",()=>{gridOpen=!gridOpen;renderQuestion();});
+  stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();}));
+  stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();}});
+  const sk=stage.querySelector("#skip");
+  if(sk) sk.addEventListener("click",()=>{deck[at].skipped=true;goNext();});
+  stage.querySelector("#next").addEventListener("click",goNext);
+  stage.querySelector("#finish").addEventListener("click",renderScore);
+
+  if(done) reveal(false);
+  else stage.querySelectorAll(".choice").forEach(b=>
+    b.addEventListener("click",()=>answer(parseInt(b.dataset.orig,10))));
+}
+
+function goNext(){
+  if(at < deck.length-1){ at++; renderQuestion(); return; }
+  const np = nextPending(at);
+  if(np > -1){ at = np; renderQuestion(); }
+  else renderScore();
+}
+
+function reveal(fresh){
+  const it=deck[at], q=it.ref, ok=it.picked===q.a;
+  stage.querySelectorAll(".choice").forEach(b=>{
+    const o=+b.dataset.orig; b.disabled=true;
+    if(o===q.a){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`);}
+    else if(o===it.picked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`);}
+    else b.classList.add("dim");
+  });
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b>` : `<b>Not quite.</b><p>The answer is ${esc(q.c[q.a])}.</p>`;
+  if(q.flag) v.insertAdjacentHTML("beforeend",`<p class="flagnote">${esc(q.flag)}</p>`);
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const pend=pendingIdx().length;
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pend===0) ? "See your score" : "Next \u25B6";
+    n.focus();
+  }
+}
+
+function answer(orig){
+  const it=deck[at];
+  if(answered(it)) return;
+  it.picked=orig; it.skipped=false;
+  reveal(true);
+}
+
+/* ---------- score ---------- */
+function renderScore(){
+  const done=deck.filter(answered);
+  const right=done.filter(d=>d.picked===d.ref.a).length;
+  const misses=done.filter(d=>d.picked!==d.ref.a);
+  const unans=deck.filter(d=>!answered(d));
+  const pct=deck.length?Math.round(right/deck.length*100):0;
+  const line = unans.length ? `Scored out of all ${deck.length} questions &mdash; ${unans.length} left unanswered count as missed.`
+    : pct===100 ? "Clean run. Shuffle it and see if it holds."
+    : pct>=80 ? "Solid. Run the missed ones until they're automatic."
+    : pct>=60 ? "Getting there. The retry below drills only what you missed."
+    : "Worth another pass. Retry the misses first, then the full set.";
+  const redoList=[...misses.map(d=>d.ref), ...unans.map(d=>d.ref)];
+
+  stage.innerHTML = `
+    <p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p>
+    <p class="scoreline">${line}</p>
+    <div class="btnrow">
+      <button class="btn" id="again">Repeat this set</button>
+      ${unans.length?`<button class="btn ghost" id="back">Go back and answer ${unans.length}</button>`:``}
+      ${redoList.length?`<button class="btn ghost" id="redo">Drill the ${redoList.length} missed</button>`:``}
+      <button class="btn quiet" id="home">Change settings</button>
+    </div>
+    <div class="review">
+      <h2>${redoList.length?"What to go over":"Review"}</h2>
+      ${misses.map(d=>`
+        <div class="miss">
+          <p>${esc(d.ref.q)}</p>
+          <p class="yours">You chose: ${esc(d.ref.c[d.picked])}</p>
+          <p class="truth">Answer: ${esc(d.ref.c[d.ref.a])}</p>
+        </div>`).join("")}
+      ${unans.map(d=>`
+        <div class="miss unans">
+          <p>${esc(d.ref.q)}</p>
+          <p class="none">Left unanswered</p>
+          <p class="truth">Answer: ${esc(d.ref.c[d.ref.a])}</p>
+        </div>`).join("")}
+      ${redoList.length?``:`<p class="allgood">Nothing missed &mdash; every answer was right.</p>`}
+    </div>`;
+
+  stage.querySelector("#again").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+  stage.querySelector("#home").addEventListener("click",renderSetup);
+  const bk=stage.querySelector("#back");
+  if(bk) bk.addEventListener("click",()=>{const p=pendingIdx();at=p[0];gridOpen=false;renderQuestion();});
+  const rd=stage.querySelector("#redo");
+  if(rd) rd.addEventListener("click",()=>{buildDeck(redoList);renderQuestion();});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* keyboard */
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const btns=[...document.querySelectorAll(".choice")];
+  if(!btns.length) return;
+  const it=deck[at];
+  if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click();}return;}
+  if(e.key==="ArrowRight"||e.key==="Enter"){const n=document.getElementById("next");if(n){e.preventDefault();n.click();}return;}
+  if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click();}return;}
+  if(answered(it)) return;
+  let i=-1;
+  if(/^[1-5]$/.test(e.key)) i=+e.key-1;
+  else {const k=KEYS.indexOf(e.key.toUpperCase()); if(k>-1) i=k;}
+  if(i>-1&&btns[i]){e.preventDefault();btns[i].click();}
+});
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+renderSetup();
+</script>
+</body>
+</html>
