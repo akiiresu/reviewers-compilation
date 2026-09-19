@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Module 2 Quiz: Intro to Computer Graphics & Visual Computing</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; max-width: 800px; margin: 20px auto; padding: 0 15px; line-height: 1.5; color: #222; }
+  h1 { font-size: 22px; }
+  h2 { font-size: 18px; margin-top: 0; }
+  #progress { font-size: 14px; color: #555; margin-bottom: 10px; }
+  .card { border: 1px solid #ccc; border-radius: 8px; padding: 18px; margin-bottom: 15px; }
+  .qtext { font-weight: bold; margin-bottom: 10px; white-space: pre-wrap; }
+  pre.code { background: #f4f4f4; border: 1px solid #ddd; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 14px; }
+  .options label { display: block; margin: 6px 0; padding: 8px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; }
+  .options label:hover { background: #f0f0f0; }
+  .options input { margin-right: 8px; }
+  .correct { background: #d9f2d9 !important; border-color: #4caf50 !important; }
+  .incorrect { background: #f9d9d9 !important; border-color: #e05353 !important; }
+  button { padding: 8px 14px; margin: 4px 6px 4px 0; border-radius: 6px; border: 1px solid #999; background: #fafafa; cursor: pointer; font-size: 14px; }
+  button:hover { background: #eee; }
+  button.primary { background: #2c6ecb; color: white; border-color: #2c6ecb; }
+  button.primary:hover { background: #245aa8; }
+  button.know { background: #4caf50; color: white; border-color: #4caf50; }
+  button.dontknow { background: #e05353; color: white; border-color: #e05353; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .blank { width: 160px; padding: 3px 6px; font-family: monospace; font-size: 14px; }
+  .explain { margin-top: 10px; font-size: 14px; color: #333; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; }
+  #summary { text-align: center; }
+  .hidden { display: none; }
+  #startScreen { text-align: center; padding: 30px 0; }
+  #tally { font-size: 14px; margin-bottom: 8px; }
+  #tally span.knowCount { color: #2e7d32; font-weight: bold; }
+  #tally span.dontKnowCount { color: #c62828; font-weight: bold; }
+  #tally span.unansweredCount { color: #777; font-weight: bold; }
+  #numberList { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .numBadge {
+    width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; border: 1px solid #ccc; font-size: 12px; font-weight: bold;
+    background: #f4f4f4; color: #555; cursor: default;
+  }
+  .numBadge.unanswered { background: #f4f4f4; color: #777; border-color: #ccc; }
+  .numBadge.know { background: #4caf50; color: white; border-color: #4caf50; }
+  .numBadge.dontknow { background: #e05353; color: white; border-color: #e05353; }
+  .numBadge.current { outline: 2px solid #2c6ecb; outline-offset: 1px; }
+</style>
+</head>
+<body>
+
+<h1>Module 2 Quiz</h1>
+<h2>Introduction to Computer Graphics and Visual Computing</h2>
+
+<div id="startScreen">
+  <p>This quiz covers Subtopic 1 (Geometric Specification &amp; Drawing) and Subtopic 2 (Filled Primitives and Colors), plus fill-in-the-blank code questions.</p>
+  <p>After each question, mark it <b>Know</b> or <b>Don't Know</b>. Click any number below the question to jump straight to it, and finish whenever you like to see your results.</p>
+  <button class="primary" onclick="startQuiz(allIndices())">Start Quiz</button>
+</div>
+
+<div id="quizArea" class="hidden">
+  <div id="progress"></div>
+  <div id="tally"></div>
+  <div id="numberList"></div>
+  <div id="cardHolder"></div>
+</div>
+
+<div id="summary" class="hidden">
+  <h2>Results</h2>
+  <p id="summaryText"></p>
+  <button class="primary" onclick="retryDontKnow()">Retry "Don't Know" Questions</button>
+  <button onclick="startQuiz(allIndices())">Retry All Questions</button>
+</div>
+
+<script>
+// ---------- QUESTION BANK ----------
+const questions = [
+
+// ===== Subtopic 1: Geometric Specification & Drawing =====
+{type:'mc', q:'According to the Subtopic 1 learning objectives, students should be able to explain:', options:[
+  'The OpenGL coordinate system and geometric primitives',
+  'The history of the Khronos Group',
+  'How to install MSYS2',
+  'The rendering pipeline stages only'],
+  answer:0},
+
+{type:'mc', q:'According to the Subtopic 1 learning objectives, students should be able to apply OpenGL commands to render:', options:[
+  'Textures and shaders',
+  'Points, lines, and line patterns',
+  '3D models only',
+  'Audio and video'],
+  answer:1},
+
+{type:'mc', q:'According to the Subtopic 1 learning objectives, students should be able to analyze:', options:[
+  'The effect of different primitive types on rendered output',
+  'The cost of GPUs',
+  'The history of SGI',
+  'The Khronos board of promoters'],
+  answer:0},
+
+{type:'mc', q:'Primitives are described as:', options:[
+  'The fundamental entities that we work with in our graphics system',
+  'Optional decorations added after rendering',
+  'Only used in 2D graphics',
+  'A deprecated OpenGL feature'],
+  answer:0},
+
+{type:'mc', q:'Which three primitives are listed under "Geometric Primitives and Attributes"?', options:[
+  'Points, Line Segments, Polygons',
+  'Circles, Squares, Cubes',
+  'Vertices, Shaders, Textures',
+  'Pixels, Voxels, Meshes'],
+  answer:0},
+
+{type:'mc', q:'What are "attributes" of a primitive?', options:[
+  'Properties that determine how the primitive is displayed by OpenGL',
+  'The number of vertices only',
+  'The file format used to save it',
+  'A separate shader program'],
+  answer:0},
+
+{type:'mc', q:'A primitive in OpenGL is defined by its:', options:[
+  'Vertices',
+  'Pixels',
+  'Textures',
+  'Shaders'],
+  answer:0},
+
+{type:'mc', q:'A vertex is simply a point in 3D, given by its:', options:[
+  'x, y, and z coordinates',
+  'Row and column only',
+  'Red, green, and blue values',
+  'Width and height'],
+  answer:0},
+
+{type:'mc', q:'In the command format glVertex3fv(v), what does the "3" indicate?', options:[
+  'Number of components — 3 means (x, y, z)',
+  'The OpenGL version',
+  'The number of vertices in the shape',
+  'The line width'],
+  answer:0},
+
+{type:'mc', q:'In the command format glVertex3fv(v), what does the "f" indicate?', options:[
+  'The data type — float',
+  'The "fixed" pipeline stage',
+  'The fragment shader',
+  'The frame rate'],
+  answer:0},
+
+{type:'mc', q:'In the command format glVertex3fv(v), what does the "v" indicate?', options:[
+  'That the arguments are passed as a vector/array',
+  'That the command is "void"',
+  'That it only works with VBOs',
+  'The vertical axis'],
+  answer:0},
+
+{type:'mc', q:'If you omit the "v" (vector) suffix, what form do you use instead?', options:[
+  'Scalar form, e.g. glVertex2f(x, y)',
+  'Matrix form',
+  'Pointer form',
+  'Array form only'],
+  answer:0},
+
+{type:'mc', q:'How many components does the number "2" represent in the OpenGL command format chart?', options:[
+  '(x, y)',
+  '(x, y, z)',
+  '(x, y, z, w)',
+  '(r, g, b)'],
+  answer:0},
+
+{type:'mc', q:'How many components does the number "4" represent in the OpenGL command format chart?', options:[
+  '(x, y, z, w)',
+  '(x, y)',
+  '(x, y, z)',
+  '(r, g, b, a) only'],
+  answer:0},
+
+{type:'mc', q:'Which letter represents the "double" data type in the OpenGL command format chart?', options:[
+  'd',
+  'db',
+  'do',
+  'f'],
+  answer:0},
+
+{type:'mc', q:'Which letters represent "unsigned byte" and "unsigned short" in the command format chart?', options:[
+  'ub and us',
+  'b and s',
+  'u and us',
+  'ubb and uss'],
+  answer:0},
+
+{type:'mc', q:'What does GL_POINTS do?', options:[
+  'Renders mathematical points — OpenGL renders a point for each vertex specified',
+  'Draws unconnected line segments',
+  'Draws a filled polygon',
+  'Connects all vertices into one continuous line'],
+  answer:0},
+
+{type:'mc', q:'Which function sets the size of the rendered points before glBegin(GL_POINTS)?', options:[
+  'glPointSize()',
+  'glLineWidth()',
+  'glPointWidth()',
+  'glVertexSize()'],
+  answer:0},
+
+{type:'mc', q:'What does GL_LINES do?', options:[
+  'Draws unconnected line segments',
+  'Draws a single connected line strip',
+  'Closes a loop of lines',
+  'Fills a polygon with lines'],
+  answer:0},
+
+{type:'mc', q:'If an application specifies n vertices using GL_LINES, how many line segments does OpenGL render?', options:[
+  'n/2 line segments',
+  'n line segments',
+  'n-1 line segments',
+  'n/3 line segments'],
+  answer:0},
+
+{type:'mc', q:'If n is odd when using GL_LINES, what does OpenGL do?', options:[
+  'Ignores the final vertex',
+  'Throws a compile error',
+  'Duplicates the last vertex',
+  'Renders n+1 line segments'],
+  answer:0},
+
+{type:'mc', q:'What does GL_LINE_STRIP do?', options:[
+  'Draws a sequence of connected line segments (1st–2nd, 2nd–3rd, 3rd–4th, and so on)',
+  'Draws unconnected line segments',
+  'Fills the area between vertices',
+  'Only draws a single point'],
+  answer:0},
+
+{type:'mc', q:'What does GL_LINE_LOOP do?', options:[
+  'Renders like GL_LINE_STRIP but adds a closing line segment between the final and first vertices',
+  'Draws only the first and last vertex',
+  'Removes the first vertex from the strip',
+  'Doubles the width of every line'],
+  answer:0},
+
+{type:'mc', q:'Which function sets the fixed width of lines?', options:[
+  'glLineWidth(GLfloat width)',
+  'glPointSize(GLfloat width)',
+  'glLineSize(GLfloat width)',
+  'glSetWidth(GLfloat width)'],
+  answer:0},
+
+{type:'mc', q:'What is the default value for line width, and what must it be greater than?', options:[
+  'Default is 1.0; width must be greater than 0.0 or an error is generated',
+  'Default is 0.0; width must be greater than 1.0',
+  'Default is 2.0; width has no restriction',
+  'Default is 10.0; width must be an integer'],
+  answer:0},
+
+{type:'mc', q:'What is line stippling used for?', options:[
+  'Breaking a solid line into a repeating pattern of dots or dashes (dashed/dotted lines)',
+  'Increasing the resolution of a line',
+  'Removing anti-aliasing from a line',
+  'Merging two lines into one'],
+  answer:0},
+
+{type:'mc', q:'What is the function signature for line stippling?', options:[
+  'glLineStipple(repeatFactor, pattern)',
+  'glLineStyle(pattern, repeatFactor)',
+  'glStipple(width, pattern)',
+  'glLinePattern(factor)'],
+  answer:0},
+
+{type:'mc', q:'What does the "pattern" parameter in glLineStipple reference?', options:[
+  'A 16-bit integer that describes how the line should be displayed',
+  'A 32-bit float describing color',
+  'The number of vertices in the line',
+  'The line\'s starting coordinate'],
+  answer:0},
+
+{type:'mc', q:'What does the "repeatFactor" parameter specify?', options:[
+  'How many times each bit in the pattern is to be repeated before the next bit is applied',
+  'How many times the whole line is repeated on screen',
+  'The number of lines to draw',
+  'The color repetition count'],
+  answer:0},
+
+{type:'mc', q:'In the line stippling example, the hexadecimal pattern 0x00FF converts to what decimal value?', options:[
+  '255',
+  '128',
+  '512',
+  '16'],
+  answer:0},
+
+{type:'mc', q:'In which direction does OpenGL evaluate the binary stipple pattern, matching bits to pixels along the line?', options:[
+  'Right to left',
+  'Left to right',
+  'Top to bottom',
+  'It depends on the GPU vendor'],
+  answer:0},
+
+{type:'mc', q:'What visual result does the 0x00FF pattern create?', options:[
+  'A solid eight-pixel segment followed by an eight-pixel gap',
+  'A single dot every pixel',
+  'A completely solid line',
+  'A four-pixel dash with a twelve-pixel gap'],
+  answer:0},
+
+{type:'mc', q:'According to the stipple factor examples (e.g. 0x00FF with factor 1 vs factor 2), what does increasing the factor do?', options:[
+  'Elongates/stretches the rendered line segments without changing the underlying hex pattern',
+  'Shortens the rendered dashes',
+  'Changes the hexadecimal pattern automatically',
+  'Removes the stipple effect entirely'],
+  answer:0},
+
+{type:'mc', q:'Which function must be called to activate the line-stipple feature before drawing?', options:[
+  'glEnable(GL_LINE_STIPPLE)',
+  'glActivate(GL_LINE_STIPPLE)',
+  'glLineStipple(GL_LINE_STIPPLE)',
+  'glOn(GL_LINE_STIPPLE)'],
+  answer:0},
+
+{type:'mc', q:'Which function turns OFF the line-stipple feature?', options:[
+  'glDisable(GL_LINE_STIPPLE)',
+  'glOff(GL_LINE_STIPPLE)',
+  'glLineStipple(0, 0)',
+  'glStop(GL_LINE_STIPPLE)'],
+  answer:0},
+
+// ===== Subtopic 2: Filled Primitives and Colors =====
+{type:'mc', q:'According to the Subtopic 2 learning objectives, students should apply OpenGL functions to render:', options:[
+  'Filled geometric primitives',
+  'Only wireframe primitives',
+  'Audio waveforms',
+  'Text fonts'],
+  answer:0},
+
+{type:'mc', q:'According to the Subtopic 2 learning objectives, students should demonstrate the use of:', options:[
+  'Colors in OpenGL rendering',
+  'Networking in OpenGL',
+  'File I/O in OpenGL',
+  'Multi-threading in OpenGL'],
+  answer:0},
+
+{type:'mc', q:'According to the Subtopic 2 learning objectives, students should evaluate rendered outputs using:', options:[
+  'Appropriate primitive and color combinations',
+  'Only grayscale colors',
+  'Randomized vertex positions',
+  'Pre-made textures only'],
+  answer:0},
+
+{type:'mc', q:'What does GL_TRIANGLES do?', options:[
+  'Draws individual triangles — OpenGL renders a triangle for each group of three vertices',
+  'Draws a single connected triangle strip',
+  'Fills a polygon with a solid color only',
+  'Draws unconnected points'],
+  answer:0},
+
+{type:'mc', q:'If n vertices are specified with GL_TRIANGLES and n is not a multiple of 3, what happens?', options:[
+  'OpenGL ignores the excess vertices',
+  'OpenGL throws a runtime error',
+  'OpenGL duplicates vertices to complete a triangle',
+  'OpenGL renders points instead'],
+  answer:0},
+
+{type:'mc', q:'What does GL_POLYGON do?', options:[
+  'Draws a single filled convex n-gon primitive',
+  'Draws n separate unfilled triangles',
+  'Draws a sequence of connected lines only',
+  'Draws a fan of unfilled triangles'],
+  answer:0},
+
+{type:'mc', q:'What happens if fewer than 3 vertices are specified for GL_POLYGON?', options:[
+  'OpenGL renders nothing',
+  'OpenGL renders a single point',
+  'OpenGL renders a line',
+  'OpenGL throws a compile error'],
+  answer:0},
+
+{type:'mc', q:'What does GL_TRIANGLE_STRIP do?', options:[
+  'Draws a sequence of triangles that share edges',
+  'Draws a single triangle only',
+  'Fills a quadrilateral',
+  'Draws a fan of lines'],
+  answer:0},
+
+{type:'mc', q:'In GL_TRIANGLE_STRIP, how are triangles formed from the vertex sequence?', options:[
+  'A triangle from the 1st, 2nd, and 3rd vertices, then another from the 2nd, 3rd, and 4th, and so on',
+  'A triangle from every 3 non-overlapping vertices',
+  'A triangle that always reuses the very first vertex',
+  'A triangle formed from random vertex combinations'],
+  answer:0},
+
+{type:'mc', q:'What does GL_TRIANGLE_FAN do?', options:[
+  'Draws a fan of triangles that share edges and also share a common first vertex',
+  'Draws triangles that share only their last vertex',
+  'Draws unconnected triangles',
+  'Draws a strip of quadrilaterals'],
+  answer:0},
+
+{type:'mc', q:'For GL_TRIANGLE_FAN with vertices v0, v1, v2, v3, v4..., how are the triangles formed?', options:[
+  'v0-v1-v2, then v0-v2-v3, then v0-v3-v4, and so on',
+  'v0-v1-v2, then v1-v2-v3, then v2-v3-v4, and so on',
+  'v0-v1-v2, then v3-v4-v5, and so on',
+  'Every triangle uses only the last three vertices'],
+  answer:0},
+
+{type:'mc', q:'What does GL_QUADS do?', options:[
+  'Draws individual convex quadrilaterals — one for each group of four vertices',
+  'Draws a strip of connected quadrilaterals',
+  'Draws a single filled n-gon',
+  'Draws unconnected line segments'],
+  answer:0},
+
+{type:'mc', q:'If n vertices are specified with GL_QUADS and n is not a multiple of 4, what happens?', options:[
+  'OpenGL ignores the excess vertices',
+  'OpenGL renders a triangle instead',
+  'OpenGL throws a runtime error',
+  'OpenGL pads the group with (0,0) vertices'],
+  answer:0},
+
+{type:'mc', q:'What does GL_QUAD_STRIP do?', options:[
+  'Draws a sequence of quadrilaterals that share edges',
+  'Draws individual, non-connected quadrilaterals',
+  'Draws only convex polygons of 5+ sides',
+  'Draws triangles that share a common vertex'],
+  answer:0},
+
+{type:'mc', q:'For GL_QUAD_STRIP with vertices v0...v7, how is the first quadrilateral formed, and the next?', options:[
+  'First quad uses v0, v1, v3, v2; next quad uses v2, v3, v5, v4; and so on',
+  'First quad uses v0, v1, v2, v3; next quad uses v4, v5, v6, v7',
+  'Each quad uses 4 completely unrelated vertices',
+  'First quad uses v0-v3 only, no further quads are drawn'],
+  answer:0},
+
+{type:'mc', q:'What are the two color modes shown in the "Color in OpenGL" diagram?', options:[
+  'Color index mode and RGBA mode',
+  'HSV mode and CMYK mode',
+  'Grayscale mode and true color mode',
+  'Additive mode and subtractive mode'],
+  answer:0},
+
+{type:'mc', q:'In RGBA mode, a color is specified by which values?', options:[
+  'Three intensities (Red, Green, Blue) and optionally a fourth value, Alpha, for transparency',
+  'Only a single hue value',
+  'Two values: brightness and saturation',
+  'A hexadecimal string only'],
+  answer:0},
+
+{type:'mc', q:'What is the function used to set a color with alpha (transparency)?', options:[
+  'glColor4f(red, green, blue, alpha)',
+  'glColor3f(red, green, blue)',
+  'glSetColor(r, g, b, a)',
+  'glAlpha(red, green, blue, alpha)'],
+  answer:0},
+
+{type:'mc', q:'In glColor4f, what value range do red, green, and blue intensities map onto?', options:[
+  '(0.0, 1.0)',
+  '(0, 255)',
+  '(-1.0, 1.0)',
+  '(0, 100)'],
+  answer:0},
+
+{type:'mc', q:'In glColor4f, what does 0.0 mean for a color component?', options:[
+  'The color component is absent',
+  'The color is fully saturated',
+  'The value is invalid',
+  'The component is set to maximum brightness'],
+  answer:0},
+
+{type:'mc', q:'In glColor4f, what does 1.0 mean for a color component?', options:[
+  'A saturated color',
+  'The color is completely absent',
+  'The value overflows and wraps to 0',
+  'It represents pure black'],
+  answer:0},
+
+{type:'mc', q:'What color does (0.0, 0.0, 0.0) represent?', options:[
+  'Black',
+  'White',
+  'Red',
+  'Transparent gray'],
+  answer:0},
+
+{type:'mc', q:'What color does (1.0, 1.0, 1.0) represent?', options:[
+  'White',
+  'Black',
+  'Blue',
+  'Undefined'],
+  answer:0},
+
+{type:'mc', q:'What does the fourth component of glColor4f (alpha) control, and what do 1.0 and 0.0 represent?', options:[
+  'Opacity — 1.0 is opaque, 0.0 is transparent',
+  'Brightness — 1.0 is brightest, 0.0 is darkest',
+  'Line width — 1.0 is thick, 0.0 is thin',
+  'Hue — 1.0 is red, 0.0 is blue'],
+  answer:0},
+
+{type:'mc', q:'Based on the sample code glColor3ub(92,181,100), what kind of values does glColor3ub expect compared to glColor3f?', options:[
+  'Unsigned byte values (typically 0–255) instead of float values (0.0–1.0)',
+  'Negative float values only',
+  'Hexadecimal string values',
+  'Exactly the same 0.0–1.0 float range as glColor3f'],
+  answer:0},
+
+{type:'mc', q:'In the gradient triangle sample (colorSample4), a different glColor is set before each glVertex2f call. What visual effect does this produce?', options:[
+  'OpenGL interpolates the colors smoothly across the triangle, producing a color gradient',
+  'Only the last color specified is used for the whole triangle',
+  'The triangle is rendered with random noise colors',
+  'It causes a compile error because glColor can only be called once per primitive'],
+  answer:0},
+
+// ===== Fill in the blank code questions =====
+{type:'fib', title:'Points (GL_POINTS with per-vertex color)',
+  code:
+`__b1__(2.0);
+glBegin(__b2__);
+    __b3__(1.0, 1.0, 1.0);
+    glVertex2f(-0.5, -0.5);
+    glColor3f(1.0, 0.0, 1.0);
+    glVertex2f(-0.5, 0.5);
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex2f(0.5, 0.5);
+    glColor3f(0.0, 1.0, 0.0);
+    glVertex2f(0.5, -0.5);
+__b4__();`,
+  blanks: {
+    b1: 'glPointSize',
+    b2: 'GL_POINTS',
+    b3: 'glColor3f',
+    b4: 'glEnd'
+  }},
+
+{type:'fib', title:'Lines — GL_LINE_STRIP',
+  code:
+`glBegin(__b1__);
+    glVertex2f(-0.5, -0.5);
+    glVertex2f(-0.5, 0.5);
+    glVertex2f(0.5, 0.5);
+    glVertex2f(0.5, -0.5);
+__b2__();`,
+  blanks: {
+    b1: 'GL_LINE_STRIP',
+    b2: 'glEnd'
+  }},
+
+{type:'fib', title:'Lines — GL_LINE_LOOP',
+  code:
+`glBegin(__b1__);
+    glVertex2f(-0.5, -0.5);
+    glVertex2f(-0.5, 0.5);
+    glVertex2f(0.5, 0.5);
+    glVertex2f(0.5, -0.5);
+__b2__();`,
+  blanks: {
+    b1: 'GL_LINE_LOOP',
+    b2: 'glEnd'
+  }},
+
+{type:'fib', title:'Line Stippling — Full Sample Code',
+  code:
+`void display(){
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    __b1__(GL_LINE_STIPPLE);
+
+    __b2__(2.0f);
+
+    __b3__(4, 0xAAAA );
+    glBegin(__b4__);
+        glVertex2f(-0.5, -0.5);
+        glVertex2f(-0.5, 0.5);
+        glVertex2f(0.5, 0.5);
+        glVertex2f(0.5, -0.5);
+    glEnd();
+
+    glFlush();
+
+    __b5__(GL_LINE_STIPPLE);
+}`,
+  blanks: {
+    b1: 'glEnable',
+    b2: 'glLineWidth',
+    b3: 'glLineStipple',
+    b4: 'GL_LINE_STRIP',
+    b5: 'glDisable'
+  }},
+
+{type:'fib', title:'Filled Primitives — Polygon',
+  code:
+`void displayPolygon(){
+
+glClear(GL_COLOR_BUFFER_BIT);
+glBegin(__b1__);
+    glVertex2f(0.1,0.1);
+    glVertex2f(0.6,0.1);
+    glVertex2f(0.7,0.3);
+    glVertex2f(0.6,0.6);
+    glVertex2f(0.1,0.6);
+    glVertex2f(0.0,0.3);
+__b2__();
+__b3__();
+
+}`,
+  blanks: {
+    b1: 'GL_POLYGON',
+    b2: 'glEnd',
+    b3: 'glFlush'
+  }},
+
+{type:'fib', title:'Filled Primitives — Triangle Fan',
+  code:
+`void displayTriangleFan(){
+
+glClear(GL_COLOR_BUFFER_BIT);
+glBegin(__b1__);
+    glVertex2f(0.0f,-.5f);
+    glVertex2f(.5f,.5f);
+    glVertex2f(0.0,.5f);
+    glVertex2f(-.5f,.5f);
+__b2__();
+__b3__();
+
+}`,
+  blanks: {
+    b1: 'GL_TRIANGLE_FAN',
+    b2: 'glEnd',
+    b3: 'glFlush'
+  }},
+
+{type:'fib', title:'Filled Primitives — Quad Strip',
+  code:
+`void displayQuadStrip(){
+
+glClear(GL_COLOR_BUFFER_BIT);
+glBegin(__b1__);
+
+    glVertex2f(-.5f, -.5f); // vertex 1
+    glVertex2f(.5f,-.5f); // vertex 2
+    glVertex2f(-.5f, 0.0f); // vertex 3
+    glVertex2f(.5f, 0.0f); // vertex 4
+
+    glVertex2f(-.7f, .80f); // vertex 5
+    glVertex2f(.7f, 0.80f); // vertex 6
+__b2__();
+__b3__();
+}`,
+  blanks: {
+    b1: 'GL_QUAD_STRIP',
+    b2: 'glEnd',
+    b3: 'glFlush'
+  }},
+
+{type:'fib', title:'Color — Gradient Triangle (per-vertex color)',
+  code:
+`void colorSample4(){
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glBegin(GL_TRIANGLES);
+        __b1__(92,181,100);
+        glVertex2f(-.5f,-.5f);
+        __b2__(1.0f,0.0f,0.0f);
+        glVertex2f(.5f,-.5f);
+        __b3__(0.0f,0.0f,1.0f);
+        glVertex2f(0.0,.5f);
+    glEnd();
+    glFlush();
+
+}`,
+  blanks: {
+    b1: 'glColor3ub',
+    b2: 'glColor3f',
+    b3: 'glColor3f'
+  }},
+
+{type:'fib', title:'Full Program — GL_LINE_LOOP with Per-Vertex Colors',
+  code:
+`// vertices specification + primitive type = shape
+
+#include <GL/glut.h>
+
+using namespace std;
+
+void display(){
+
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glPointSize(10.0);
+
+        
+    glBegin(__b1__);
+        __b2__(1.0, 0.0, 0.0);
+        glVertex2f(-0.5, 0.5);
+
+        glColor3f(0.0, 1.0, 0.0);
+        glVertex2f(0.5, 0.5);
+
+        glColor3f(0.0, 0.0, 1.0);
+        glVertex2f(-0.5, -0.5);
+
+        glColor3f(0.0, 0.0, 1.0);
+        glVertex2f(0.5, -0.5);
+    __b3__();
+
+    __b4__();
+}
+
+int main(int argc, char** argv){
+    __b5__(&argc, argv);
+    glutInitWindowSize(1024, 768);
+    glutInitWindowPosition(0, 0);
+
+    glutCreateWindow("M2 DEMO - TN31");
+
+    __b6__(display);
+    __b7__();
+
+return 0;
+}`,
+  blanks: {
+    b1: 'GL_LINE_LOOP',
+    b2: 'glColor3f',
+    b3: 'glEnd',
+    b4: 'glFlush',
+    b5: 'glutInit',
+    b6: 'glutDisplayFunc',
+    b7: 'glutMainLoop'
+  }}
+];
+
+
+// ---------- SHUFFLE MULTIPLE-CHOICE OPTIONS ----------
+// Randomize each question's option order while preserving the correct answer.
+questions.forEach(q => {
+  if (q.type !== 'mc') return;
+  const correctText = q.options[q.answer];
+  for (let i = q.options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [q.options[i], q.options[j]] = [q.options[j], q.options[i]];
+  }
+  q.answer = q.options.indexOf(correctText);
+});
+
+// ---------- STATE ----------
+let currentSet = [];         // indices of questions in this pass
+let currentPos = 0;
+let knowStatus = {};         // idx -> true(know) / false(dontknow)
+let answeredIndices = new Set(); // idx -> has this question's answer been submitted/checked
+let userChoices = {};        // idx -> chosen option index (for mc questions)
+let fibCorrectness = {};     // idx -> { blankKey: true/false }
+
+function allIndices(){ return questions.map((_,i)=>i); }
+
+function resetAnswerState(indices){
+  indices.forEach(i => {
+    delete knowStatus[i];
+    delete userChoices[i];
+    delete fibCorrectness[i];
+    answeredIndices.delete(i);
+  });
+}
+
+function startQuiz(indices, doReset){
+  if(doReset === undefined) doReset = true;
+  currentSet = indices;
+  if(doReset) resetAnswerState(indices);
+  currentPos = 0;
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('summary').classList.add('hidden');
+  document.getElementById('quizArea').classList.remove('hidden');
+  renderQuestion();
+}
+
+function retryDontKnow(){
+  const dontKnow = currentSet.filter(i => knowStatus[i] === false);
+  if(dontKnow.length === 0){
+    alert('No "Don\'t Know" questions left — nice work!');
+    return;
+  }
+  startQuiz(dontKnow, true);
+}
+
+function renderTally(){
+  const knowCount = currentSet.filter(i => knowStatus[i] === true).length;
+  const dontKnowCount = currentSet.filter(i => knowStatus[i] === false).length;
+  const unansweredCount = currentSet.length - knowCount - dontKnowCount;
+  document.getElementById('tally').innerHTML =
+    '<span class="knowCount">✔ Know: ' + knowCount + '</span> &nbsp;|&nbsp; ' +
+    '<span class="dontKnowCount">✘ Don\'t Know: ' + dontKnowCount + '</span> &nbsp;|&nbsp; ' +
+    '<span class="unansweredCount">Unanswered: ' + unansweredCount + '</span>';
+}
+
+function renderNumberList(){
+  const list = document.getElementById('numberList');
+  list.innerHTML = '';
+  currentSet.forEach((idx, pos) => {
+    const badge = document.createElement('div');
+    let statusClass = 'unanswered';
+    if(knowStatus[idx] === true) statusClass = 'know';
+    else if(knowStatus[idx] === false) statusClass = 'dontknow';
+    badge.className = 'numBadge ' + statusClass + (pos === currentPos ? ' current' : '');
+    badge.textContent = pos + 1;
+    badge.title = 'Jump to question ' + (pos+1) +
+      (knowStatus[idx] === true ? ' — Known' : knowStatus[idx] === false ? ' — Don\'t Know' : ' — Not answered yet');
+    badge.addEventListener('click', () => goToPosition(pos));
+    list.appendChild(badge);
+  });
+}
+
+function goToPosition(pos){
+  if(pos < 0 || pos >= currentSet.length) return;
+  currentPos = pos;
+  renderQuestion();
+}
+
+function renderNavBar(){
+  const isFirst = currentPos === 0;
+  const isLast = currentPos === currentSet.length - 1;
+  let html = '<div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center;">';
+  html += '<div>';
+  html += '<button ' + (isFirst ? 'disabled' : '') + ' onclick="goToPosition(currentPos-1)">◀ Previous</button>';
+  html += '<button ' + (isLast ? 'disabled' : '') + ' onclick="goToPosition(currentPos+1)">Next ▶</button>';
+  html += '</div>';
+  html += '<button class="primary" onclick="showSummary()">Finish &amp; View Summary</button>';
+  html += '</div>';
+  return html;
+}
+
+function renderQuestion(){
+  document.getElementById('progress').textContent =
+    'Question ' + (currentPos+1) + ' of ' + currentSet.length +
+    ' — click any number below to jump to that question';
+  renderTally();
+  renderNumberList();
+  const idx = currentSet[currentPos];
+  const q = questions[idx];
+  const holder = document.getElementById('cardHolder');
+  holder.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  if(q.type === 'mc'){
+    card.innerHTML = renderMC(idx, q) + renderNavBar();
+  } else if(q.type === 'fib'){
+    card.innerHTML = renderFIB(idx, q) + renderNavBar();
+  }
+  holder.appendChild(card);
+
+  if(q.type === 'mc'){
+    if(!answeredIndices.has(idx)){
+      const opts = card.querySelectorAll('.options label');
+      opts.forEach((label, i) => {
+        label.addEventListener('click', () => selectMC(idx, i, q));
+      });
+    }
+  } else {
+    if(!answeredIndices.has(idx)){
+      const btn = card.querySelector('#checkBtn');
+      btn.addEventListener('click', () => checkFIB(idx, q));
+    }
+  }
+}
+
+function renderMC(idx, q){
+  const isAnswered = answeredIndices.has(idx);
+  const chosen = userChoices[idx];
+  let html = '<div class="qtext">' + q.q + '</div><div class="options">';
+  q.options.forEach((opt, i) => {
+    let cls = '';
+    if(isAnswered){
+      if(i === q.answer) cls = ' correct';
+      else if(i === chosen) cls = ' incorrect';
+    }
+    html += '<label data-i="'+i+'" class="'+cls.trim()+'"><input type="radio" name="mcopt" ' +
+            (chosen === i ? 'checked' : '') + (isAnswered ? ' disabled' : '') + '> ' + opt + '</label>';
+  });
+  html += '</div>';
+  if(isAnswered){
+    html += '<div class="explain" id="explainBox">' +
+      (chosen === q.answer ? 'Correct! ✅' : 'Not quite. The correct answer is highlighted in green.') +
+      '</div>';
+    html += renderKnowButtons(idx);
+  }
+  return html;
+}
+
+function selectMC(idx, choice, q){
+  answeredIndices.add(idx);
+  userChoices[idx] = choice;
+  renderQuestion();
+}
+
+function renderFIB(idx, q){
+  const isAnswered = answeredIndices.has(idx);
+  let codeHtml = q.code;
+  Object.keys(q.blanks).forEach(key => {
+    let extra = '';
+    let val = '';
+    if(isAnswered){
+      val = 'value="' + q.blanks[key] + '"';
+      const isRight = fibCorrectness[idx] && fibCorrectness[idx][key];
+      extra = 'disabled style="background:' + (isRight ? '#d9f2d9' : '#f9d9d9') + '"';
+    }
+    const inputTag = '<input class="blank" id="'+key+'" data-key="'+key+'" placeholder="?" autocomplete="off" ' + val + ' ' + extra + '>';
+    codeHtml = codeHtml.split('__'+key+'__').join(inputTag);
+  });
+  let html = '<div class="qtext">Fill in the blanks: ' + q.title + '</div>';
+  html += '<pre class="code">' + codeHtml + '</pre>';
+  if(!isAnswered){
+    html += '<button id="checkBtn">Check Answers</button>';
+  } else {
+    let allCorrect = Object.keys(q.blanks).every(k => fibCorrectness[idx] && fibCorrectness[idx][k]);
+    let resultLines = Object.keys(q.blanks).map(k =>
+      ((fibCorrectness[idx] && fibCorrectness[idx][k]) ? '✅ ' : '❌ ') + k + ': ' + q.blanks[k]);
+    html += '<div class="explain" id="explainBox">' +
+      (allCorrect ? 'All correct! ✅<br>' : 'Some answers were off — correct values shown above.<br>') +
+      resultLines.join('<br>') + '</div>';
+    html += renderKnowButtons(idx);
+  }
+  return html;
+}
+
+function checkFIB(idx, q){
+  const card = document.getElementById('cardHolder').firstElementChild;
+  const correctness = {};
+  Object.keys(q.blanks).forEach(key => {
+    const input = card.querySelector('#'+key);
+    const correctVal = q.blanks[key];
+    const userVal = (input.value || '').trim();
+    correctness[key] = userVal.toLowerCase() === correctVal.toLowerCase();
+  });
+  fibCorrectness[idx] = correctness;
+  answeredIndices.add(idx);
+  renderQuestion();
+}
+
+function renderKnowButtons(idx){
+  const status = knowStatus[idx];
+  return '<div id="knowButtons" style="margin-top:12px;">' +
+    '<button class="know" style="' + (status === true ? 'outline:2px solid #245a24;' : '') + '" onclick="markKnow(' + idx + ', true)">I Know This ✔</button>' +
+    '<button class="dontknow" style="' + (status === false ? 'outline:2px solid #7a1f1f;' : '') + '" onclick="markKnow(' + idx + ', false)">I Don\'t Know This ✘</button>' +
+    '</div>';
+}
+
+function markKnow(idx, knowsIt){
+  knowStatus[idx] = knowsIt;
+  renderQuestion();
+}
+
+function showSummary(){
+  document.getElementById('quizArea').classList.add('hidden');
+  const summary = document.getElementById('summary');
+  summary.classList.remove('hidden');
+  const knowCount = currentSet.filter(i => knowStatus[i] === true).length;
+  const dontKnowCount = currentSet.filter(i => knowStatus[i] === false).length;
+  const unansweredCount = currentSet.length - knowCount - dontKnowCount;
+  document.getElementById('summaryText').innerHTML =
+    'You went through <b>' + currentSet.length + '</b> question(s).<br>' +
+    '✔ Know: <b>' + knowCount + '</b> &nbsp; | &nbsp; ✘ Don' + String.fromCharCode(39) + 't Know: <b>' + dontKnowCount + '</b>' +
+    (unansweredCount > 0 ? ' &nbsp; | &nbsp; Unanswered: <b>' + unansweredCount + '</b>' : '');
+}
+</script>
+
+</body>
+</html>
