@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="style.css">
 <meta charset="UTF-8">
 <title>Module 2 Quiz: Intro to Computer Graphics & Visual Computing</title>
 <style>
@@ -53,6 +54,7 @@
   <p>This quiz covers Subtopic 1 (Geometric Specification &amp; Drawing) and Subtopic 2 (Filled Primitives and Colors), plus fill-in-the-blank code questions.</p>
   <p>After each question, mark it <b>Know</b> or <b>Don't Know</b>. Click any number below the question to jump straight to it, and finish whenever you like to see your results.</p>
   <button class="primary" onclick="startQuiz(allIndices())">Start Quiz</button>
+  <button class="back-btn" onclick="window.location.href='../index.html'">Back</button>
 </div>
 
 <div id="quizArea" class="hidden">
@@ -815,6 +817,7 @@ function renderNavBar(){
   html += '</div>';
   html += '<button class="primary" onclick="showSummary()">Finish &amp; View Summary</button>';
   html += '</div>';
+  html += '<button id="back-btn" onclick="window.location.href=\'../index.html\'">Back</button>';
   return html;
 }
 

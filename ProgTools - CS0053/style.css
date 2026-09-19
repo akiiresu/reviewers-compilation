@@ -43,6 +43,7 @@ body {
     display: flex;
     justify-content: baseline;
     flex-direction: row;
+    gap: 10px;
 }
 
 #subject-1 {
