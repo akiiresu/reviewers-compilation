@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS0016 Networks &amp; Communication Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-sunk:#f3f6f9;
+  --ink:#19222e; --ink-soft:#5a6875; --rule:#d3dae1;
+  --accent:#1d5b8f; --right:#136b45; --right-bg:#e2f3ea;
+  --wrong:#a32a1f; --wrong-bg:#fbe8e5; --skip:#8a6a17; --skip-bg:#fbf1da;
+  --shadow:0 1px 0 rgba(25,34,46,.06), 0 10px 24px -18px rgba(25,34,46,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+    --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+    --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+    --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+  --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+  --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+  --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
+}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
+  border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+
+/* setup */
+.field{margin-bottom:1.5rem}
+.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
+.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+  border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
+  transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}
+.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}
+.switch span{font-size:.9rem}
+.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;
+  padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+
+/* nav */
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}
+.meter i.ok{background:var(--right)}
+.meter i.no{background:var(--wrong)}
+.meter i.sk{background:var(--skip)}
+.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+  padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}
+.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}
+.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;margin-top:.2rem}
+.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}
+.qtext p{margin:0 0 .6rem}
+.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;
+  font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;
+  font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);
+  border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;
+  color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
+  flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.choice.wrong .key{color:var(--wrong)}
+.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible,.qhead button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.verdict{margin-top:1rem;font-size:.9rem;display:none}
+.verdict.show{display:block}
+.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}
+.verdict.hit b{color:var(--right)}
+.verdict.miss b{color:var(--wrong)}
+.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.flagnote{margin-top:.8rem;font-size:.8rem;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:.6rem}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;
+  border-top:1px solid var(--rule);padding-top:1rem}
+.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace;width:100%}
+
+/* score */
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}
+.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}
+.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}
+.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}
+.miss.unans{border-color:var(--skip)}
+.miss p{margin:0;font-size:.92rem}
+.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}
+.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}
+.miss .truth{color:var(--right);font-size:.85rem}
+.allgood{color:var(--right);font-size:.92rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <span class="code">CS0016</span>
+    <h1>Networks &amp; Communication</h1>
+    <p>Formative Assessment 1 &amp; 2 reviewer</p>
+  </header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">45 unique questions merged from the Formative 1 &amp; 2 reviewer sets, duplicates removed.</p>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+</div>
+
+<script>
+const BANK = [
+  {"s":1,"q":"A student is learning Python in the interactive interpreter mode. The student issues the commands:\n\n```\n>>> devicenames=[\"RT1\", \"RT2\", \"SW1\", \"SW2\"]\n>>> devicenames[-1]\n```\n\nWhat is the result?","c":["SW1","RT1","an error message","[‘RT2’, ‘SW1’, ‘SW2’]","SW2"],"a":4},
+  {"s":1,"q":"A user issues a Linux command and the result is shown:\n\n```\ntotal 40 \ndrwxr-xr-x 2 devasc devasc 4096 Mar 30 21:25 Desktop \ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Documents \ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Downloads \ndrwxr-xr-x 5 devasc devasc 4096 Mar 30 21:21 labs \ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Music \ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Pictures \ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Public \ndrwxr-xr-x 5 devasc devasc 4096 Mar 30 21:24 snap \ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Templates \ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Videos \ndevasc@labvm:~$\n```\n\nWhich Linux command is used to display the contents of the current directory as shown?","c":["ls -l","ls -a","ls -lr","ls"],"a":0},
+  {"s":1,"q":"A Linux system administrator is searching the passwd file for any username that starts with a digit. Which grep command should the administrator use?","c":["grep ‘(0-9}’ /etc/passwd","grep ‘_[0-9]’ /etc/passwd","grep ‘[0-9]’ /etc/passwd","grep ‘^[0-9]’ /etc/passwd"],"a":3},
+  {"s":1,"q":"What is displayed after the following code is entered into a Python interpreter?\n\n```\naddition = 22 +10 \nprint(addition)\n```","c":["32","nothing ( because the print command is wrong)","(syntaxerror)-…as there should not be a space between the numerical values","[22]+[10]"],"a":0},
+  {"s":1,"q":"A user issues the Linux command ls -l myfile.sh to check the permission of the file myfile.sh.\n\n```\ndevasc@labvm:~/Documents$ ls -l myfile.sh \n-rwxr-xr-- 1 self test 15 Mar 30 21:24 myfile.sh\n```\n\nWhich two statements describe the permissions assigned to the file? (Choose two.)","c":["The user with the user ID of devasc can modify the file.","All users can execute the file.","The user with the user ID of self can modify the file.","Any user in the self group can read, modify, and execute the file.","Any user in the test group can execute the file."],"a":[2,4]},
+  {"s":1,"q":"A system administrator of a Linux server is searching the passwd file for the username taylor that appears at the beginning of the line. Which grep command should the administrator use?","c":["grep ‘[taylor]’ /etc/passwd","grep ‘^taylor’ /etc/passwd","grep ‘.taylor’ /etc/passwd","grep taylor /etc/passwd"],"a":1},
+  {"s":1,"q":"What command is used to rename a file in a Linux system?","c":["cp","mv","rm","dd"],"a":1},
+  {"s":1,"q":"A network engineer needs to review the status of all network interfaces of a server running a Linux operating system. The engineer enters the command ifconfig -a . What is the result of this command?","c":["The host routing table will be displayed.","The ARP table of the computer will be displayed.","Both active and inactive interfaces will display information.","All active interfaces will display information."],"a":2},
+  {"s":1,"q":"A student is learning Python and is reviewing a Python script as follows:\n\n```\naclNum = int(input(\"What is the IPv4 ACL number? \"))\nif aclNum >= 1 and aclNum <= 99:\n     print(\"This is a standard IPv4 ACL.\")\nelif aclNum >=100 and aclNum <= 199:\n     print(\"This is an extended IPv4 ACL.\")\nelse:\n     print(\"This is not a standard or extended IPv4 ACL.\")\n```\n\nUnder which condition will the elif statement be evaluated?","c":["when the input is a string","when the first print statement fails","when the input is a float number","when the if statement is false"],"a":3},
+  {"s":1,"q":"A system administrator issues the apt-get upgrade command on a Linux operating system. What is the purpose of this command?","c":["Operating system updates are downloaded and will be installed.","The remote repository of applications and dependencies will be updated to the latest version.","Every application installed will update itself to the latest version.","A specific application named upgrade will be installed."],"a":2},
+  {"s":1,"q":"A student new to Python is working in the interactive interpreter mode. The student issues the commands:\n\n```\n>>> ipAddress = {\"R1\":\"10.1.1.1\",\"R2\":\"10.2.2.1\",\"R3\":\"10.3.3.1\"}\n```\n\nWhich data type is used to represent the variable ipAddress?","c":["dictionary","tuple","array","list"],"a":0},
+  {"s":1,"q":"A student new to Python is working in the interactive interpreter mode. The student issues the commands:\n\n```\n>>> devicenames=[\"RT1\", \"RT2\", \"SW1\", \"SW2\"]\n>>> hostnames=devicenames + [\"RT3\", \"SW3\"]\n>>> del hostnames[3]\n>>> hostnames\n```\n\nWhat is the result?","c":["[‘RT1’, ‘RT2’, ‘SW1’, ‘RT3’, ‘SW3’]","[‘RT1’, ‘RT2’, ‘SW1’, ‘SW2’, ‘SW3’]","[‘RT1’, ‘RT2’, ‘SW2’, ‘RT3’, ‘SW3’]","[‘RT1’, ‘RT2’, ‘RT3’, ‘SW2, ‘SW3’]"],"a":0},
+  {"s":1,"q":"Which Python programming function is used to display output?","c":["while","print","if","for"],"a":1},
+  {"s":1,"q":"A user issues a Linux command and the result is shown.\n\n```\ntotal 40\ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Videos\ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Templates\ndrwxr-xr-x 5 devasc devasc 4096 Mar 30 21:24 snap\ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Public\ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Pictures\ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Music\ndrwxr-xr-x 5 devasc devasc 4096 Mar 30 21:21 labs\ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Downloads\ndrwxr-xr-x 2 devasc devasc 4096 Apr 15 19:09 Documents\ndrwxr-xr-x 2 devasc devasc 4096 Mar 30 21:25 Desktop\ndevasc@labvm:~$\n```\n\nWhich Linux command is used to display the contents of the current directory as shown?","c":["ls -lr","ls -l","ln","ls -a"],"a":0},
+  {"s":1,"q":"A student is learning Python in the interactive interpreter mode. The student issues the commands:\n\n```\n>>> y=2\n>>> y*3\n6\n>>> 'Test'*y\n```\n\nWhat is the result?","c":["TypeError: A string type cannot be multiplied by an integer.","‘Test6’","‘Test2","‘TestTest’","‘TestTestTestTestTestTest’"],"a":3},
+  {"s":1,"q":"A student is learning Python in the interactive interpreter mode. The student issues the command:\n\n```\n>>> type(True)\n```\n\nWhat is the data type reported by Python?","c":["integer","float","Boolean","string"],"a":2},
+  {"s":1,"q":"Which Python command creates a conditional control structure?","c":["from","def","if","delay"],"a":2},
+  {"s":1,"q":"A system administrator attempts to determine what is causing a computer to perform slower than normal. The administrator issues the ps command. What is displayed by this command?","c":["active processes using CPU time","current NIC status","current HDD usage","current RAM usage"],"a":0},
+  {"s":1,"q":"A student new to Python is working in the interactive interpreter mode. The student issues the command:\n\n```\n>>> ipAddress = {\"R1\":\"10.1.1.1\",\"R2\":\"10.2.2.1\",\"R3\":\"10.3.3.1\"}\n```\n\nWhich Python expression can be used to retrieve the IP address of R2?","c":["ipAddress{“R2”}","ipAddress[‘R2’]","ipAddress[R2]","ipAddress{‘R2’}"],"a":1},
+  {"s":1,"q":"A user enters the commands as shown. What is the result after the mv command is entered?\n\n```\ndevasc@labvm:~/Documents$ pwd \n/home/devasc/Documents \ndevasc@labvm:~/Documents$ mv myfile.sh ../Desktop/myfile2.sh\n```","c":["The file myfile.sh is copied and renamed to myfile2.sh in the current directory.","The file myfile.sh is copied to the /home/devasc/Desktop directory and replaces the file myfile2.sh.","The file myfile.sh is copied to the /home/devasc/Desktop directory and renamed as myfile2.sh.","The file myfile.sh is moved to the /home/devasc/Desktop directory and renamed as myfile2.sh."],"a":3},
+  {"s":1,"q":"A student is learning Python using the interactive interpreter mode. The student issues the commands:\n\n```\n>>> routers=[]\n>>> switches=[]\n>>> devices=[\"RT1\", \"RT2\", \"RT3\", \"SW1\", \"SW2\", \"SW3\"]\n>>> devices=devices + [\"RT4\", \"SW4\"]\n>>> for i in devices:\n    if \"R\" in i:\n        routers.append(i)\n    else:\n        switches.append(i)\n>>> switches\n```\n\nWhat is the result?","c":["[‘SW4’, ‘SW1’, ‘SW2’, ‘SW3’]","[‘SW1’, ‘SW2’, ‘SW3’, ‘SW4’]","[‘SW4’]","[‘SW4’, ‘SW3’, ‘SW2’, ‘SW1’]","[‘SW1’, ‘SW2’, ‘SW3’]"],"a":1},
+  {"s":1,"q":"What Linux command is used to display the contents of the current directory?","c":["pwd","cat","ls","ln"],"a":2},
+  {"s":1,"q":"A developer needs to check the version of the running Python package. Which command should the developer use?","c":["python3 –v","python3 -V","python3 -i","python3 -q"],"a":1},
+  {"s":2,"q":"What is Cisco DevNet?","c":["a developer program","a way to create networks using software alone","a Cisco-proprietary virtual network","a vendor-neutral type of virtual networking"],"a":0},
+  {"s":2,"q":"Which two DevNet resources are available online? (Choose two.)","c":["Code Exchange","API Tokens","Python Exchange","Automation Exchange","DevNet Zone"],"a":[0,3]},
+  {"s":2,"q":"What is required in order to ensure that clients are able to talk to applications that are outside a local system?","c":["a script","a network","an application","an API"],"a":1},
+  {"s":2,"q":"What are two requirements when participating in the DevNet Learning Labs? (Choose two.)","c":["The user must successfully log in with a DevNet account.","The user must have an active internet connection.","The user must have successfully passed the 200-901 DEVASC exam.","The user must have purchased the DevNet Learning Labs activation license.","The user must install a developer environment on a local computer."],"a":[0,1]},
+  {"s":2,"q":"Which website provides the entry point for Cisco DevNet?","c":["developer.cisco.com","devnet.com","cisco.com","talosintelligence.com"],"a":0},
+  {"s":2,"q":"What is a requirement when creating a Cisco DevNet account for accessing educational resources, such as Learning Labs and the DevNet Sandbox?","c":["The account holder must share personally created code before access is allowed.","The account must contain a purchased license.","The account must be registered using a Cisco email address.","The account must be created using an existing online identity or via a new Cisco account."],"a":3},
+  {"s":2,"q":"What is contained within a DevNet Sandbox?","c":["a collection of Cisco developer API documentation","a preconfigured environment already installed with Cisco platforms","instructor-led videos focusing on hands-on exercises","a collection of self-paced tutorials using REST APIs"],"a":1},
+  {"s":2,"q":"What type of learner should take the DevNet Associate course?","c":["only new software developers","only new network engineers","anyone interested in network automation and programmability","anyone that does not like working in teams and is a software developer"],"a":2},
+  {"s":2,"q":"What is the contracted response time after a developer opens a case-based ticket with the DevNet support service?","c":["one business day","one hour","one week","five business days"],"a":0},
+  {"s":2,"q":"Which DevNet event is provided by Cisco partners and Cisco offices?","c":["DevNet Express","DevNet Hackathon","DevNet Learn In","DevNet Codearama"],"a":0},
+  {"s":2,"q":"Which DevNet resource would a developer use if the developer is using a Cisco API and needs help understanding the error message received?","c":["DevNet Learning Labs","Code Exchange","DevNet Support","DevNet Sandbox"],"a":2},
+  {"s":2,"q":"What resources are available in the Cisco DevNet Code Exchange?","c":["a repository of sample code written by other developers","support for developer-related issues using forums and live chats","production-like development and code testing environments","self-paced tutorials that cover a wide range of automation and integration topics"],"a":0},
+  {"s":2,"q":"Which Cisco DevNet developer support option provides 1-on-1 support to the members of the Solution Partner program?","c":["case-based ticket","knowledge base","community forum","chat with DevNet"],"a":0},
+  {"s":2,"q":"What is the purpose of the Cisco DevNet Learning Labs?","c":["They provide a space for game development, interaction, and learning based on coding.","They allow participants to add their own Python labs.","They allow participants to add their own labs as long as the labs relate to any type of coding.","They provide self-paced tutorials including coding."],"a":3},
+  {"s":2,"q":"What is network programmability?","c":["the ability to configure, monitor, and react to events in the network in real time","the ability to program network devices using repettive manual configuration via a terminal and command sets","the ability to configure virtualized networks and deploy virtualized services in real time","the ability to easily monitor network devices using traditional network protocols"],"a":0},
+  {"s":2,"q":"What are two benefits of using APIs and integrations between applications? (Choose two.)","c":["Integrations enable the applications to request actions from each other.","Integrations are used to verify compatibility between different applications.","Integrations enable the applications to be installed on any operating system type.","Integrations are used to provide applications the ability to notify each other when a specific event happens.","Integrations enable the applications to run a Docker instance using Hyper-V."],"a":[0,3]},
+  {"s":2,"q":"What is the purpose of Cisco DevNet?","c":["to teach everyone about the different Cisco API offerings and how to use them","to be the central resource for everything about networking at Cisco","to teach specific coding courses such as advanced Python and implementing REST APIs","to be the central resource for advanced software developers and the use of Cisco APIs"],"a":0},
+  {"s":2,"q":"Which Cisco DevNet online resource provides use cases for network automation, including listing data and activating policies across domains?","c":["DevNet Learning Labs","Code Exchange","Automation Exchange","DevNet Sandbox"],"a":2},
+  {"s":2,"q":"Which link is used from the Cisco DevNet Learning Labs to access the largest collections of labs?","c":["Sections","Tracks","Bookends","Modules"],"a":1},
+  {"s":2,"q":"What resources are available in the Cisco DevNet sandboxes?","c":["production-like development and code testing environments","support for developer-related issues through the use of forums and live chats","a repository of sample code writen by developers","self-paced tutorials that cover a wide range of automation and integration topics"],"a":0},
+  {"s":2,"q":"Which technology trend enables an industry shift towards automation, applications, and integrations?","c":["increased storage and RAM","increased intenet connection bandwidth","smaller and faster CPUs","advanced API capabilities"],"a":3},
+  {"s":2,"q":"What are three major areas that comprise DevNet? (Choose three.)","c":["providing support for website creation and maintenance","automation and programmability standards development area","interactive and collaborative developer community","on-line training site for various technology vendors","integrated community forums","coordinated developer tools"],"a":[2,4,5]}
+];
+
+const KEYS = ["A","B","C","D","E"];
+const stage = document.getElementById("stage");
+let opts = {set:"all", shuffleQ:true, shuffleC:true};
+let deck = [], at = 0;
+
+function pool(){
+  if(opts.set==="m1") return BANK.filter(q=>q.s===1);
+  if(opts.set==="m2") return BANK.filter(q=>q.s===2);
+  return BANK.slice();
+}
+function shuffled(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function buildDeck(list){
+  const qs = opts.shuffleQ ? shuffled(list) : list.slice();
+  deck = qs.map(q=>({ref:q, order:(opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i)), picked:null, skipped:false}));
+  at=0;
+}
+const isMulti = q => Array.isArray(q.a);
+const isRightIdx = (q,i) => isMulti(q) ? q.a.includes(i) : i===q.a;
+const isCorrectPick = (q,picked) => picked!==null && isRightIdx(q,picked);
+function correctLabel(q){
+  if(!isMulti(q)) return esc(q.c[q.a]);
+  return q.a.map(i=>esc(q.c[i])).join(" &middot; ");
+}
+const answered = it => it.picked !== null;
+const stateOf = it => answered(it) ? (isCorrectPick(it.ref,it.picked)?"ok":"no") : (it.skipped?"sk":"");
+const pendingIdx = () => deck.map((it,i)=>i).filter(i=>!answered(deck[i]));
+function nextPending(from){
+  for(let k=1;k<=deck.length;k++){const i=(from+k)%deck.length; if(!answered(deck[i])) return i;}
+  return -1;
+}
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  const n1=BANK.filter(q=>q.s===1).length, n2=BANK.filter(q=>q.s===2).length;
+  stage.innerHTML = `
+    <div class="field">
+      <p class="lede">Which set do you want to drill?</p>
+      <p class="hint">Every unique question from the Formative 1 &amp; 2 reviewer sets, duplicates removed.</p>
+      <div class="segs">
+        <button class="seg" type="button" data-set="all" aria-pressed="false">Full reviewer<span class="n">${n1+n2} questions</span></button>
+        <button class="seg" type="button" data-set="m1" aria-pressed="false">Module 1<span class="n">${n1} questions &middot; Linux &amp; Python</span></button>
+        <button class="seg" type="button" data-set="m2" aria-pressed="false">Module 2<span class="n">${n2} questions &middot; Cisco DevNet</span></button>
+      </div>
+    </div>
+    <div class="field">
+      <p class="lede">Shuffling</p>
+      <label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}>
+        <span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+      <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}>
+        <span>Shuffle the choices<small>Stops you from remembering "the third one".</small></span></label>
+    </div>
+    <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+  const segs=[...stage.querySelectorAll(".seg")];
+  const paint=()=>segs.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===opts.set)));
+  segs.forEach(b=>b.addEventListener("click",()=>{opts.set=b.dataset.set;paint();}));
+  paint();
+  stage.querySelector("#sq").addEventListener("change",e=>opts.shuffleQ=e.target.checked);
+  stage.querySelector("#sc").addEventListener("change",e=>opts.shuffleC=e.target.checked);
+  stage.querySelector("#go").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+}
+
+/* ---------- question ---------- */
+function renderQuestion(){
+  const it=deck[at], q=it.ref, done=answered(it);
+  const right=deck.filter(d=>stateOf(d)==="ok").length;
+  const pend=pendingIdx().length;
+
+  const meter=deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("");
+  const jumps=deck.map((d,i)=>
+    `<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}"
+      aria-label="Go to question ${i+1}">${i+1}</button>`).join("");
+
+  stage.innerHTML = `
+    <div class="meter">${meter}</div>
+    <div class="qhead">
+      <span>Question ${at+1} / ${deck.length}</span>
+      <span>Module ${q.s} &middot; ${right} correct</span>
+    </div>
+    <div class="grid" id="grid">
+      ${jumps}
+      <div class="legend">
+        <s><b style="background:var(--right)"></b>correct</s>
+        <s><b style="background:var(--wrong)"></b>wrong</s>
+        <s><b style="background:var(--skip)"></b>skipped</s>
+        <s><b style="background:var(--rule)"></b>not seen</s>
+      </div>
+    </div>
+    <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">pick the best answer</span>`:``}</h2>
+    <div class="choices">
+      ${it.order.map((orig,pos)=>`
+        <button class="choice" type="button" data-orig="${orig}" ${done?"disabled":""}>
+          <span class="key">${KEYS[pos]}</span>
+          <span class="txt">${esc(q.c[orig])}</span>
+        </button>`).join("")}
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <div class="nav">
+      <button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>
+      ${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}
+      <span class="spacer"></span>
+      <button class="btn sm" id="next">Next &#9654;</button>
+      <button class="btn ghost sm" id="finish">Finish &amp; score</button>
+      ${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:``}
+    </div>`;
+
+  stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();}));
+  stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();}});
+  const sk=stage.querySelector("#skip");
+  if(sk) sk.addEventListener("click",()=>{deck[at].skipped=true;goNext();});
+  stage.querySelector("#next").addEventListener("click",goNext);
+  stage.querySelector("#finish").addEventListener("click",renderScore);
+
+  if(done) reveal(false);
+  else stage.querySelectorAll(".choice").forEach(b=>
+    b.addEventListener("click",()=>answer(parseInt(b.dataset.orig,10))));
+}
+
+function goNext(){
+  if(at < deck.length-1){ at++; renderQuestion(); return; }
+  const np = nextPending(at);
+  if(np > -1){ at = np; renderQuestion(); }
+  else renderScore();
+}
+
+function reveal(fresh){
+  const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
+  stage.querySelectorAll(".choice").forEach(b=>{
+    const o=+b.dataset.orig; b.disabled=true;
+    if(isRightIdx(q,o)){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`);}
+    else if(o===it.picked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`);}
+    else b.classList.add("dim");
+  });
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b>` : `<b>Not quite.</b><p>The answer is ${correctLabel(q)}.</p>`;
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const pend=pendingIdx().length;
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pend===0) ? "See your score" : "Next \u25B6";
+    n.focus();
+  }
+}
+
+function answer(orig){
+  const it=deck[at];
+  if(answered(it)) return;
+  it.picked=orig; it.skipped=false;
+  reveal(true);
+}
+
+/* ---------- score ---------- */
+function renderScore(){
+  const done=deck.filter(answered);
+  const right=done.filter(d=>isCorrectPick(d.ref,d.picked)).length;
+  const misses=done.filter(d=>!isCorrectPick(d.ref,d.picked));
+  const unans=deck.filter(d=>!answered(d));
+  const pct=deck.length?Math.round(right/deck.length*100):0;
+  const line = unans.length ? `Scored out of all ${deck.length} questions &mdash; ${unans.length} left unanswered count as missed.`
+    : pct===100 ? "Clean run. Shuffle it and see if it holds."
+    : pct>=80 ? "Solid. Run the missed ones until they're automatic."
+    : pct>=60 ? "Getting there. The retry below drills only what you missed."
+    : "Worth another pass. Retry the misses first, then the full set.";
+  const redoList=[...misses.map(d=>d.ref), ...unans.map(d=>d.ref)];
+
+  stage.innerHTML = `
+    <p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p>
+    <p class="scoreline">${line}</p>
+    <div class="btnrow">
+      <button class="btn" id="again">Repeat this set</button>
+      ${unans.length?`<button class="btn ghost" id="back">Go back and answer ${unans.length}</button>`:``}
+      ${redoList.length?`<button class="btn ghost" id="redo">Drill the ${redoList.length} missed</button>`:``}
+      <button class="btn quiet" id="home">Change settings</button>
+    </div>
+    <div class="review">
+      <h2>${redoList.length?"What to go over":"Review"}</h2>
+      ${misses.map(d=>`
+        <div class="miss">
+          <p>${qCompact(d.ref.q)}</p>
+          <p class="yours">You chose: ${esc(d.ref.c[d.picked])}</p>
+          <p class="truth">Answer: ${correctLabel(d.ref)}</p>
+        </div>`).join("")}
+      ${unans.map(d=>`
+        <div class="miss unans">
+          <p>${qCompact(d.ref.q)}</p>
+          <p class="none">Left unanswered</p>
+          <p class="truth">Answer: ${correctLabel(d.ref)}</p>
+        </div>`).join("")}
+      ${redoList.length?``:`<p class="allgood">Nothing missed &mdash; every answer was right.</p>`}
+    </div>`;
+
+  stage.querySelector("#again").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+  stage.querySelector("#home").addEventListener("click",renderSetup);
+  const bk=stage.querySelector("#back");
+  if(bk) bk.addEventListener("click",()=>{const p=pendingIdx();at=p[0];renderQuestion();});
+  const rd=stage.querySelector("#redo");
+  if(rd) rd.addEventListener("click",()=>{buildDeck(redoList);renderQuestion();});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* keyboard */
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const btns=[...document.querySelectorAll(".choice")];
+  if(!btns.length) return;
+  const it=deck[at];
+  if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click();}return;}
+  if(e.key==="ArrowRight"||e.key==="Enter"){const n=document.getElementById("next");if(n){e.preventDefault();n.click();}return;}
+  if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click();}return;}
+  if(answered(it)) return;
+  let i=-1;
+  if(/^[1-5]$/.test(e.key)) i=+e.key-1;
+  else {const k=KEYS.indexOf(e.key.toUpperCase()); if(k>-1) i=k;}
+  if(i>-1&&btns[i]){e.preventDefault();btns[i].click();}
+});
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+
+function formatQtext(text){
+  const parts = String(text).split("```");
+  let html = "";
+  parts.forEach((part,i)=>{
+    if(i % 2 === 1){
+      html += `<pre class="code">${esc(part.trim())}</pre>`;
+    } else {
+      const paras = part.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+      html += paras.map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
+    }
+  });
+  return html;
+}
+
+function qCompact(text){
+  const stripped = String(text).replace(/```([\s\S]*?)```/g, (m,c)=>" "+c.trim().replace(/\n+/g," ")+" ");
+  return esc(stripped.replace(/\s*\n\s*/g," ").replace(/\s{2,}/g," ").trim());
+}
+
+renderSetup();
+</script>
+</body>
+</html>
