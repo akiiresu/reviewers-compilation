@@ -156,6 +156,7 @@ body{
   </header>
   <main id="stage" class="panel"></main>
   <p class="foot">29 questions compiled from the uploaded formatives. Duplicates merged; answers cross-checked across papers.</p>
+  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('https://raw.githubusercontent.com/akiiresu/reviewers-compilation/refs/heads/main/ProgTools%20-%20CS0053/Module%201-2%20Formative%20v1.1.0.html', 'CS0053_M1-2_Reviewer.html')">download it here.</a></p>
   <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
 </div>
 
@@ -441,5 +442,6 @@ document.addEventListener("keydown",e=>{
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
 renderSetup();
 </script>
+<script src="script.js"></script>
 </body>
 </html>

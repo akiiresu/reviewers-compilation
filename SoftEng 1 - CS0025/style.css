@@ -91,6 +91,8 @@ body {
     background-color: rgb(213, 22, 22);
     color: white;
     padding: 10px;
+    margin: 20px auto 0;
+    display: block;
 }
 
 #back-btn:hover {
