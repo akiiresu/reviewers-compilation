@@ -6,6 +6,8 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .choice-container {
@@ -13,24 +15,26 @@ body {
     border-radius: 20px;
     padding: 20px;
     text-align: center;
-    width: 800px;
+    width: 100%;
+    max-width: 800px;
     margin-top: 10%;
+    box-sizing: border-box;
 
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    
 }
 
 #header1 {
     background-color: rgb(18, 104, 44);
     color: yellow;
-    font-size: 30px;
+    font-size: clamp(20px, 4vw, 30px);
     border-radius: 15px;
-    width: 600px;
+    width: 100%;
+    max-width: 600px;
     padding: 20px;
-    
+    box-sizing: border-box;
 }
 
 .subjects-container {
@@ -39,24 +43,27 @@ body {
     height: 100%;
     min-height: 200px;
     border-radius: 10px;
-    padding: 5px;
+    padding: 10px;
+    box-sizing: border-box;
     display: flex;
-    justify-content: baseline;
+    justify-content: center;
+    align-items: flex-start;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
 #subject-1 {
-    height: 50px;
+    min-height: 50px;
+    height: auto;
     border: none;
     border-radius: 10px;
     background-color: rgb(244, 244, 127);
     font-family: '0x Proto', monospace;
     font-style: italic;
     font-weight: bold;
-    color:rgb(46, 92, 60);
-    padding: 10px;
-
+    color: rgb(46, 92, 60);
+    padding: 10px 15px;
 }
 
 #subject-1:hover {
@@ -70,6 +77,8 @@ body {
 #disclaimer {
     color: slategrey;
     font-style: italic;
+    text-align: center;
+    padding: 0 10px;
 }
 
 #back-btn {
@@ -78,7 +87,7 @@ body {
     font-family: '0x Proto', monospace;
     font-style: italic;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 15px;
     background-color: rgb(213, 22, 22);
     color: white;
     padding: 10px;
