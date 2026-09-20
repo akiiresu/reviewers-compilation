@@ -116,6 +116,8 @@ body{
 .choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
   flex:none;width:1.2rem;padding-top:.1rem}
 .choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice.picked .key{color:var(--accent)}
 .choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
 .choice.right .key{color:var(--right)}
 .choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
@@ -232,15 +234,28 @@ function shuffled(arr){
 }
 function buildDeck(list){
   const qs = opts.shuffleQ ? shuffled(list) : list.slice();
-  deck = qs.map(q=>({ref:q, order:(opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i)), picked:null, skipped:false}));
+  deck = qs.map(q=>({ref:q, order:(opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i)), picked:null, skipped:false, tempPicks:[]}));
   at=0;
 }
 const isMulti = q => Array.isArray(q.a);
 const isRightIdx = (q,i) => isMulti(q) ? q.a.includes(i) : i===q.a;
-const isCorrectPick = (q,picked) => picked!==null && isRightIdx(q,picked);
+function sameSet(a,b){
+  if(a.length!==b.length) return false;
+  const sa=[...a].sort((x,y)=>x-y), sb=[...b].sort((x,y)=>x-y);
+  return sa.every((v,i)=>v===sb[i]);
+}
+const isCorrectPick = (q,picked) => {
+  if(picked===null) return false;
+  return isMulti(q) ? sameSet(picked,q.a) : isRightIdx(q,picked);
+};
 function correctLabel(q){
   if(!isMulti(q)) return esc(q.c[q.a]);
   return q.a.map(i=>esc(q.c[i])).join(" &middot; ");
+}
+function pickedLabel(d){
+  if(!answered(d)) return "";
+  if(isMulti(d.ref)) return d.picked.map(i=>esc(d.ref.c[i])).join(" &middot; ");
+  return esc(d.ref.c[d.picked]);
 }
 const answered = it => it.picked !== null;
 const stateOf = it => answered(it) ? (isCorrectPick(it.ref,it.picked)?"ok":"no") : (it.skipped?"sk":"");
@@ -306,14 +321,21 @@ function renderQuestion(){
         <s><b style="background:var(--rule)"></b>not seen</s>
       </div>
     </div>
-    <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">pick the best answer</span>`:``}</h2>
+    <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:``}</h2>
     <div class="choices">
-      ${it.order.map((orig,pos)=>`
-        <button class="choice" type="button" data-orig="${orig}" ${done?"disabled":""}>
+      ${it.order.map((orig,pos)=>{
+        const picked = !done && isMulti(q) && it.tempPicks.includes(orig);
+        return `
+        <button class="choice${picked?" picked":""}" type="button" data-orig="${orig}" ${done?"disabled":""} ${isMulti(q)?`aria-pressed="${picked}"`:``}>
           <span class="key">${KEYS[pos]}</span>
           <span class="txt">${esc(q.c[orig])}</span>
-        </button>`).join("")}
+        </button>`;}).join("")}
     </div>
+    ${(!done && isMulti(q))?`
+    <div class="btnrow">
+      <button class="btn sm" id="submitMulti" ${it.tempPicks.length!==q.a.length?"disabled":""}>Submit answer</button>
+      <span class="pending">${it.tempPicks.length} of ${q.a.length} selected</span>
+    </div>`:``}
     <div class="verdict" id="verdict"></div>
     <div class="nav">
       <button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>
@@ -332,8 +354,30 @@ function renderQuestion(){
   stage.querySelector("#finish").addEventListener("click",renderScore);
 
   if(done) reveal(false);
-  else stage.querySelectorAll(".choice").forEach(b=>
-    b.addEventListener("click",()=>answer(parseInt(b.dataset.orig,10))));
+  else {
+    stage.querySelectorAll(".choice").forEach(b=>{
+      const orig=parseInt(b.dataset.orig,10);
+      b.addEventListener("click",()=> isMulti(q) ? toggleChoice(orig) : answer(orig));
+    });
+    const sm=stage.querySelector("#submitMulti");
+    if(sm) sm.addEventListener("click",submitMulti);
+  }
+}
+
+function toggleChoice(orig){
+  const it=deck[at], q=it.ref;
+  const i=it.tempPicks.indexOf(orig);
+  if(i>-1) it.tempPicks.splice(i,1);
+  else if(it.tempPicks.length<q.a.length) it.tempPicks.push(orig);
+  renderQuestion();
+}
+
+function submitMulti(){
+  const it=deck[at], q=it.ref;
+  if(it.tempPicks.length!==q.a.length) return;
+  it.picked=it.tempPicks.slice();
+  it.skipped=false;
+  reveal(true);
 }
 
 function goNext(){
@@ -347,8 +391,9 @@ function reveal(fresh){
   const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
   stage.querySelectorAll(".choice").forEach(b=>{
     const o=+b.dataset.orig; b.disabled=true;
+    const wasPicked = isMulti(q) ? it.picked.includes(o) : o===it.picked;
     if(isRightIdx(q,o)){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`);}
-    else if(o===it.picked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`);}
+    else if(wasPicked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`);}
     else b.classList.add("dim");
   });
   const v=stage.querySelector("#verdict");
@@ -398,7 +443,7 @@ function renderScore(){
       ${misses.map(d=>`
         <div class="miss">
           <p>${qCompact(d.ref.q)}</p>
-          <p class="yours">You chose: ${esc(d.ref.c[d.picked])}</p>
+          <p class="yours">You chose: ${pickedLabel(d)}</p>
           <p class="truth">Answer: ${correctLabel(d.ref)}</p>
         </div>`).join("")}
       ${unans.map(d=>`
@@ -426,6 +471,7 @@ document.addEventListener("keydown",e=>{
   if(!btns.length) return;
   const it=deck[at];
   if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click();}return;}
+  if(e.key==="Enter"){const sm=document.getElementById("submitMulti");if(sm&&!sm.disabled){e.preventDefault();sm.click();return;}}
   if(e.key==="ArrowRight"||e.key==="Enter"){const n=document.getElementById("next");if(n){e.preventDefault();n.click();}return;}
   if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click();}return;}
   if(answered(it)) return;
