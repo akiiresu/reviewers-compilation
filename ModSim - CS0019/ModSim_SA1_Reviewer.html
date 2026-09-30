@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SA1 Modeling &amp; Simulation Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-sunk:#f3f6f9;
+  --ink:#19222e; --ink-soft:#5a6875; --rule:#d3dae1;
+  --accent:#1d5b8f; --right:#136b45; --right-bg:#e2f3ea;
+  --wrong:#a32a1f; --wrong-bg:#fbe8e5; --skip:#8a6a17; --skip-bg:#fbf1da;
+  --shadow:0 1px 0 rgba(25,34,46,.06), 0 10px 24px -18px rgba(25,34,46,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+    --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+    --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+    --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+  --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+  --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+  --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
+}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
+  border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+
+/* setup */
+.field{margin-bottom:1.5rem}
+.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
+.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+  border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
+  transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}
+.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}
+.switch span{font-size:.9rem}
+.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;
+  padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+
+/* nav */
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}
+.meter i.ok{background:var(--right)}
+.meter i.no{background:var(--wrong)}
+.meter i.sk{background:var(--skip)}
+.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+  padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}
+.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}
+.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;margin-top:.2rem}
+.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}
+.qtext p{margin:0 0 .6rem}
+.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;
+  font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;
+  font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);
+  border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;
+  color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
+  flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice.picked .key{color:var(--accent)}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.choice.wrong .key{color:var(--wrong)}
+.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible,.qhead button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.verdict{margin-top:1rem;font-size:.9rem;display:none}
+.verdict.show{display:block}
+.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}
+.verdict.hit b{color:var(--right)}
+.verdict.miss b{color:var(--wrong)}
+.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.flagnote{margin-top:.8rem;font-size:.8rem;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:.6rem}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;
+  border-top:1px solid var(--rule);padding-top:1rem}
+.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace;width:100%}
+
+/* score */
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}
+.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}
+.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}
+.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}
+.miss.unans{border-color:var(--skip)}
+.miss p{margin:0;font-size:.92rem}
+.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}
+.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}
+.miss .truth{color:var(--right);font-size:.85rem}
+.miss.hit{border-color:var(--right)}.miss .ok{color:var(--right);font-size:.85rem;margin-top:.25rem}
+.allgood{color:var(--right);font-size:.92rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+.filltip{margin:0 0 .7rem;font-size:.78rem;color:var(--ink-soft)}
+.bank{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem;padding:.7rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.bank.col{flex-direction:column;gap:.3rem}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;text-align:left;cursor:pointer;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:.3rem .5rem;transition:border-color .12s}
+.chip:hover:not(:disabled){border-color:var(--accent)}.chip:disabled{cursor:default;opacity:.6}
+.chip .cl{color:var(--ink-soft);margin-right:.25rem}
+.after{margin:0 0 .8rem;font-size:.92rem}
+.brow{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.5rem 0;font-size:.92rem}
+.brow .n{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--ink-soft);min-width:1.4rem}
+.brow .post{flex:1 1 14rem}
+.blank{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:.4rem .5rem;width:min(100%,17rem)}
+pre.code .blank{width:min(100%,28rem);margin:.15rem 0}
+.blank:focus{outline:2px solid var(--accent);outline-offset:1px}
+.blank.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.blank.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.fixrow{display:grid;grid-template-columns:4.5rem 1fr;gap:.1rem .6rem;margin-top:.55rem;padding-left:.6rem;border-left:2px solid var(--wrong);font-family:"IBM Plex Mono",monospace;font-size:.78rem;word-break:break-word}
+.fixrow .fn{grid-row:span 2;color:var(--ink-soft)}
+.fixrow .bad{color:var(--wrong);text-decoration:line-through}
+.fixrow .good{color:var(--right);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <span class="code">SA1</span>
+    <h1>Modeling &amp; Simulation</h1>
+    <p>Full 33-item reviewer</p>
+  </header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">33 questions from the ModSim SA1 study guide, all multiple choice, grouped into 6 modules.</p>
+  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('raw github link','CS0019_M1-2_Reviewer.html')">download it here.</a></p>
+</div>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+<script>
+const SETS = {1:"Random Numbers & Entities",2:"Fidelity & Linear Systems",3:"Data Modeling & Taxonomies",4:"Distributions & ABM",5:"RNG & Queue Behavior",6:"Verification & Validation"};
+const BANK = [{"s": 1, "q": "What are the two basic steps in generating a random variate?", "c": ["Choose an event, then delete it", "Create a queue, then add a server", "Estimate a mean, then set variance to zero", "Generate a random number, then transform it"], "a": 3}, {"s": 1, "q": "In a library system, a \"Librarian\" is considered:", "c": ["Attribute", "Model", "Activity", "Entity"], "a": 3}, {"s": 1, "q": "An exponential interarrival distribution has an average rate of 4 arrivals per hour. Compute its mean interarrival time in hours.", "c": ["0.25 hours (15 minutes)", "4 hours", "0.5 hours (30 minutes)", "1 hour"], "a": 0}, {"s": 1, "q": "A supplier delivery enters a factory from outside the modeled boundary. Identify this type of activity.", "c": ["Exogenous", "Endogenous", "Notional", "Static"], "a": 0}, {"s": 1, "q": "Let A={1,2,3} and B={3,4}. What is A union B?", "c": ["{3}", "{1,2,3,3,4}", "{1,2,3,4}", "{1,2,4}"], "a": 2}, {"s": 1, "q": "A customer switches from one line to another to reduce waiting. This is:", "c": ["Reneging", "Balking", "Faffing", "Jockeying"], "a": 3}, {"s": 2, "q": "Modeling and simulation can replicate reality perfectly in a computer setup.", "c": ["True", "False"], "a": 1}, {"s": 2, "q": "Two identical servers provide a combined busy time of 150 minutes during a 100-minute run. Compute average resource utilization as a percentage.", "c": ["75%", "150%", "50%", "60%"], "a": 0}, {"s": 2, "q": "Why is a hospital with staff, equipment, policies, and patients a system?", "c": ["Its interdependent elements produce an overall result", "It has only physical parts", "It has no environment", "Each part independently produces the whole result"], "a": 0}, {"s": 2, "q": "A = [1 2 3; 4 5 6]. After B = A', how many rows does B have?", "c": ["3 rows", "2 rows", "6 rows", "1 row"], "a": 0}, {"s": 2, "q": "Disjoint events E1 and E2 have probabilities 0.35 and 0.40. Compute P(E1 union E2).", "c": ["0.75", "0.14", "0.61", "0.05"], "a": 0}, {"s": 2, "q": "A system with customer arrivals from outside its boundary is:", "c": ["Closed", "Notional", "Open", "Static"], "a": 2}, {"s": 3, "q": "Interarrival times, service times, schedules, failure rates, and travel times belong primarily to:", "c": ["Data modeling", "Queue discipline only", "Clock initialization only", "Structural modeling"], "a": 0}, {"s": 3, "q": "In a library system, borrowing of a book by a student is considered:", "c": ["Attribute", "Model", "Entity", "Activity"], "a": 3}, {"s": 3, "q": "For an exponential model with rate lambda = 0.5 per minute, compute P(X > 2). Round to three decimal places.", "c": ["0.368", "0.632", "0.135", "0.500"], "a": 0}, {"s": 3, "q": "A checkout model advances from one customer arrival or departure directly to the next. Identify the simulation type.", "c": ["Discrete-event simulation (next-event time-advance)", "Continuous simulation", "Agent-based simulation", "Static Monte Carlo simulation"], "a": 0}, {"s": 3, "q": "New government regulations on jeepney modernization program is considered exogenous activities because they originate outside our transportation systems being modeled.", "c": ["True", "False"], "a": 0}, {"s": 3, "q": "Real people operating real systems describes:", "c": ["Constructive simulation", "Virtual simulation", "Web-based simulation", "Live simulation"], "a": 3}, {"s": 4, "q": "Which distribution is commonly used to model interarrival times in DES?", "c": ["Exponential", "Normal only", "Uniform on all real numbers", "Triangular only"], "a": 0}, {"s": 4, "q": "A temperature model based on differential equations is:", "c": ["Constructive simulation", "Continuous simulation", "Static simulation", "Discrete-event simulation"], "a": 1}, {"s": 4, "q": "Modeling pedestrians as autonomous interacting individuals is:", "c": ["Physics-based modeling only", "Agent-based modeling", "Static physical modeling", "Aggregate modeling"], "a": 1}, {"s": 4, "q": "In a single-server queue, a customer arrives at time 6 and the previous service ends at time 9. When does service begin?", "c": ["9", "6", "7", "15"], "a": 0}, {"s": 4, "q": "Real people operating simulated systems describes which type of simulation?", "c": ["Live simulation", "Virtual simulation", "Constructive simulation", "Deterministic simulation"], "a": 1}, {"s": 4, "q": "Simulated people operating simulated systems describes which type of simulation?", "c": ["Live simulation", "Virtual simulation", "Constructive simulation", "Stochastic simulation"], "a": 2}, {"s": 5, "q": "In a Linear Congruential Generator (LCG) defined by X_(i+1) = (a*X_i + c) mod m, what theorem provides conditions for achieving a full period (period length m)?", "c": ["Central Limit Theorem", "Hull-Dobell Theorem", "Little's Law", "Bayes' Theorem"], "a": 1}, {"s": 5, "q": "A customer arrives at a bank, sees 15 people in line, and immediately leaves without entering the queue. This behavior is called:", "c": ["Reneging", "Balking", "Jockeying", "Idling"], "a": 1}, {"s": 5, "q": "A customer enters a service queue, waits for 12 minutes, becomes impatient, and leaves before receiving service. This behavior is called:", "c": ["Reneging", "Balking", "Jockeying", "Preemption"], "a": 0}, {"s": 5, "q": "A system where no entities enter or leave from the outside environment is classified as a(n):", "c": ["Open system", "Closed system", "Continuous system", "Dynamic system"], "a": 1}, {"s": 5, "q": "The building of a model at a finer, more granular scale (such as modeling individual machines rather than an entire factory floor) increases the model's:", "c": ["Stochasticity", "Resolution (or Fidelity)", "Abstraction", "Generality"], "a": 1}, {"s": 6, "q": "Ensuring that the conceptual simulation model has been accurately translated into computer software code is called:", "c": ["Validation", "Verification", "Calibration", "Accreditation"], "a": 1}, {"s": 6, "q": "Determining whether the simulation model is an accurate representation of the real-world system for its intended purpose is called:", "c": ["Validation", "Verification", "Compilation", "Execution"], "a": 0}, {"s": 6, "q": "Why is a single run of a stochastic simulation insufficient for drawing conclusions about performance metrics?", "c": ["A single run only produces deterministic outcomes.", "A single run represents only one random realization; multiple independent replications are required to construct confidence intervals.", "Stochastic simulations cannot calculate mean wait times without infinite runs.", "Single runs always overestimate resource utilization."], "a": 1}, {"s": 6, "q": "In a system composed of purely notional (conceptual) components, which of the following is true?", "c": ["It must contain physical hardware to be simulated.", "It consists of abstract, hypothetical concepts or rules rather than physical machinery.", "It cannot be studied using discrete-event methods.", "It is strictly governed by physical conservation laws."], "a": 1}];
+
+const KEYS = ["A","B","C","D","E","F","G","H","I"];
+const stage = document.getElementById("stage");
+let opts = {set:"all", shuffleQ:true, shuffleC:true};
+let deck = [], at = 0;
+
+function pool(){
+  if(opts.set!=="all") return BANK.filter(q=>q.s===+opts.set);
+  return BANK.slice();
+}
+function shuffled(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function buildDeck(list){
+  const qs = opts.shuffleQ ? shuffled(list) : list.slice();
+  deck = qs.map(q=>({ref:q, order:(opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i)), picked:null, skipped:false, tempPicks:[], vals:[]}));
+  at=0;
+}
+
+const isFill = q => Array.isArray(q.k);
+const norm = x => String(x).replace(/\s+/g,"").replace(/\//g,"\\").toLowerCase();
+const blankOK = (q,v,i) => norm(v[i]||"")===norm(q.k[i]);
+const fillVals = it => it.ref.k.map((_,i)=>it.vals[i]||"");
+function blankInput(n,done){return `<input class="blank" data-i="${n}" placeholder="blank ${+n+1}" autocomplete="off" autocapitalize="off" spellcheck="false" ${done?"disabled":""}>`;}
+function fillHTML(it){
+  const q=it.ref, done=answered(it), lp=q.lp;
+  const lab=i=>lp==="a"?String.fromCharCode(97+i)+")":lp==="n"?(i+1)+".":"\u2022";
+  const bank=`<div class="bank ${q.wide?"col":""}">${q.list.map((x,i)=>`<button type="button" class="chip" data-v="${esc(x)}" ${done?"disabled":""}><span class="cl">${lab(i)}</span>${esc(x)}</button>`).join("")}</div>`;
+  const form = q.tpl
+    ? `<pre class="code">${q.tpl.split(/\{(\d+)\}/).map((p,i)=>i%2?blankInput(p,done):esc(p)).join("")}</pre>`
+    : q.rows.map((r,i)=>`<div class="brow"><span class="n">${i+1}.</span>${r.pre?`<span>${esc(r.pre)}</span>`:""}${blankInput(i,done)}${r.post?`<span class="post">${esc(r.post)}</span>`:""}</div>`).join("");
+  return `${done?"":`<p class="filltip">Type each answer, or tap a choice to fill the selected blank. Nothing is checked until you press Submit.</p>`}${bank}${q.after?`<p class="after">${esc(q.after)}</p>`:""}${form}
+    ${done?"":`<div class="btnrow"><button class="btn sm" id="submitFill" type="button" disabled>Submit answers</button><span class="pending" id="fillcount">0 of ${q.k.length} filled</span></div>`}`;
+}
+function bindFill(it,done){
+  const q=it.ref, inputs=[...stage.querySelectorAll(".blank")];
+  if(done){revealFill(false);return;}
+  let active=inputs[0];
+  const refresh=()=>{
+    const n=fillVals(it).filter(v=>v.trim()).length;
+    stage.querySelector("#fillcount").textContent=n+" of "+q.k.length+" filled";
+    stage.querySelector("#submitFill").disabled = n!==q.k.length;
+  };
+  inputs.forEach((inp,i)=>{
+    inp.value=it.vals[i]||"";
+    inp.addEventListener("focus",()=>active=inp);
+    inp.addEventListener("input",()=>{it.vals[i]=inp.value;refresh();});
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault(); if(i<inputs.length-1) inputs[i+1].focus(); else submitFill();}});
+  });
+  stage.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{
+    const i=Math.max(0,inputs.indexOf(active));
+    inputs[i].value=c.dataset.v; it.vals[i]=c.dataset.v; refresh();
+    (inputs[i+1]||inputs[i]).focus();
+  }));
+  stage.querySelector("#submitFill").addEventListener("click",submitFill);
+  refresh();
+}
+function submitFill(){
+  const it=deck[at];
+  if(!it||answered(it)||fillVals(it).some(v=>!v.trim())) return;
+  it.picked=fillVals(it); it.skipped=false;
+  revealFill(true);
+}
+function revealFill(fresh){
+  const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
+  const good=q.k.filter((a,i)=>blankOK(q,it.picked,i)).length;
+  stage.querySelectorAll(".blank").forEach(inp=>{
+    const i=+inp.dataset.i, r=blankOK(q,it.picked,i);
+    inp.value=it.picked[i]; inp.disabled=true; inp.classList.add(r?"right":"wrong");
+  });
+  stage.querySelectorAll(".chip").forEach(c=>c.disabled=true);
+  ["#submitFill","#fillcount"].forEach(x=>{const e=stage.querySelector(x); if(e) e.remove();});
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b><p>All ${q.k.length} blanks are right.</p>` : `<b>Not quite.</b><p>${good} of ${q.k.length} blanks correct. Here are the ones you missed:</p>${q.k.map((a,i)=>blankOK(q,it.picked,i)?"":`<div class="fixrow"><span class="fn">blank ${i+1}</span><span class="bad">${esc(it.picked[i])}</span><span class="good">${esc(a)}</span></div>`).join("")}`;
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pendingIdx().length===0) ? "See your score" : "Next \u25B6";
+    n.focus();
+  }
+}
+function reviewItem(d){
+  const q=d.ref, ok=answered(d)&&isCorrectPick(q,d.picked);
+  let body;
+  if(isFill(q)){
+    body = !answered(d) ? `<p class="none">Left unanswered</p><p class="truth">Answers:<br>${correctLabel(q)}</p>`
+      : ok ? `<p class="ok">All ${q.k.length} blanks correct.</p>`
+      : q.k.map((a,i)=>blankOK(q,d.picked,i)?"":`<p class="yours">${i+1}. You typed: ${esc(d.picked[i]||"(blank)")}</p><p class="truth">Answer: ${esc(a)}</p>`).join("");
+  } else {
+    body = ok ? `<p class="ok">Correct: ${correctLabel(q)}</p>` : (answered(d)?`<p class="yours">You chose: ${pickedLabel(d)}</p>`:`<p class="none">Left unanswered</p>`);
+    if(!ok) body += `<p class="truth">Answer: ${correctLabel(q)}</p>`;
+  }
+  return `<div class="miss ${ok?"hit":(answered(d)?"":"unans")}"><p>${qCompact(q.q)}</p>${body}</div>`;
+}
+const isMulti = q => Array.isArray(q.a);
+const isRightIdx = (q,i) => isMulti(q) ? q.a.includes(i) : i===q.a;
+function sameSet(a,b){
+  if(a.length!==b.length) return false;
+  const sa=[...a].sort((x,y)=>x-y), sb=[...b].sort((x,y)=>x-y);
+  return sa.every((v,i)=>v===sb[i]);
+}
+const isCorrectPick = (q,picked) => {
+  if(picked===null) return false;
+  if(isFill(q)) return q.k.every((a,i)=>blankOK(q,picked,i));
+  return isMulti(q) ? sameSet(picked,q.a) : isRightIdx(q,picked);
+};
+function correctLabel(q){
+  if(isFill(q)) return q.k.map((a,i)=>(i+1)+". "+esc(a)).join("<br>");
+  if(!isMulti(q)) return esc(q.c[q.a]);
+  return q.a.map(i=>esc(q.c[i])).join(" &middot; ");
+}
+function pickedLabel(d){
+  if(!answered(d)) return "";
+  if(isMulti(d.ref)) return d.picked.map(i=>esc(d.ref.c[i])).join(" &middot; ");
+  return esc(d.ref.c[d.picked]);
+}
+const answered = it => it.picked !== null;
+const stateOf = it => answered(it) ? (isCorrectPick(it.ref,it.picked)?"ok":"no") : (it.skipped?"sk":"");
+const pendingIdx = () => deck.map((it,i)=>i).filter(i=>!answered(deck[i]));
+function nextPending(from){
+  for(let k=1;k<=deck.length;k++){const i=(from+k)%deck.length; if(!answered(deck[i])) return i;}
+  return -1;
+}
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  const cnt=k=>BANK.filter(q=>q.s===k).length;
+  stage.innerHTML = `
+    <div class="field">
+      <p class="lede">Which set do you want to drill?</p>
+      <p class="hint">Every question from the ModSim SA1 study guide, one entry each.</p>
+      <div class="segs">
+        <button class="seg" type="button" data-set="all" aria-pressed="false">Full reviewer<span class="n">${BANK.length} questions</span></button>
+        ${Object.keys(SETS).map(Number).map(k=>`<button class="seg" type="button" data-set="${k}" aria-pressed="false">${SETS[k]}<span class="n">${cnt(k)} question${cnt(k)>1?"s":""}</span></button>`).join("")}
+      </div>
+    </div>
+    <div class="field">
+      <p class="lede">Shuffling</p>
+      <label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}>
+        <span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+      <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}>
+        <span>Shuffle the choices<small>Stops you from remembering "the third one".</small></span></label>
+    </div>
+    <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+  const segs=[...stage.querySelectorAll(".seg")];
+  const paint=()=>segs.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===opts.set)));
+  segs.forEach(b=>b.addEventListener("click",()=>{opts.set=b.dataset.set;paint();}));
+  paint();
+  stage.querySelector("#sq").addEventListener("change",e=>opts.shuffleQ=e.target.checked);
+  stage.querySelector("#sc").addEventListener("change",e=>opts.shuffleC=e.target.checked);
+  stage.querySelector("#go").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+}
+
+/* ---------- question ---------- */
+function renderQuestion(){
+  const it=deck[at], q=it.ref, done=answered(it);
+  const right=deck.filter(d=>stateOf(d)==="ok").length;
+  const pend=pendingIdx().length;
+
+  const meter=deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("");
+  const jumps=deck.map((d,i)=>
+    `<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}"
+      aria-label="Go to question ${i+1}">${i+1}</button>`).join("");
+
+  stage.innerHTML = `
+    <div class="meter">${meter}</div>
+    <div class="qhead">
+      <span>Question ${at+1} / ${deck.length}</span>
+      <span>${SETS[q.s]} &middot; ${right} correct</span>
+    </div>
+    <div class="grid" id="grid">
+      ${jumps}
+      <div class="legend">
+        <s><b style="background:var(--right)"></b>correct</s>
+        <s><b style="background:var(--wrong)"></b>wrong</s>
+        <s><b style="background:var(--skip)"></b>skipped</s>
+        <s><b style="background:var(--rule)"></b>not seen</s>
+      </div>
+    </div>
+    <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:``}</h2>
+    ${isFill(q)?fillHTML(it):`<div class="choices">
+      ${it.order.map((orig,pos)=>{
+        const picked = !done && isMulti(q) && it.tempPicks.includes(orig);
+        return `
+        <button class="choice${picked?" picked":""}" type="button" data-orig="${orig}" ${done?"disabled":""} ${isMulti(q)?`aria-pressed="${picked}"`:``}>
+          <span class="key">${KEYS[pos]}</span>
+          <span class="txt">${esc(q.c[orig])}</span>
+        </button>`;}).join("")}
+    </div>`}
+    ${(!done && isMulti(q))?`
+    <div class="btnrow">
+      <button class="btn sm" id="submitMulti" ${it.tempPicks.length!==q.a.length?"disabled":""}>Submit answer</button>
+      <span class="pending">${it.tempPicks.length} of ${q.a.length} selected</span>
+    </div>`:``}
+    <div class="verdict" id="verdict"></div>
+    <div class="nav">
+      <button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>
+      ${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}
+      <span class="spacer"></span>
+      <button class="btn sm" id="next">Next &#9654;</button>
+      <button class="btn ghost sm" id="finish">Finish &amp; score</button>
+      ${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:``}
+    </div>`;
+
+  stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();}));
+  stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();}});
+  const sk=stage.querySelector("#skip");
+  if(sk) sk.addEventListener("click",()=>{deck[at].skipped=true;goNext();});
+  stage.querySelector("#next").addEventListener("click",goNext);
+  stage.querySelector("#finish").addEventListener("click",renderScore);
+
+  if(isFill(q)) bindFill(it,done);
+  else if(done) reveal(false);
+  else {
+    stage.querySelectorAll(".choice").forEach(b=>{
+      const orig=parseInt(b.dataset.orig,10);
+      b.addEventListener("click",()=> isMulti(q) ? toggleChoice(orig) : answer(orig));
+    });
+    const sm=stage.querySelector("#submitMulti");
+    if(sm) sm.addEventListener("click",submitMulti);
+  }
+}
+
+function toggleChoice(orig){
+  const it=deck[at], q=it.ref;
+  const i=it.tempPicks.indexOf(orig);
+  if(i>-1) it.tempPicks.splice(i,1);
+  else if(it.tempPicks.length<q.a.length) it.tempPicks.push(orig);
+  renderQuestion();
+}
+
+function submitMulti(){
+  const it=deck[at], q=it.ref;
+  if(it.tempPicks.length!==q.a.length) return;
+  it.picked=it.tempPicks.slice();
+  it.skipped=false;
+  reveal(true);
+}
+
+function goNext(){
+  if(at < deck.length-1){ at++; renderQuestion(); return; }
+  const np = nextPending(at);
+  if(np > -1){ at = np; renderQuestion(); }
+  else renderScore();
+}
+
+function reveal(fresh){
+  const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
+  stage.querySelectorAll(".choice").forEach(b=>{
+    const o=+b.dataset.orig; b.disabled=true;
+    const wasPicked = isMulti(q) ? it.picked.includes(o) : o===it.picked;
+    if(isRightIdx(q,o)){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`);}
+    else if(wasPicked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`);}
+    else b.classList.add("dim");
+  });
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b>` : `<b>Not quite.</b><p>The answer is ${correctLabel(q)}.</p>`;
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const pend=pendingIdx().length;
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pend===0) ? "See your score" : "Next \u25B6";
+    n.focus();
+  }
+}
+
+function answer(orig){
+  const it=deck[at];
+  if(answered(it)) return;
+  it.picked=orig; it.skipped=false;
+  reveal(true);
+}
+
+/* ---------- score ---------- */
+function renderScore(){
+  const done=deck.filter(answered);
+  const right=done.filter(d=>isCorrectPick(d.ref,d.picked)).length;
+  const misses=done.filter(d=>!isCorrectPick(d.ref,d.picked));
+  const unans=deck.filter(d=>!answered(d));
+  const pct=deck.length?Math.round(right/deck.length*100):0;
+  const line = unans.length ? `Scored out of all ${deck.length} questions &mdash; ${unans.length} left unanswered count as missed.`
+    : pct===100 ? "Clean run. Shuffle it and see if it holds."
+    : pct>=80 ? "Solid. Run the missed ones until they're automatic."
+    : pct>=60 ? "Getting there. The retry below drills only what you missed."
+    : "Worth another pass. Retry the misses first, then the full set.";
+  const fd=done.filter(d=>isFill(d.ref)), fT=fd.reduce((n,d)=>n+d.ref.k.length,0), fO=fd.reduce((n,d)=>n+d.ref.k.filter((a,i)=>blankOK(d.ref,d.picked,i)).length,0);
+  const redoList=[...misses.map(d=>d.ref), ...unans.map(d=>d.ref)];
+
+  stage.innerHTML = `
+    <p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p>
+    <p class="scoreline">${line}${fT?` Fill-in blanks: ${fO}/${fT} correct.`:""}</p>
+    <div class="btnrow">
+      <button class="btn" id="again">Repeat this set</button>
+      ${unans.length?`<button class="btn ghost" id="back">Go back and answer ${unans.length}</button>`:``}
+      ${redoList.length?`<button class="btn ghost" id="redo">Drill the ${redoList.length} missed</button>`:``}
+      <button class="btn quiet" id="home">Change settings</button>
+    </div>
+    <div class="review">
+      <h2>All ${deck.length} questions &mdash; ${right} correct, ${redoList.length} to review</h2>
+      ${[...misses,...unans,...done.filter(d=>isCorrectPick(d.ref,d.picked))].map(reviewItem).join("")}
+    </div>`;
+
+  stage.querySelector("#again").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+  stage.querySelector("#home").addEventListener("click",renderSetup);
+  const bk=stage.querySelector("#back");
+  if(bk) bk.addEventListener("click",()=>{const p=pendingIdx();at=p[0];renderQuestion();});
+  const rd=stage.querySelector("#redo");
+  if(rd) rd.addEventListener("click",()=>{buildDeck(redoList);renderQuestion();});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* keyboard */
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  if(e.target&&(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA")) return;
+  const btns=[...document.querySelectorAll(".choice")];
+  if(!btns.length) return;
+  const it=deck[at];
+  if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click();}return;}
+  if(e.key==="Enter"){const sm=document.getElementById("submitMulti");if(sm&&!sm.disabled){e.preventDefault();sm.click();return;}}
+  if(e.key==="ArrowRight"||e.key==="Enter"){const n=document.getElementById("next");if(n){e.preventDefault();n.click();}return;}
+  if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click();}return;}
+  if(answered(it)) return;
+  let i=-1;
+  if(/^[1-9]$/.test(e.key)) i=+e.key-1;
+  else {const k=KEYS.indexOf(e.key.toUpperCase()); if(k>-1) i=k;}
+  if(i>-1&&btns[i]){e.preventDefault();btns[i].click();}
+});
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+
+function formatQtext(text){
+  const parts = String(text).split("```");
+  let html = "";
+  parts.forEach((part,i)=>{
+    if(i % 2 === 1){
+      html += `<pre class="code">${esc(part.trim())}</pre>`;
+    } else {
+      const paras = part.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+      html += paras.map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
+    }
+  });
+  return html;
+}
+
+function qCompact(text){
+  const stripped = String(text).replace(/```([\s\S]*?)```/g, (m,c)=>" "+c.trim().replace(/\n+/g," ")+" ");
+  return esc(stripped.replace(/\s*\n\s*/g," ").replace(/\s{2,}/g," ").trim());
+}
+
+renderSetup();
+</script>
+<script src="script.js"></script>
+</body>
+</html>

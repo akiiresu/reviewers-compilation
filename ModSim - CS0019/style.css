@@ -1,0 +1,103 @@
+body {
+    background-color: white;
+    font-family: '0x Proto', monospace;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.choice-container {
+    background-color: rgb(35, 110, 57);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin-top: 10%;
+    box-sizing: border-box;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#header1 {
+    background-color: rgb(18, 104, 44);
+    color: yellow;
+    font-size: clamp(20px, 4vw, 30px);
+    border-radius: 15px;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.subjects-container {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#subject-1 {
+    min-height: 50px;
+    height: auto;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(244, 244, 127);
+    font-family: '0x Proto', monospace;
+    font-style: italic;
+    font-weight: bold;
+    color: rgb(46, 92, 60);
+    padding: 10px 15px;
+}
+
+#subject-1:hover {
+    background-color: rgb(246, 247, 186);
+}
+
+#subject-1:active {
+    background-color: rgb(227, 242, 88);
+}
+
+#disclaimer {
+    color: slategrey;
+    font-style: italic;
+    text-align: center;
+    padding: 0 10px;
+}
+
+#back-btn {
+    border: none;
+    border-radius: 10px;
+    font-family: '0x Proto', monospace;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 15px;
+    background-color: rgb(213, 22, 22);
+    color: white;
+    padding: 10px;
+}
+
+#back-btn:hover {
+    background-color: rgb(237, 63, 63);
+}
+
+#back-btn:active {
+    background-color: rgb(196, 6, 6);
+}
