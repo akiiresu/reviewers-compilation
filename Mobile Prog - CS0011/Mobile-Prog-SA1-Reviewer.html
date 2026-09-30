@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mobile Programming SA1 Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-sunk:#f3f6f9;
+  --ink:#19222e; --ink-soft:#5a6875; --rule:#d3dae1;
+  --accent:#1d5b8f; --right:#136b45; --right-bg:#e2f3ea;
+  --wrong:#a32a1f; --wrong-bg:#fbe8e5; --skip:#8a6a17; --skip-bg:#fbf1da;
+  --shadow:0 1px 0 rgba(25,34,46,.06), 0 10px 24px -18px rgba(25,34,46,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+    --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+    --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+    --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+  --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+  --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+  --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
+}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
+  border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+
+/* setup */
+.field{margin-bottom:1.5rem}
+.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
+.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+  border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
+  transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}
+.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}
+.switch span{font-size:.9rem}
+.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;
+  padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+
+/* nav */
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}
+.meter i.ok{background:var(--right)}
+.meter i.no{background:var(--wrong)}
+.meter i.sk{background:var(--skip)}
+.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+  padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}
+.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}
+.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;margin-top:.2rem}
+.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}
+.qtext p{margin:0 0 .6rem}
+.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;
+  font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;
+  font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);
+  border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;
+  color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
+  flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice.picked .key{color:var(--accent)}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.choice.wrong .key{color:var(--wrong)}
+.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible,.qhead button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.verdict{margin-top:1rem;font-size:.9rem;display:none}
+.verdict.show{display:block}
+.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}
+.verdict.hit b{color:var(--right)}
+.verdict.miss b{color:var(--wrong)}
+.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.flagnote{margin-top:.8rem;font-size:.8rem;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:.6rem}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;
+  border-top:1px solid var(--rule);padding-top:1rem}
+.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace;width:100%}
+
+/* score */
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}
+.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}
+.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}
+.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}
+.miss.unans{border-color:var(--skip)}
+.miss p{margin:0;font-size:.92rem}
+.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}
+.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}
+.miss .truth{color:var(--right);font-size:.85rem}
+.miss.hit{border-color:var(--right)}.miss .ok{color:var(--right);font-size:.85rem;margin-top:.25rem}
+.allgood{color:var(--right);font-size:.92rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <span class="code">SA1</span>
+    <h1>Mobile Programming</h1>
+    <p>Android &amp; Kotlin reviewer</p>
+  </header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">176 unique questions from the SA1 Reviewer, duplicates removed.</p>
+  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('raw github link','file_name')">download it here.</a></p>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+</div>
+
+<script>
+const SETS = {1:"Android Basics & History",2:"Kotlin",3:"Components & Resources",4:"Android Studio & Setup"};
+const BANK = [{"s": 1, "q": "The Dalvik VM enables every Android application to run in its own process, with its own instance of the Dalvik virtual machine.", "c": ["True", "False"], "a": 0}, {"s": 1, "q": "One of the major update on Android Pie is ______________.", "c": ["PIP Mode", "Material Design", "Adaptive Brightness", "Fingerprint Authentication"], "a": 2}, {"s": 1, "q": "Android 4.4 is also know as _______________.", "c": ["Marshmallow", "Nougat", "Pie", "Kitkat"], "a": 3}, {"s": 1, "q": "Android is a proprietary and only Google is allowed to use it.", "c": ["True", "False"], "a": 1}, {"s": 1, "q": "Android is a mobile operating system based on Windows.", "c": ["True", "False"], "a": 1}, {"s": 1, "q": "Multi-window support was introduce in Android ________________.", "c": ["Nougat", "Pie", "Kitkat", "Marshmallow"], "a": 0}, {"s": 1, "q": "In Android architecture, Activity Manager falls under ________________.", "c": ["Application Framework", "Applications", "Linux Kernel", "Android Runtime"], "a": 0}, {"s": 1, "q": "The top layer of the android architecture is _______________. The native and third-party applications like contacts, email, music, gallery, clock, games, etc. whatever we will build those will be installed on this layer only.", "c": ["Android Runtime", "Platform Libraries", "Application Framework", "Applications"], "a": 3}, {"s": 1, "q": "Google purchased Android in what year?", "c": ["2005", "1999", "2012", "2001"], "a": 0}, {"s": 1, "q": "The first release of Android with a dessert codename is ___________.", "c": ["Android 1.5", "Android 1.8", "Android 1.0", "Android 1.2"], "a": 0}, {"s": 2, "q": "In Kotlin, it is possible to inherit class properties and functions from one class to another.", "c": ["True", "False"], "a": 0}, {"s": 2, "q": "What is the correct way to create an object called myObj of the class MyClass?", "c": ["myObj : MyClass()", "MyClass.new myObj", "myObj = new MyClass()", "val myObj = MyClass()"], "a": 3}, {"s": 2, "q": "What is the fname known as in the following code: fun myFunction(fname: String)", "c": ["range", "inherit", "parameter", "override"], "a": 2}, {"s": 2, "q": "What is the output of the following code: println(5 > 3 && 5 < 10)", "c": ["true", "null", "false", "undefined"], "a": 0}, {"s": 2, "q": "In Kotlin, how can you create a variable with the numeric value 5", "c": ["num =. 5", "val num = 5", "int num = 5", "num = 5 int"], "a": 1}, {"s": 2, "q": "How can you create a variable with the floating number 2.8?", "c": ["double num = 2.8", "float num = 2.8", "val num = 2.8", "num = 2.8 float"], "a": 2}, {"s": 2, "q": "Array indexes start with:", "c": ["nil", "-1", "0", "1"], "a": 2}, {"s": 2, "q": "In Kotlin, code statements must end with a semicolon (;)", "c": ["True", "False"], "a": 1}, {"s": 2, "q": "Which of the following is used to declare an array in Kotlin?", "c": ["arrayOf()", "[]", "new array()", "array()"], "a": 0}, {"s": 2, "q": "How do you insert COMMENTS in Kotlin code?", "c": ["-- this is my comment", "% this is my comment", "# this is my comment", "// this is my comment"], "a": 3}, {"s": 2, "q": "What is a correct syntax to output \"Hello World\" in Kotlin?", "c": ["Console.WriteLine(\"Hello Gwapo\");", "cout<<\"Hello Gwapo\";", "System.out.println(\"Hello Gwapo\");", "println(\"Hello Gwapo\")"], "a": 3}, {"s": 3, "q": "_______________ are additional files and static content that your code uses, such as bitmaps, layout definitions, etc.", "c": ["Receivers", "Activities", "Resources", "Services"], "a": 2}, {"s": 3, "q": "If you want to access an image from your res folder to your Java code, what command you should use?", "c": ["R.id.image", "R.drawable.image", "R.res.image", "res/drawable/image"], "a": 1}, {"s": 3, "q": "UI elements that are drawn on-screen including buttons, lists forms etc.", "c": ["Layouts", "Views", "Intents", "Fragments"], "a": 1}, {"s": 3, "q": "All application components in an Android application can be observed in the MainActivity.java file.", "c": ["True", "False"], "a": 1}, {"s": 3, "q": "_________ class contains resource IDs for all the resources available in your directory.", "c": ["ID", "R", "xml", "res"], "a": 1}, {"s": 3, "q": "An Android ______ is one screen of the app's user interface.", "c": ["Intent", "Activity", "Fragment", "Content Provider"], "a": 1}, {"s": 3, "q": "An activity is similar to ______ in a desktop application.", "c": ["Menus", "Icons", "Windows", "Folders"], "a": 2}, {"s": 3, "q": "An Android app starts by showing the main ______.", "c": ["Service", "Broadcast Receivers", "Activity", "Intent"], "a": 2}, {"s": 3, "q": "An Android activity goes through a certain life ______ during its existence.", "c": ["Loop", "Stack", "Thread", "Cycle"], "a": 3}, {"s": 3, "q": "All activities are subclasses of android.app.______", "c": ["ContentProvider", "Activity", "Service", "Fragment"], "a": 1}, {"s": 3, "q": "The Activity class contains methods that correspond to the life cycle ______.", "c": ["Threads", "Layouts", "States", "Intents"], "a": 2}, {"s": 3, "q": "The first callback called when the activity is created is ______.", "c": ["onStop()", "onDestroy()", "onCreate()", "onResume()"], "a": 2}, {"s": 3, "q": "The callback called when the activity becomes visible is ______.", "c": ["onResume()", "onDestroy()", "onStart()", "onCreate()"], "a": 2}, {"s": 3, "q": "The callback called when the user starts interacting with the app is ______.", "c": ["onDestroy()", "onResume()", "onStart()", "onPause()"], "a": 1}, {"s": 3, "q": "The callback called when the activity is being paused is ______.", "c": ["onCreate()", "onPause()", "onStop()", "onResume()"], "a": 1}, {"s": 3, "q": "A paused activity does not receive user ______ and cannot execute code.", "c": ["Memory", "Input", "Storage", "Output"], "a": 1}, {"s": 3, "q": "The callback called when the activity is no longer visible is ______.", "c": ["onCreate()", "onResume()", "onStop()", "onRestart()"], "a": 2}, {"s": 3, "q": "The callback called before the activity is destroyed is ______.", "c": ["onPause()", "onResume()", "onDestroy()", "onRestart()"], "a": 2}, {"s": 3, "q": "The callback called when the activity restarts after stopping is ______.", "c": ["onCreate()", "onPause()", "onRestart()", "onStart()"], "a": 2}, {"s": 3, "q": "All activities must be declared in the ______ file.", "c": ["Gradle", "Layout", "Manifest", "Resource"], "a": 2}, {"s": 3, "q": "In the manifest an activity is declared inside the ______ element.", "c": ["<uses-permission>", "<application>", "<manifest>", "<intent-filter>"], "a": 1}, {"s": 3, "q": "UI components are loaded from XML files stored in the ______ folder.", "c": ["res/values", "res/drawable", "res/layout", "res/menu"], "a": 2}, {"s": 3, "q": "The method used to set the activity's layout is ______.", "c": ["setLayout()", "startActivity()", "setContentView()", "findViewById()"], "a": 2}, {"s": 3, "q": "In a Kotlin Android project the main logic file is ______", "c": ["MainActivity.kt", "AndroidManifest.xml", "activity_main.xml", "strings.xml"], "a": 0}, {"s": 3, "q": "In a Kotlin Android project the main layout file is ______", "c": ["build.gradle", "activity_main.xml", "MainActivity.kt", "AndroidManifest.xml"], "a": 1}, {"s": 4, "q": "Step 1 of creating a Kotlin project: Select the ______ for your application.", "c": ["Package", "Layout", "Theme", "Language"], "a": 1}, {"s": 4, "q": "Step 2 of creating a Kotlin project: Write the application name and select the language ______.", "c": ["Java", "C++", "Kotlin", "Swift"], "a": 2}, {"s": 4, "q": "Step 3 of creating a Kotlin project gives you two files: MainActivity.kt and ______.", "c": ["activity_main.xml", "AndroidManifest.xml", "build.gradle", "strings.xml"], "a": 0}, {"s": 3, "q": "Application components are the essential building blocks of an Android _______", "c": ["application", "emulator", "kernel", "framework"], "a": 0}, {"s": 3, "q": "The configuration file that describes each component and how they interact is called _______", "c": ["strings.xml", "activity_main.xml", "MainActivity.kt", "AndroidManifest.xml"], "a": 3}, {"s": 3, "q": "An _______ represents a single screen with a user interface", "c": ["Activity", "Service", "Broadcast Receivers", "Content Provider"], "a": 0}, {"s": 3, "q": "An activity is implemented as a subclass of the _______ class", "c": ["ContentProvider", "Fragment", "Service", "Activity"], "a": 3}, {"s": 3, "q": "A _______ runs in the background to perform long-running operations", "c": ["Service", "Content Provider", "Activity", "Broadcast Receivers"], "a": 0}, {"s": 3, "q": "A service is implemented as a subclass of the _______ class", "c": ["ContentProvider", "Activity", "Fragment", "Service"], "a": 3}, {"s": 3, "q": "_______ simply respond to broadcast messages from the system or other applications", "c": ["Broadcast Receivers", "Content Provider", "Intent", "Service"], "a": 0}, {"s": 3, "q": "A broadcast receiver is implemented as a subclass of the _______ class", "c": ["Activity", "Service", "BroadcastReceiver", "Fragment"], "a": 2}, {"s": 3, "q": "A _______ supplies data from one application to others on request", "c": ["Fragment", "Content Provider", "Broadcast Receivers", "Activity"], "a": 1}, {"s": 3, "q": "A content provider is implemented as a subclass of the _______ class", "c": ["ContentProvider", "Service", "Fragment", "BroadcastReceiver"], "a": 0}, {"s": 3, "q": "A portion of a user interface in an Activity is called a _______", "c": ["Intent", "Activity", "Content Provider", "Fragment"], "a": 3}, {"s": 3, "q": "View hierarchies that control screen format and appearance are called _______", "c": ["Intents", "Layouts", "Views", "Resources"], "a": 1}, {"s": 3, "q": "Messages wiring components together in Android are called _______", "c": ["Fragments", "Layouts", "Views", "Intents"], "a": 3}, {"s": 3, "q": "External elements such as strings, constants, and drawable pictures are called _______", "c": ["Views", "Layouts", "Resources", "Intents"], "a": 2}, {"s": 3, "q": "The configuration file for the application is called the _______", "c": ["Resource", "Layout", "Gradle", "Manifest"], "a": 3}, {"s": 3, "q": "Resources in Android are maintained in the _______ directory", "c": ["res/", "gen/", "src/", "bin/"], "a": 0}, {"s": 3, "q": "XML files that define Property animations are stored in _______", "c": ["xml/", "animator/", "raw/", "menu/"], "a": 1}, {"s": 3, "q": "XML files that define Tween animations are stored in _______", "c": ["anim/", "drawable/", "xml/", "menu/"], "a": 0}, {"s": 3, "q": "XML files that define a state list of colors are stored in _______", "c": ["color/", "font/", "drawable/", "raw/"], "a": 0}, {"s": 3, "q": "Image files like .png, .jpg, .gif or XML drawable files are stored in _______", "c": ["drawable/", "font/", "raw/", "values/"], "a": 0}, {"s": 3, "q": "XML files that define a user interface layout are stored in _______", "c": ["menu/", "layout/", "font/", "raw/"], "a": 1}, {"s": 3, "q": "XML files that define application menus are stored in _______", "c": ["raw/", "menu/", "drawable/", "values/"], "a": 1}, {"s": 3, "q": "Arbitrary files saved in their raw form are stored in _______", "c": ["raw/", "color/", "values/", "layout/"], "a": 0}, {"s": 3, "q": "Simple values such as strings, integers, and colors are defined in _______", "c": ["animator/", "values/", "drawable/", "anim/"], "a": 1}, {"s": 3, "q": "Arbitrary XML files for runtime use such as configuration are stored in _______", "c": ["color/", "menu/", "drawable/", "xml/"], "a": 3}, {"s": 3, "q": "Font files such as .ttf, .otf, or XML font-family definitions are stored in _______", "c": ["animator/", "anim/", "color/", "font/"], "a": 3}, {"s": 3, "q": "To set an image resource in code from drawable, you use _______", "c": ["setImageDrawable(R.layout.myimage)", "setContentView(R.drawable.myimage)", "setImageResource(R.drawable.myimage)", "setImage(R.drawable.myimage)"], "a": 2}, {"s": 3, "q": "String resources are defined in the file _______", "c": ["res/values/strings.xml", "res/xml/strings.xml", "res/layout/strings.xml", "res/raw/strings.xml"], "a": 0}, {"s": 3, "q": "To set the layout of an activity in code you use _______", "c": ["setContentView(R.drawable.activity_main)", "setContentView(R.layout.activity_main)", "setLayout(R.layout.activity_main)", "findViewById(R.layout.activity_main)"], "a": 1}, {"s": 3, "q": "In XML, to reference a color resource you use _______", "c": ["@drawable/resource_name", "@layout/resource_name", "@color/resource_name", "@string/resource_name"], "a": 2}, {"s": 3, "q": "In XML, to reference a string resource you use _______", "c": ["@drawable/resource_name", "@id/resource_name", "@color/resource_name", "@string/resource_name"], "a": 3}, {"s": 2, "q": "Kotlin was released in ____ by JetBrains.", "c": ["2018", "2016", "2011", "2014"], "a": 1}, {"s": 2, "q": "Kotlin is fully interoperable with _____.", "c": ["Python", "C++", "Java", "Swift"], "a": 2}, {"s": 2, "q": "Kotlin is cross-platform and works on _____.", "c": ["Android and iOS only", "Windows and macOS only", "Windows only", "Windows, macOS, Linux, Raspberry Pi"], "a": 3}, {"s": 2, "q": "Kotlin is concise, safe, and _____.", "c": ["slow", "expressive", "complicated", "verbose"], "a": 1}, {"s": 2, "q": "Kotlin is easy to learn if you already know _____.", "c": ["Java", "PHP", "Python", "Swift"], "a": 0}, {"s": 2, "q": "Kotlin is free and _____.", "c": ["proprietary", "paid", "open-source", "closed-source"], "a": 2}, {"s": 2, "q": "In Kotlin, the keyword used to define a function is _____.", "c": ["var", "fun", "for", "data class"], "a": 1}, {"s": 2, "q": "In Kotlin, the entry point of a program is the _____ function.", "c": ["start()", "main()", "run()", "init()"], "a": 1}, {"s": 2, "q": "In Kotlin, semicolons (;) are _____.", "c": ["forbidden", "required", "optional", "mandatory"], "a": 2}, {"s": 2, "q": "The symbol for a single-line comment in Kotlin is _____.", "c": ["//", "--", "%", "#"], "a": 0}, {"s": 2, "q": "The symbol for a multi-line comment in Kotlin is _____.", "c": ["# ...", "/* ... */", "// ...", "<!-- ... -->"], "a": 1}, {"s": 2, "q": "In Kotlin, the keyword for an immutable variable is _____.", "c": ["while", "val", "for", "when"], "a": 1}, {"s": 2, "q": "In Kotlin, the keyword for a mutable variable is _____.", "c": ["when", "var", "while", "object"], "a": 1}, {"s": 2, "q": "Kotlin supports _____.", "c": ["type inference", "pointer arithmetic", "type erasure", "multiple inheritance"], "a": 0}, {"s": 2, "q": "The operator that allows null values in Kotlin is _____.", "c": ["&", "!!", "?", "*"], "a": 2}, {"s": 2, "q": "The keyword used for late initialization in Kotlin is _____.", "c": ["init", "lazy", "later", "lateinit"], "a": 3}, {"s": 2, "q": "The expression used as a switch equivalent in Kotlin is _____.", "c": ["case", "when", "select", "switch"], "a": 1}, {"s": 2, "q": "The Kotlin loop that iterates from 1 to 5 is written as _____.", "c": ["for i in range(1,5)", "for (i in 1..5)", "foreach (i in 1..5)", "for (i = 1; i <= 5; i++)"], "a": 1}, {"s": 2, "q": "The Kotlin loop that executes while a condition is true is _____.", "c": ["while", "for", "when", "do"], "a": 0}, {"s": 2, "q": "A class in Kotlin is defined using the keyword _____.", "c": ["for", "when", "data class", "class"], "a": 3}, {"s": 2, "q": "A special class for storing data in Kotlin is defined with the keyword _____.", "c": ["data class", "while", "when", "var"], "a": 0}, {"s": 2, "q": "The immutable list creation function in Kotlin is _____.", "c": ["mutableListOf()", "listOf()", "arrayOf()", "setOf()"], "a": 1}, {"s": 2, "q": "The mutable list creation function in Kotlin is _____.", "c": ["arrayOf()", "listOf()", "mapOf()", "mutableListOf()"], "a": 3}, {"s": 2, "q": "In Kotlin, type checking with automatic casting is called _____.", "c": ["Smart Casting", "Type Erasure", "Type Inference", "Boxing"], "a": 0}, {"s": 2, "q": "A function that adds new behavior to existing classes is called an _____.", "c": ["Lambda Function", "Extension Function", "Scope Function", "Inline Function"], "a": 1}, {"s": 2, "q": "Lightweight threads for asynchronous programming in Kotlin are called _____.", "c": ["Coroutines", "Handlers", "Threads", "Callbacks"], "a": 0}, {"s": 2, "q": "Android Studio supports Kotlin _____.", "c": ["only on Linux", "via a paid license", "out-of-the-box", "through plugins only"], "a": 2}, {"s": 2, "q": "Kotlin is the official programming language for _____.", "c": ["Android development", "iOS development", "Web development", "Windows development"], "a": 0}, {"s": 2, "q": "The shortcut to convert Java to Kotlin in Android Studio is _____.", "c": ["Ctrl + Shift + J", "Ctrl + Shift + K", "Ctrl + Alt + K", "Ctrl + Alt + Shift + K"], "a": 3}, {"s": 2, "q": "The Android feature used to replace findViewById is _____.", "c": ["Coroutines", "Fragments", "Intents", "View Binding"], "a": 3}, {"s": 2, "q": "In Kotlin Android, background tasks can be run using _____.", "c": ["Coroutines", "Fragments", "Manifest", "Layouts"], "a": 0}, {"s": 2, "q": "In Android, data can be passed between activities using _____.", "c": ["Layouts", "Intents", "Fragments", "Resources"], "a": 1}, {"s": 2, "q": "In Kotlin, a variable whose value cannot change is called _____.", "c": ["Mutable", "Smart Cast", "Immutable", "Data Class"], "a": 2}, {"s": 2, "q": "In Kotlin, a variable whose value can change is called _____.", "c": ["Extension Functions", "Data Class", "Mutable", "Smart Cast"], "a": 2}, {"s": 2, "q": "A Kotlin variable that can hold null values is called _____.", "c": ["Coroutine", "Nullable", "Data Class", "Extension Functions"], "a": 1}, {"s": 2, "q": "Functions like let, apply, also, run, and with are called _____.", "c": ["Smart Cast", "Data Class", "Extension Functions", "Scope Functions"], "a": 3}, {"s": 4, "q": "System requirement for Windows requires at least _____ RAM minimum, 8 GB recommended; plus 1 GB for the Android Emulator.", "c": ["1 GB", "4 GB", "3 GB", "2 GB"], "a": 2}, {"s": 4, "q": "System requirement for Windows requires at least _____ of available disk space minimum, 4 GB recommended.", "c": ["8 GB", "3 GB", "1 GB", "2 GB"], "a": 3}, {"s": 4, "q": "Minimum screen resolution required for Windows to run Android Studio is _____.", "c": ["1920 × 1080", "1024 × 768", "800 × 600", "1280 × 800"], "a": 3}, {"s": 4, "q": "Mac OS supported by Android Studio Module 2 ranges from OS X 10.10 (Yosemite) up to _____.", "c": ["macOS Sierra (10.12)", "macOS Mojave (10.14)", "OS X El Capitan (10.11)", "macOS High Sierra (10.13)"], "a": 3}, {"s": 4, "q": "System requirement for Mac requires at least _____ RAM minimum, 8 GB recommended; plus 1 GB for the Android Emulator.", "c": ["4 GB", "3 GB", "2 GB", "1 GB"], "a": 1}, {"s": 4, "q": "System requirement for Mac requires at least _____ of available disk space minimum, 4 GB recommended.", "c": ["2 GB", "3 GB", "8 GB", "1 GB"], "a": 0}, {"s": 4, "q": "The first step in creating an Android Project is to click _____.", "c": ["Check out project from Version Control", "Import project", "Start a new Android Studio project", "Open an Android Studio project"], "a": 2}, {"s": 4, "q": "If you already have a project open, go to _____.", "c": ["File > Open > New Project", "Build > New > Project", "File > New > New Project", "Tools > New > Project"], "a": 2}, {"s": 4, "q": "When choosing your project, you must select _____.", "c": ["No Activity", "Bottom Navigation Activity", "Empty Activity", "Basic Views Activity"], "a": 2}, {"s": 4, "q": "In Configure your project, the app Name should be _____.", "c": ["Hello World", "My First App", "Test App", "MyApp"], "a": 1}, {"s": 4, "q": "In Configure your project, the Package name should be _____.", "c": ["com.example.myapp", "com.android.myfirstapp", "com.example.myfirstapp", "com.myfirstapp.example"], "a": 2}, {"s": 4, "q": "You must check the box next to _____.", "c": ["Use legacy android.support libraries", "Use AndroidX artifacts", "Use Jetpack Compose", "Enable Instant Apps"], "a": 1}, {"s": 4, "q": "If you prefer writing the app in Java, select _____ from the Language drop-down.", "c": ["C++", "Swift", "Kotlin", "Java"], "a": 3}, {"s": 4, "q": "The final step in creating a project is to click _____.", "c": ["Finish", "Next", "Previous", "Cancel"], "a": 0}, {"s": 4, "q": "The Android Studio component that lets you carry out actions like running the app and launching tools is called the _____.", "c": ["Tool Windows", "Status Bar", "Toolbar", "Tool Window Bar"], "a": 2}, {"s": 4, "q": "The component that helps you navigate through your project structure and open files is the _____.", "c": ["Tool Window Bar", "Navigation Bar", "Status Bar", "Editor Window"], "a": 1}, {"s": 4, "q": "The area where you create and modify code is the _____.", "c": ["Editor Window", "Toolbar", "Status Bar", "Tool Window Bar"], "a": 0}, {"s": 4, "q": "The outer bar containing buttons to expand or collapse tool windows is the _____.", "c": ["Tool Window Bar", "Toolbar", "Status Bar", "Navigation Bar"], "a": 0}, {"s": 4, "q": "The components that give you access to project management, search, version control, and more are called _____.", "c": ["Editor Window", "Navigation Bar", "Status Bar", "Tool Windows"], "a": 3}, {"s": 4, "q": "The bar that displays the status of your project and IDE, including warnings or messages, is the _____.", "c": ["Tool Window Bar", "Toolbar", "Tool Windows", "Status Bar"], "a": 3}, {"s": 4, "q": "To run your app on a real device, you must connect your Android phone and enable _____.", "c": ["USB Debugging", "Airplane Mode", "NFC Transfer", "Bluetooth Pairing"], "a": 0}, {"s": 4, "q": "USB Debugging can be enabled by first enabling _____.", "c": ["Battery saver", "Developer options", "Accessibility settings", "Location services"], "a": 1}, {"s": 4, "q": "To run your app on an emulator, navigate to _____.", "c": ["Profiler", "Project Structure", "Logcat", "Device Manager"], "a": 3}, {"s": 4, "q": "In Device Manager, first select _____.", "c": ["Wipe Data", "Start Emulator", "Cold Boot Now", "Create Device"], "a": 3}, {"s": 4, "q": "When setting up the emulator, select your screen size, kind of phone, and _____.", "c": ["Camera resolution", "Android SDK version", "Battery capacity", "Screen brightness"], "a": 1}, {"s": 1, "q": "Android is a mobile operating system based on ____", "c": ["Unix", "Windows", "macOS", "Linux"], "a": 3}, {"s": 1, "q": "Android was originally developed by ____", "c": ["Samsung", "Open Handset Alliance", "Android Inc.", "Google Inc."], "a": 2}, {"s": 1, "q": "The first commercial Android device was the ____", "c": ["Motorola Droid", "Nexus One", "HTC Dream", "Galaxy S"], "a": 2}, {"s": 1, "q": "Android 1.0 and 1.1 did not have official ____", "c": ["Codenames", "Versions", "Themes", "Updates"], "a": 0}, {"s": 1, "q": "Android version 1.5 is known as ____", "c": ["Cupcake", "Oreo", "Jelly Bean", "Pie"], "a": 0}, {"s": 1, "q": "Android version 1.6 is known as ____", "c": ["Honeycomb", "Donut", "Nougat", "Pie"], "a": 1}, {"s": 1, "q": "Android version 2.0 and 2.1 are known as ____", "c": ["Pie", "Eclair", "Gingerbread", "Marshmallow"], "a": 1}, {"s": 1, "q": "Android version 2.2 is known as ____", "c": ["Oreo", "Cupcake", "Froyo", "Donut"], "a": 2}, {"s": 1, "q": "Android version 2.3 and 2.4 are known as ____", "c": ["Oreo", "Cupcake", "Gingerbread", "KitKat"], "a": 2}, {"s": 1, "q": "Android version 3.0 to 3.2 are known as ____", "c": ["Honeycomb", "Gingerbread", "KitKat", "Marshmallow"], "a": 0}, {"s": 1, "q": "Android version 4.0 is known as ____", "c": ["Froyo", "Ice Cream Sandwich", "Donut", "KitKat"], "a": 1}, {"s": 1, "q": "Android versions 4.1, 4.2, and 4.3 are known as ____", "c": ["Honeycomb", "Donut", "Jelly Bean", "Ice Cream Sandwich"], "a": 2}, {"s": 1, "q": "Android versions 5.0 and 5.1 are known as ____", "c": ["Donut", "Lollipop", "Eclair", "Gingerbread"], "a": 1}, {"s": 1, "q": "Android version 6.0 is known as ____", "c": ["Marshmallow", "Pie", "Cupcake", "Jelly Bean"], "a": 0}, {"s": 1, "q": "Android version 7.0 is known as ____", "c": ["Oreo", "Nougat", "Cupcake", "Pie"], "a": 1}, {"s": 1, "q": "Android version 8.0 is known as ____", "c": ["Honeycomb", "Oreo", "Donut", "Marshmallow"], "a": 1}, {"s": 1, "q": "Android version 9.0 is known as ____", "c": ["Cupcake", "Pie", "Eclair", "Nougat"], "a": 1}, {"s": 1, "q": "Android version 10 is also called ____", "c": ["Tiramisu", "Vanilla Ice Cream", "Snow Cone", "Quince Tart"], "a": 3}, {"s": 1, "q": "Android version 11 is also called ____", "c": ["Red Velvet Cake", "Vanilla Ice Cream", "Tiramisu", "Quince Tart"], "a": 0}, {"s": 1, "q": "Android version 12 is also called ____", "c": ["Vanilla Ice Cream", "Upside Down Cake", "Snow Cone", "Quince Tart"], "a": 2}, {"s": 1, "q": "Android version 13 is also called ____", "c": ["Snow Cone", "Quince Tart", "Tiramisu", "Upside Down Cake"], "a": 2}, {"s": 1, "q": "Android version 14 is also called ____", "c": ["Quince Tart", "Tiramisu", "Upside Down Cake", "Snow Cone"], "a": 2}, {"s": 1, "q": "Android version 15 is also called ____", "c": ["Snow Cone", "Quince Tart", "Upside Down Cake", "Vanilla Ice Cream"], "a": 3}, {"s": 1, "q": "The main feature introduced in Android 4.1 Jelly Bean is ____", "c": ["Google Assistant", "Material Design", "Face Lock", "Google Now"], "a": 3}, {"s": 1, "q": "The voice activation phrase \"OK Google\" was introduced in Android ____", "c": ["Pie", "Froyo", "Nougat", "KitKat"], "a": 3}, {"s": 1, "q": "Android 5.0 introduced a new runtime environment called ____", "c": ["JVM", "Dalvik", "WebKit", "ART (Android Runtime)"], "a": 3}, {"s": 1, "q": "The feature that allows logging in using your face in Android 4.0 is called ____", "c": ["Face Lock", "Touch ID", "Face ID", "Smart Lock"], "a": 0}, {"s": 1, "q": "The feature called Picture-in-Picture (PIP) was introduced in Android ____", "c": ["Cupcake", "Nougat", "Oreo", "Marshmallow"], "a": 2}, {"s": 1, "q": "Android 9.0 introduced Adaptive ____", "c": ["Network and Brightness", "Battery and Brightness", "Battery and Storage", "Volume and Brightness"], "a": 1}, {"s": 1, "q": "The system layer that provides APIs for developers is called the Android ____", "c": ["Kernel", "Libraries", "Runtime", "Framework"], "a": 3}, {"s": 1, "q": "The system layer that contains core libraries and the Dalvik/ART is called the Android ____", "c": ["Framework", "Libraries", "Kernel", "Runtime"], "a": 3}, {"s": 1, "q": "The system layer that includes SQLite, WebKit, and SSL is called the ____", "c": ["Application Framework", "Linux Kernel", "Android Runtime", "Platform Libraries"], "a": 3}, {"s": 1, "q": "The lowest layer of Android architecture is the ____", "c": ["Platform Libraries", "Android Runtime", "Applications", "Linux Kernel"], "a": 3}, {"s": 1, "q": "Android architecture is often described as a software ____", "c": ["Stack", "Tree", "Queue", "Heap"], "a": 0}, {"s": 1, "q": "The key Android feature that allows it to run on multiple devices and brands is ____", "c": ["Closed-source firmware", "Open-source platform", "Single-vendor hardware", "Proprietary licensing"], "a": 1}];
+
+const KEYS = ["A","B","C","D","E"];
+const stage = document.getElementById("stage");
+let opts = {set:"all", shuffleQ:true, shuffleC:true};
+let deck = [], at = 0;
+
+function pool(){
+  if(opts.set!=="all") return BANK.filter(q=>q.s===+opts.set);
+  return BANK.slice();
+}
+function shuffled(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function buildDeck(list){
+  const qs = opts.shuffleQ ? shuffled(list) : list.slice();
+  deck = qs.map(q=>({ref:q, order:(opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i)), picked:null, skipped:false, tempPicks:[]}));
+  at=0;
+}
+const isMulti = q => Array.isArray(q.a);
+const isRightIdx = (q,i) => isMulti(q) ? q.a.includes(i) : i===q.a;
+function sameSet(a,b){
+  if(a.length!==b.length) return false;
+  const sa=[...a].sort((x,y)=>x-y), sb=[...b].sort((x,y)=>x-y);
+  return sa.every((v,i)=>v===sb[i]);
+}
+const isCorrectPick = (q,picked) => {
+  if(picked===null) return false;
+  return isMulti(q) ? sameSet(picked,q.a) : isRightIdx(q,picked);
+};
+function correctLabel(q){
+  if(!isMulti(q)) return esc(q.c[q.a]);
+  return q.a.map(i=>esc(q.c[i])).join(" &middot; ");
+}
+function pickedLabel(d){
+  if(!answered(d)) return "";
+  if(isMulti(d.ref)) return d.picked.map(i=>esc(d.ref.c[i])).join(" &middot; ");
+  return esc(d.ref.c[d.picked]);
+}
+const answered = it => it.picked !== null;
+const stateOf = it => answered(it) ? (isCorrectPick(it.ref,it.picked)?"ok":"no") : (it.skipped?"sk":"");
+const pendingIdx = () => deck.map((it,i)=>i).filter(i=>!answered(deck[i]));
+function nextPending(from){
+  for(let k=1;k<=deck.length;k++){const i=(from+k)%deck.length; if(!answered(deck[i])) return i;}
+  return -1;
+}
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  const cnt=k=>BANK.filter(q=>q.s===k).length;
+  stage.innerHTML = `
+    <div class="field">
+      <p class="lede">Which set do you want to drill?</p>
+      <p class="hint">Every unique question from the SA1 reviewer, duplicates removed.</p>
+      <div class="segs">
+        <button class="seg" type="button" data-set="all" aria-pressed="false">Full reviewer<span class="n">${BANK.length} questions</span></button>
+        ${[1,2,3,4].map(k=>`<button class="seg" type="button" data-set="${k}" aria-pressed="false">${SETS[k]}<span class="n">${cnt(k)} questions</span></button>`).join("")}
+      </div>
+    </div>
+    <div class="field">
+      <p class="lede">Shuffling</p>
+      <label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}>
+        <span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+      <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}>
+        <span>Shuffle the choices<small>Stops you from remembering "the third one".</small></span></label>
+    </div>
+    <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+  const segs=[...stage.querySelectorAll(".seg")];
+  const paint=()=>segs.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===opts.set)));
+  segs.forEach(b=>b.addEventListener("click",()=>{opts.set=b.dataset.set;paint();}));
+  paint();
+  stage.querySelector("#sq").addEventListener("change",e=>opts.shuffleQ=e.target.checked);
+  stage.querySelector("#sc").addEventListener("change",e=>opts.shuffleC=e.target.checked);
+  stage.querySelector("#go").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+}
+
+/* ---------- question ---------- */
+function renderQuestion(){
+  const it=deck[at], q=it.ref, done=answered(it);
+  const right=deck.filter(d=>stateOf(d)==="ok").length;
+  const pend=pendingIdx().length;
+
+  const meter=deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("");
+  const jumps=deck.map((d,i)=>
+    `<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}"
+      aria-label="Go to question ${i+1}">${i+1}</button>`).join("");
+
+  stage.innerHTML = `
+    <div class="meter">${meter}</div>
+    <div class="qhead">
+      <span>Question ${at+1} / ${deck.length}</span>
+      <span>${SETS[q.s]} &middot; ${right} correct</span>
+    </div>
+    <div class="grid" id="grid">
+      ${jumps}
+      <div class="legend">
+        <s><b style="background:var(--right)"></b>correct</s>
+        <s><b style="background:var(--wrong)"></b>wrong</s>
+        <s><b style="background:var(--skip)"></b>skipped</s>
+        <s><b style="background:var(--rule)"></b>not seen</s>
+      </div>
+    </div>
+    <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:``}</h2>
+    <div class="choices">
+      ${it.order.map((orig,pos)=>{
+        const picked = !done && isMulti(q) && it.tempPicks.includes(orig);
+        return `
+        <button class="choice${picked?" picked":""}" type="button" data-orig="${orig}" ${done?"disabled":""} ${isMulti(q)?`aria-pressed="${picked}"`:``}>
+          <span class="key">${KEYS[pos]}</span>
+          <span class="txt">${esc(q.c[orig])}</span>
+        </button>`;}).join("")}
+    </div>
+    ${(!done && isMulti(q))?`
+    <div class="btnrow">
+      <button class="btn sm" id="submitMulti" ${it.tempPicks.length!==q.a.length?"disabled":""}>Submit answer</button>
+      <span class="pending">${it.tempPicks.length} of ${q.a.length} selected</span>
+    </div>`:``}
+    <div class="verdict" id="verdict"></div>
+    <div class="nav">
+      <button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>
+      ${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}
+      <span class="spacer"></span>
+      <button class="btn sm" id="next">Next &#9654;</button>
+      <button class="btn ghost sm" id="finish">Finish &amp; score</button>
+      ${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:``}
+    </div>`;
+
+  stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();}));
+  stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();}});
+  const sk=stage.querySelector("#skip");
+  if(sk) sk.addEventListener("click",()=>{deck[at].skipped=true;goNext();});
+  stage.querySelector("#next").addEventListener("click",goNext);
+  stage.querySelector("#finish").addEventListener("click",renderScore);
+
+  if(done) reveal(false);
+  else {
+    stage.querySelectorAll(".choice").forEach(b=>{
+      const orig=parseInt(b.dataset.orig,10);
+      b.addEventListener("click",()=> isMulti(q) ? toggleChoice(orig) : answer(orig));
+    });
+    const sm=stage.querySelector("#submitMulti");
+    if(sm) sm.addEventListener("click",submitMulti);
+  }
+}
+
+function toggleChoice(orig){
+  const it=deck[at], q=it.ref;
+  const i=it.tempPicks.indexOf(orig);
+  if(i>-1) it.tempPicks.splice(i,1);
+  else if(it.tempPicks.length<q.a.length) it.tempPicks.push(orig);
+  renderQuestion();
+}
+
+function submitMulti(){
+  const it=deck[at], q=it.ref;
+  if(it.tempPicks.length!==q.a.length) return;
+  it.picked=it.tempPicks.slice();
+  it.skipped=false;
+  reveal(true);
+}
+
+function goNext(){
+  if(at < deck.length-1){ at++; renderQuestion(); return; }
+  const np = nextPending(at);
+  if(np > -1){ at = np; renderQuestion(); }
+  else renderScore();
+}
+
+function reveal(fresh){
+  const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
+  stage.querySelectorAll(".choice").forEach(b=>{
+    const o=+b.dataset.orig; b.disabled=true;
+    const wasPicked = isMulti(q) ? it.picked.includes(o) : o===it.picked;
+    if(isRightIdx(q,o)){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`);}
+    else if(wasPicked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`);}
+    else b.classList.add("dim");
+  });
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b>` : `<b>Not quite.</b><p>The answer is ${correctLabel(q)}.</p>`;
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const pend=pendingIdx().length;
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pend===0) ? "See your score" : "Next \u25B6";
+    n.focus();
+  }
+}
+
+function answer(orig){
+  const it=deck[at];
+  if(answered(it)) return;
+  it.picked=orig; it.skipped=false;
+  reveal(true);
+}
+
+/* ---------- score ---------- */
+function renderScore(){
+  const done=deck.filter(answered);
+  const right=done.filter(d=>isCorrectPick(d.ref,d.picked)).length;
+  const misses=done.filter(d=>!isCorrectPick(d.ref,d.picked));
+  const unans=deck.filter(d=>!answered(d));
+  const pct=deck.length?Math.round(right/deck.length*100):0;
+  const line = unans.length ? `Scored out of all ${deck.length} questions &mdash; ${unans.length} left unanswered count as missed.`
+    : pct===100 ? "Clean run. Shuffle it and see if it holds."
+    : pct>=80 ? "Solid. Run the missed ones until they're automatic."
+    : pct>=60 ? "Getting there. The retry below drills only what you missed."
+    : "Worth another pass. Retry the misses first, then the full set.";
+  const redoList=[...misses.map(d=>d.ref), ...unans.map(d=>d.ref)];
+
+  stage.innerHTML = `
+    <p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p>
+    <p class="scoreline">${line}</p>
+    <div class="btnrow">
+      <button class="btn" id="again">Repeat this set</button>
+      ${unans.length?`<button class="btn ghost" id="back">Go back and answer ${unans.length}</button>`:``}
+      ${redoList.length?`<button class="btn ghost" id="redo">Drill the ${redoList.length} missed</button>`:``}
+      <button class="btn quiet" id="home">Change settings</button>
+    </div>
+    <div class="review">
+      <h2>All ${deck.length} questions &mdash; ${right} correct, ${redoList.length} to review</h2>
+      ${[...misses,...unans,...done.filter(d=>isCorrectPick(d.ref,d.picked))].map(d=>{
+        const ok=answered(d)&&isCorrectPick(d.ref,d.picked);
+        return `<div class="miss ${ok?"hit":(answered(d)?"":"unans")}">
+          <p>${qCompact(d.ref.q)}</p>
+          ${ok?`<p class="ok">Correct: ${correctLabel(d.ref)}</p>`:(answered(d)?`<p class="yours">You chose: ${pickedLabel(d)}</p>`:`<p class="none">Left unanswered</p>`)}
+          ${ok?``:`<p class="truth">Answer: ${correctLabel(d.ref)}</p>`}
+        </div>`;}).join("")}
+    </div>`;
+
+  stage.querySelector("#again").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+  stage.querySelector("#home").addEventListener("click",renderSetup);
+  const bk=stage.querySelector("#back");
+  if(bk) bk.addEventListener("click",()=>{const p=pendingIdx();at=p[0];renderQuestion();});
+  const rd=stage.querySelector("#redo");
+  if(rd) rd.addEventListener("click",()=>{buildDeck(redoList);renderQuestion();});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* keyboard */
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const btns=[...document.querySelectorAll(".choice")];
+  if(!btns.length) return;
+  const it=deck[at];
+  if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click();}return;}
+  if(e.key==="Enter"){const sm=document.getElementById("submitMulti");if(sm&&!sm.disabled){e.preventDefault();sm.click();return;}}
+  if(e.key==="ArrowRight"||e.key==="Enter"){const n=document.getElementById("next");if(n){e.preventDefault();n.click();}return;}
+  if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click();}return;}
+  if(answered(it)) return;
+  let i=-1;
+  if(/^[1-5]$/.test(e.key)) i=+e.key-1;
+  else {const k=KEYS.indexOf(e.key.toUpperCase()); if(k>-1) i=k;}
+  if(i>-1&&btns[i]){e.preventDefault();btns[i].click();}
+});
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+
+function formatQtext(text){
+  const parts = String(text).split("```");
+  let html = "";
+  parts.forEach((part,i)=>{
+    if(i % 2 === 1){
+      html += `<pre class="code">${esc(part.trim())}</pre>`;
+    } else {
+      const paras = part.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+      html += paras.map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
+    }
+  });
+  return html;
+}
+
+function qCompact(text){
+  const stripped = String(text).replace(/```([\s\S]*?)```/g, (m,c)=>" "+c.trim().replace(/\n+/g," ")+" ");
+  return esc(stripped.replace(/\s*\n\s*/g," ").replace(/\s{2,}/g," ").trim());
+}
+
+renderSetup();
+</script>
+</body>
+</html>
