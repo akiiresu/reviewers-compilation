@@ -81,3 +81,24 @@ body {
     text-align: center;
     padding: 0 10px;
 }
+
+.misc-container {
+    background-color: rgb(236, 222, 222);
+    border-radius: 15px;
+    padding: 5px;
+    margin-top: 50px;
+}
+
+#upd-notes {
+    color: slategrey;
+    font-style: italic;
+    text-align: center;
+    padding: 0 10px;
+}
+
+#notes {
+    color: slategrey;
+    font-style: italic;
+    text-align: left;
+    padding: 0 10px;
+}
