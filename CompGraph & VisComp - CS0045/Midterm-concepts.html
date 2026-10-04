@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Computer Graphics Midterm Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-sunk:#f3f6f9;
+  --ink:#19222e; --ink-soft:#5a6875; --rule:#d3dae1;
+  --accent:#1d5b8f; --right:#136b45; --right-bg:#e2f3ea;
+  --wrong:#a32a1f; --wrong-bg:#fbe8e5; --skip:#8a6a17; --skip-bg:#fbf1da;
+  --shadow:0 1px 0 rgba(25,34,46,.06), 0 10px 24px -18px rgba(25,34,46,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+    --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+    --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+    --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+  --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+  --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+  --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
+}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
+  border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+
+/* setup */
+.field{margin-bottom:1.5rem}
+.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
+.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+  border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
+  transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}
+.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}
+.switch span{font-size:.9rem}
+.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;
+  padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+
+/* nav */
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}
+.meter i.ok{background:var(--right)}
+.meter i.no{background:var(--wrong)}
+.meter i.sk{background:var(--skip)}
+.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+  padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}
+.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}
+.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;margin-top:.2rem}
+.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}
+.qtext p{margin:0 0 .6rem}
+.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;
+  font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;
+  font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);
+  border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;
+  color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
+  flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice.picked .key{color:var(--accent)}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.choice.wrong .key{color:var(--wrong)}
+.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible,.qhead button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.verdict{margin-top:1rem;font-size:.9rem;display:none}
+.verdict.show{display:block}
+.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}
+.verdict.hit b{color:var(--right)}
+.verdict.miss b{color:var(--wrong)}
+.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.flagnote{margin-top:.8rem;font-size:.8rem;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:.6rem}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;
+  border-top:1px solid var(--rule);padding-top:1rem}
+.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace;width:100%}
+
+/* score */
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}
+.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}
+.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}
+.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}
+.miss.unans{border-color:var(--skip)}
+.miss p{margin:0;font-size:.92rem}
+.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}
+.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}
+.miss .truth{color:var(--right);font-size:.85rem}
+.miss.hit{border-color:var(--right)}.miss .ok{color:var(--right);font-size:.85rem;margin-top:.25rem}
+.allgood{color:var(--right);font-size:.92rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+
+.qtext pre.code{margin:.6rem 0 0}
+.navtog{margin-bottom:1.1rem}
+.choice .txt{word-break:break-word}
+:root{box-sizing:border-box}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead"><span class="code">CG</span><h1>Computer Graphics</h1><p>Midterm reviewer</p></header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">158 unique questions from the Computer Graphics midterm reviewer, all multiple choice. Items marked (unverified) had no confirmed key in the source, so the answer was corrected independently.</p>
+  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('raw github link','CS0045_Midterm_Reviewer.html')">download it here.</a></p>
+</div>
+<button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+<script>
+const DATA=[[1,"______________ can also be described as the number of horizontal points to vertical points (or vice versa) necessary to produce equal-length lines in both directions on the screen.",["Aspect Ratio","Resolution","Refresh Rate","Bit Depth"]],[1,"The glColorPointer has 4 parameters for the function to work. One of its parameter is the size, for the size it is the number of components per color. What is the minimum number of components? (unverified)",["3","1","2","4"],"The source key said 4, but glColorPointer accepts 3 or 4 components per color, so the minimum is 3. Corrected independently."],[1,"A type of display where a matrix of diodes is arranged to form the pixel positions in the display, and picture definition is stored in a refresh buffer.",["LED PANEL","Plasma Panel","Raster Scan Display","Nonemissive Displays"]],[1,"The frequency at which a picture is redrawn on the screen is referred to as ____________________.",["REFRESH RATE","Resolution","Aspect Ratio","Frame Rate"]],[1,"use optical effects to convert sunlight or light from some other source into graphics patterns",["NONEMISSIVE DISPLAYS","Emissive Displays","LED PANEL","Plasma Panel"]],[1,"What OpenGL constant is used to activate the use of colors as arrays in your application.",["GL_COLOR_ARRAY","GL_VERTEX_ARRAY","GL_TEXTURE_ARRAY","GL_INDEX_ARRAY"]],[6,"In the OpenGL Rendering pipeline it is where the parts of the primitive that are determined to be potentially visible are sent to a fixed-function subsystem called the rasterizer.",["Primitive Assembly","Vertex Shader","Fragment Shader","Rasterization"]],[6,"The time parameter in glutTimerFunc sets the callback to trigger in the span of",["Millisecond","Second","Microsecond","Minute"]],[1,"Common aspect ration for vertical smartphones",["9:16","16:9","4:3","1:1"]],[1,"The most common type of graphics monitor employing a CRT is the ____________________ display, based on television technology. In this system the electron beam is swept across the screen, one row at a time, from top to bottom",["Raster Scan Display","Random Scan Display","LED PANEL","Plasma Panel"]],[1,"OpenGLs architecture is a client-server model where the client is the application and the server is the_______________",["Video Card","Monitor","Keyboard","Hard Drive"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLsizei",["int","signed char","unsigned char","float","unsigned short","signed short","double","unsigned int"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLfloat",["float","signed char","unsigned char","unsigned short","signed short","int","double","unsigned int"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLclampf",["float","signed char","unsigned char","unsigned short","signed short","int","double","unsigned int"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLdouble",["double","signed char","unsigned char","float","unsigned short","signed short","int","unsigned int"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLclampd",["double","signed char","unsigned char","float","unsigned short","signed short","int","unsigned int"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLubyte",["unsigned char","signed char","float","unsigned short","signed short","int","double","unsigned int"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLushort",["unsigned short","signed char","unsigned char","float","signed short","int","double","unsigned int"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLuint",["unsigned int","signed char","unsigned char","float","unsigned short","signed short","int","double"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLenum",["unsigned int","signed char","unsigned char","float","unsigned short","signed short","int","double"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nGLbitfield",["unsigned int","signed char","unsigned char","float","unsigned short","signed short","int","double"]],[1,"also called gas-discharge displays, are constructed by filling the region between two glass plates with a mixture of gases that usually includes neon",["Plasma Panel","LED PANEL","Raster Scan Display","Nonemissive Displays"]],[1,"The maximum number of points that can be displayed without overlap on a CRT is referred to as the __________________________.",["Resolution","Aspect Ratio","Refresh Rate","Bit Depth"]],[2,"If the number of vertices specified for GL_TRIANGLES is not in multiples of 3. What will happen to the rendered triangle.",["A triangle will be rendered and the excess vertex will be ignored","No triangle will be rendered at all","An error will occur and the program will stop","The excess vertex forms an extra triangle"]],[1,"High-quality raster-graphics systems have 24 bits per pixel in the frame buffer, allowing 256 voltage settings for each electron gun and nearly _________ million color choices for each pixel",["17","8","24","256"]],[1,"Common aspect ration for HDTV, Widescreen display",["16:9","9:16","4:3","1:1"]],[6,"Alternatively you can use glDrawElements() to render a vertex array, the 2nd parameter for the glDrawElements() function is the",["Specifies the number of elements to be rendered","Specifies the number of components per color","Specifies a pointer to the first component of the first color element in the array.","Specifies the primitive type to render"]],[6,"The glColorPointer has 4 parameters for the function to work. What is the purpose of the 1st parameter",["Specifies the number of components per color","Specifies the number of elements to be rendered","Specifies a pointer to the first component of the first color element in the array.","Specifies the data type of each color component"]],[6,"The glColorPointer has 4 parameters for the function to work. What is the purpose of the last parameter",["Specifies a pointer to the first component of the first color element in the array.","Specifies the number of components per color","Specifies the number of elements to be rendered","Specifies the data type of each color component"]],[3,"How many parameters does glutFullScreen have?",["0","1","2","3"]],[1,"Display devices that convert electrical energy into lightD",["emissive displays","nonemissive displays","LED PANEL","Plasma Panel"]],[2,"Copy and Paste the items below to their appropriate description.\nGL_POINT\nGL_LINE\nGL_LINE_LOOP\nGL_LINE_STRIP\n\nUse this primitive to draw a sequence of connected line segments",["GL_LINE_STRIP","GL_POINT","GL_LINE","GL_LINE_LOOP"]],[2,"Copy and Paste the items below to their appropriate description.\nGL_POINT\nGL_LINE\nGL_LINE_LOOP\nGL_LINE_STRIP\n\nUse this primitive type to render mathematical points. OpenGL renders a point for each vertex specified.",["GL_POINT","GL_LINE","GL_LINE_LOOP","GL_LINE_STRIP"]],[2,"Copy and Paste the items below to their appropriate description.\nGL_POINT\nGL_LINE\nGL_LINE_LOOP\nGL_LINE_STRIP\n\nUse this primitive to close a line strip",["GL_LINE_LOOP","GL_POINT","GL_LINE","GL_LINE_STRIP"]],[2,"Copy and Paste the items below to their appropriate description.\nGL_POINT\nGL_LINE\nGL_LINE_LOOP\nGL_LINE_STRIP\n\nUse this primitive to draw unconnected line segments.",["GL_LINE","GL_POINT","GL_LINE_LOOP","GL_LINE_STRIP"]],[1,"Historically, the operation of most video monitors was based on the standard CRT design. What does CRT stands for",["Cathode Ray Tube","Computer Resolution Technology","Colored Raster Tube","Cathode Resolution Terminal"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nQuestion:\nGLbyte",["signed char","unsigned char","float","unsigned short","signed short","int","double","unsigned int"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nQuestion:\nGLshort",["signed short","signed char","unsigned char","float","unsigned short","int","double","unsigned int"]],[2,"Identify the equivalent C-Language Type for each OpenGL Type Definition, using the different data types below:\n\nQuestion:\nGlint",["int","signed char","unsigned char","float","unsigned short","signed short","double","unsigned int"]],[3,"For this course we will be using the DEvC++ IDE. Which version of IDE does this course recommend?",["Orwell DevCpp","BloodShed","MingW","GCC"]],[3,"GLUT was originally written by.",["Mark Kilgard","Graydon Hoare","James Gosling","Ivan Sutherland"]],[3,"On what version of OpenGL does the original GLUT was abandoned?",["3.7","1.7","2.5","4.3"]],[3,"It is a free-software/open source alternative to the OpenGL Utility Toolkit library.",["Freeglut","GCC","MingW","LLVM"]],[3,"What does GLUT stands for?",["OpenGL Utility Toolkit","OpenGL Utility Template","OpenGL User Tools","OpenGL User Graphical Text"]],[3,"In creating an OpenGL application in Dev-C++, what type of project should be selected?",["Console Application","DLL","Windows Application","Static Library"]],[3,"Where do you add the include and library folders of freeglut?",["Project->Options->Directories","Project->Add To Project","Project->New File","Tools->Package Manager"]],[3,"What additional command line options do you include for an OpenGL program to work in Dev-C++?",["All of the above","-lfreeglut","-lglu32","-lopengl32"]],[3,"A command line option needed for the successful compilation of an OpenGL application.",["-lfreeglut","-lopengl","-lgraphics","-lfreegl"]],[4,"Which of the following is the proper declaration of a pointer?",["int *x;","int x;","int &x;","ptr x;"]],[3,"OpenGL is best described as:",["A computer graphics rendering API","A graphics hardware device","An operating system component","A programming language"]],[3,"Which company first developed OpenGL?",["Silicon Graphics (SGI)","Microsoft","IBM","Oracle"]],[3,"The first version of OpenGL was released in: (unverified)",["1992","1990","1994","1996"],"The source key said 1994. OpenGL 1.0 was released in 1992. Corrected independently."],[3,"OpenGL operates using which model?",["Client-Server Model","Object-Oriented Model","Event-Driven Model","MVC Model"]],[3,"Which organization currently manages OpenGL standards?",["Khronos Group","ISO","IEEE","ACM"]],[3,"The latest version of OpenGL mentioned in the slides is:",["4.5","3","4","5"]],[3,"In the sample OpenGL program, which function clears the screen buffer?",["glClear()","glEnd()","glBegin()","glFlush()"]],[3,"Which OpenGL function specifies the start of a primitive?",["glBegin()","glStart()","glVertex()","glDraw()"]],[3,"What is the role of glEnd()?",["Ends a list of vertices","Ends a program","Clears memory","Closes the window"]],[3,"Which OpenGL function forces buffered commands to execute?",["glFlush()","glClear()","glBegin()","glDrawArrays()"]],[4,"Which keyword is used to define a function in C++?",["No keyword required","method","func","function"]],[4,"What is the default return type of a function in C++ if none is specified? (unverified)",["int","void","float","double"],"The source key said void. C++ has no default return type (older C implied int), so int is the closest answer. Corrected independently."],[4,"Which of the following correctly defines a function prototype in C++?",["int sum(int, int);","sum(int, int);","function sum(int, int);","prototype sum(int, int);"]],[4,"What is a function that calls itself called?",["recursive function","inline function","overloadded function","friend function"]],[4,"Which of the following is true about inline functions?",["They reduce function call overhead","Defined inside a class only","Compiler always expands inline functions","They can only return integers"]],[4,"What is the purpose of the return statement?",["to end a function and return a value","to stop a loop","to return a value","to allocae memory"]],[4,"Which function type does not return any value?",["vois","int","double","char"]],[4,"What happens if a function is declared but not defined in C++?",["linker error occurs","compiler ignores it","it runs with default behavior","it is treated as inline"]],[4,"Which keyword is used to define a function inside a class?",["nothing spacial, just declare normally","inline function","member","func"]],[4,"Which of the following allows multiple functions with the same name but different parameters?",["Function overloading","Function overriding","Function templating","Operator overloading"]],[5,"What is computer graphics primarily concerned with?",["Creating and manipulating visual content using computers","Editing audio","Writing novels","Managing databases"]],[5,"Which programming language is widely used for graphics due to performance and memory control?",["C++","Ruby","Python","Java"]],[5,"What does GPU stand for?",["Graphics Processing Unit","Global Performance Utility","Graphical Programming Utility","General Processing Unit"]],[5,"Which of the following is a raster graphics format?",["PNG","DWG","SVG","Postscript"]],[5,"Which graphics type is scalable without loss of quality?",["Vector","Bitmap","Raster","Pixmap"]],[5,"Who is considered a pioneer of computer graphics?",["Ivan Sutherland","Alan Turing","John Carmack","Tim Berners-Lee"]],[5,"What is the aspect ratio of a screen with 4 horizontal units and 3 vertical units?",["4:3","1:1","3:4","16:9"]],[5,"Which application area uses computer graphics for virtual surgery simulations?",["Medical Visualization","Scientific Visualization","AR","CAD"]],[5,"What does VRAM stand for?",["Video RAM","Visual RAM","Variable RAM","Virtual RAM"]],[5,"Which bit depth supports 256 tones?",["8-bit","4-bit","24-bit","16-bit"]],[5,"Which rendering algorithm introduced in 1980 simulates global illumination using ray tracing?",["Ray tracing","Anti-aliasing","Z-buffer","Radiosity"]],[5,"Which graphics pioneer developed the Sketchpad system?",["Sutherland","Catmull","Blinn","Warnock"]],[5,"Which lighting model includes ambient, diffuse, and specular components?",["Phong","Gouraud","Lambert","Blinn"]],[5,"What is the primary advantage of vector graphics over raster graphics?",["Scalability without pixelation","Smaller file size","Better color depth","Faster rendering"]],[5,"Which algorithm solves the visibility problem by sorting surfaces?",["Sutherland","Z-buffer","Warnock","Appel"]],[5,"Which rendering equation was introduced by Kajiya in 1986?",["Rendering equation","Radiosity","Ray tracing","Shade trees"]],[5,"Which bit depth supports over 16 million tones?",["24-bit","32-bit","8-bit","16-bit"]],[5,"Which file format is used for vector graphics in web applications?",["SVG","TIFF","PNG","JPG"]],[5,"Which graphics concept studies how humans perceive light and visual information?",["Perception","Simulation","Visualization","Rendering"]],[5,"Which graphics technique uses physics to animate models over time?",["Simulation","Shading","Modeling","Rendering"]],[4,"What is one purpose of using functions in programming?",["To reuse abstractions","To increase memory usage","To complicate the code","To make the program longer"]],[4,"The sqrt() function calculates the square root of a number.",["True","False"]],[4,"Which of the following is a function with no return value and no parameter?",["void displayHello()","int addTwoNumbers(int n1, int n2)","void printit(int x)","int addTwo()"]],[4,"The int main() function is the only required function in a C++ program.",["False","True"]],[4,"What does the fabs() function return?",["The absolute value of a floating-point number","The logarithm of a number","The floor of a number","The cube root of a number"]],[4,"The pow(x, y) function raises x to the power of y.",["True","False"]],[4,"What is the output of cout << \"Hello World...\" << endl;?",["Hello World...","\"Hello World...\"","cout","endl"]],[4,"What is a function prototype?",["A declaration that tells the compiler about a function's valid input and output","The main part of a function","The body of a function","A variable that stores a function"]],[4,"What is the value of cbrt(27.0)?",["3.0","-3.0","9.0","27.0"]],[4,"Which of the following is a purpose of the return statement?",["It tells the computer to leave the function immediately.","It tells the computer to call another function.","It tells the computer to ignore the function.","It tells the computer to repeat the function."]],[4,"What is the value of addTwoNumbers(10, 100) given the example code in the presentation?",["110","100","50","10"]],[4,"Which of the following is a key characteristic of a well-defined function according to the presentation?",["It should perform a single well-defined task.","It should always have a return value.","It should have multiple purposes.","It should be as long as possible."]],[4,"Which of the following are examples of functions with a parameter and a return value?",["int addTwoNumbers(int n1, int n2)","void displayHello()","void displaySomething(string str, int count)","int addTwo()"]],[4,"What is the output of fmod(13.657, 2.333)?",["1.992","1.991","13.657","11.324"]],[4,"What is the output of addTwoNumbers(addTwo(), 100) given the example code?\n```\n#include <GL/glut.h>\n#include <string>\n#include <iostream>\nint result;\nint addTwo() {\nreturn 15;\n}\nint addTwoNumbers(int a, int b) {\nreturn a + b;\n}\nvoid display() {\nglClear(GL_COLOR_BUFFER_BIT);\nstd::string text = \"Result = \" + std::to_string(result);\nglColor3f(1.0f, 1.0f, 1.0f);\nglRasterPos2f(-0.2f, 0.0f);\nfor (char c : text) {\nglutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);\n }\nglFlush();\n}\nint main(int argc, char** argv) \nresult = addTwoNumbers(addTwo(), 100);\nstd::cout << \"Result = \" << result << std::endl;\nglutInit(&argc, argv);\nglutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);\nglutInitWindowSize(400, 200);\nglutCreateWindow(\"Function Output Example\");\nglClearColor(0.0, 0.0, 0.0, 1.0); // background = black\nglutDisplayFunc(display);\nglutMainLoop();\nreturn 0;\n}\n```",["115","15","100","215"]],[4,"What is the purpose of the using namespace std; statement?",["It allows the program to use identifiers from the std namespace without the std:: prefix.","It creates a new namespace called std.","It includes the standard input/output library.","It is a required part of all C++ programs."]],[4,"Which of the following is an example of an int function with no parameters?",["int addTwo()","void printit()","int addTwoNumbers(int n1, int n2)","void displaySomething(string str, int count)"]],[4,"What does the return 0; statement in int main() typically signify?",["The program executed successfully.","An error occurred.","The program is about to loop.","A value of 0 is being returned."]],[4,"A function's \"contract\" defines its inputs and outputs.",["True","False"]],[4,"What is the value of floor(-9.8)?",["-10.0","9.0","10.0","-9.0"]],[3,"What does OpenGL stand for?",["Open Graphics Library","Open Game Library","OpenGL Application","Open Graphics Language"]],[6,"The OpenGL rendering pipeline is a sequence of stages that processes 3D data to produce a 2D image.",["True","False"]],[6,"Which of the following is a fixed-function stage of the OpenGL rendering pipeline?",["Rasterization","Geometry Shader","Vertex Shader","Fragment Shader"]],[6,"The Geometry Shader is a mandatory stage of the rendering pipeline.",["False","True"]],[6,"What is the purpose of the Fragment Shader?",["To determine the final color of a fragment","To convert primitives into fragments","To process vertex data","To assemble primitives"]],[2,"Which of the following is a geometric primitive in OpenGL?",["Polygons","Textures","Spheres","Pixels"]],[6,"What is a \"programmable stage\" in the OpenGL pipeline?",["A stage where developers can write custom code called shaders","A stage that cannot be changed","A stage that only uses fixed functions","A stage for memory management"]],[3,"What does the glutCreateWindow() function do?",["Creates a window on the screen with a specified title","Sets the window size","Initializes the OpenGL library","Creates a new thread for the program"]],[3,"What is the purpose of the glFlush() command?",["To force buffered OpenGL commands to execute","To create a new primitive","To clear the color buffer","To close the window"]],[3,"What is the Khronos Group?",["An industry consortium that manages open, royalty-free standards","A company that manufactures GPUs","The original developer of OpenGL","A library for creating 3D graphics"]],[3,"The glutInit() function must be called before other GLUT and OpenGL functions.",["True","False"]],[2,"What is the purpose of glVertex2f()?",["To specify the location of a vertex","To draw a line","To specify a color","To end a list of vertices"]],[3,"What is the purpose of glutMainLoop()?",["To enter an infinite event-processing loop","To define a callback function","To clear the window","To draw the primitives"]],[2,"What is the term for a property that determines how a primitive is displayed by OpenGL?",["Attribute","Primitive","Mask","Vertex"]],[6,"What is the first programmable stage of the OpenGL rendering pipeline?",["Vertex Shader","Rasterization","Fragment Shader","Geometry Shader"]],[6,"What are Vertex Buffer Objects (VBOs) and Vertex Array Objects (VAOs) used for?",["Defining and organizing raw vertex data in memory","Specifying a callback function","Drawing primitives","Defining the window size"]],[3,"What is the purpose of glClear(GL_COLOR_BUFFER_BIT)?",["To clear the color buffer","To clear the window and set a new color","To display the final image","To create a new buffer"]],[6,"The OpenGL pipeline saves time by skipping unnecessary work, such as clipping off-screen objects.",["True","False"]],[3,"What is the client-server model in the context of OpenGL?",["A model where the application is the client and the vendor's implementation is the server","A model that only applies to web graphics","A model for networked gaming","A model where the application is the server and the vendor's implementation is the client"]],[2,"Which command format is correct for specifying a vertex in OpenGL?",["glVertex3fv(v)","glPoint(x, y)","glBeginVertex(v)","glDrawVertex(v)"]],[2,"How many components are used in glVertex4f(x,y,z,w)?",["4","2","3","5"]],[2,"Which primitive renders one point for each vertex specified?",["GL_POINTS","GL_LINES","GL_POLYGON","GL_TRIANGLES"]],[2,"The function glPointSize(2.0); is used to:",["Set the point size","Draw a polygon","Increase window resolution","Set line width"]],[2,"Which primitive draws a line segment for each group of two vertices?",["GL_LINES","GL_LINE_STRIP","GL_LINE_LOOP","GL_POLYGON"]],[2,"If an application specifies 5 vertices with GL_LINES, how many line segments are drawn?",["2","1","3","5"]],[2,"Which primitive connects each vertex to the next and closes the loop?",["GL_LINE_LOOP","GL_LINES","GL_POLYGON","GL_QUADS"]],[2,"Which function enables line stippling in OpenGL?",["glEnable(GL_LINE_STIPPLE)","glLineStipple()","glLineWidth()","glColor3f()"]],[2,"In glLineStipple(repeatFactor, pattern), the parameter pattern is:",["A 16-bit integer","A color value","A float multiplier","A buffer address"]],[2,"Which primitive renders one triangle for each group of three vertices?",["GL_TRIANGLES","GL_TRIANGLE_STRIP","GL_POLYGON","GL_TRIANGLE_FAN"]],[6,"The parameter values for mouse buttons in GLUT include:",["GLUT_LEFT_BUTTON","GLUT_KEY_LEFT","GLUT_WHEEL_UP","GLUT_ARROW_LEFT"]],[6,"The state parameter in a mouse callback can be:",["GLUT_UP or GLUT_DOWN","GLUT_ENTER or GLUT_LEAVE","GLUT_LEFT or GLUT_RIGHT","GLUT_ON or GLUT_OFF"]],[6,"Which GLUT function detects mouse motion when no buttons are pressed?",["glutPassiveMotionFunc()","glutMotionFunc()","glutMouseFunc()","glutEntryFunc()"]],[6,"Which GLUT function is called when the mouse enters or leaves the window?",["glutEntryFunc()","glutIdleFunc()","glutMotionFunc()","glutPassiveMotionFunc()"]],[6,"Which GLUT function registers an idle callback for background tasks or animations?",["glutIdleFunc()","glutPostRedisplay()","glutMainLoop()","glutFullScreen()"]],[6,"The function glutTimerFunc(milliseconds, func, value) is used to:",["Register a timer callback","Delay screen refresh","Set frame rate","Pause input handling"]],[6,"Which callback is triggered continuously when no window system events are pending?",["Idle callback","Display callback","Timer callback","Motion callback"]],[6,"Which GLUT function allows handling both pressed and released mouse button events?",["glutMouseFunc()","glutPassiveMotionFunc()","glutMotionFunc()","glutEntryFunc()"]],[3,"The function glRasterPos2f(x, y) is used to:",["Set the text drawing position","Set the window size","Move the camera","Resize primitives"]],[3,"To render text in GLUT, you can use:",["glutBitmapString()","glutDrawText()","glutFontDisplay()","glutTextRender()"]],[6,"Which primitive type is drawn with glDrawArrays(GL_TRIANGLES, 0, 12)? (unverified)",["4 triangles","6 triangles","12 triangles","3 triangles"],"The source key said 6 triangles, but 12 vertices at 3 per triangle gives 4. Corrected independently."],[6,"Which statement correctly disables client-side arrays?",["glDisableClientState()","glEndArray()","glStopArrays()","glArrayOff()"]],[6,"Which OpenGL functions are replaced by vertex arrays for efficiency?",["glBegin() and glEnd()","glClear() and glFlush()","glLoadIdentity() and glMatrixMode()","glEnable() and glDisable()"]],[6,"What does glDrawArrays(GL_QUADS, 0, 4) draw?",["A quadrilateral","Four triangles","A polygon with 8 sides","A triangle strip"]],[6,"Which data structure is required for using glDrawElements()?",["Index arrays","Shaders","Color buffers only","Texture coordinates"]],[6,"Which OpenGL client state must be enabled to use color arrays?",["GL_COLOR_ARRAY","GL_VERTEX_ARRAY","GL_TEXTURE_ARRAY","GL_INDEX_ARRAY"]],[6,"In vertex arrays, data such as positions and colors are stored in:",["Client-side arrays","Shaders","Server-side RAM only","Texture buffers"]],[6,"The function glFlush() is used to:",["Force OpenGL to execute commands immediately","Clear memory","Close the OpenGL program","Reset vertex arrays"]],[6,"Using vertex arrays instead of glBegin()/glEnd() improves:",["Rendering speed and efficiency","Shader complexity","Memory fragmentation","Buffer size"]],[6,"To specify both vertices and colors in arrays, you must call:",["glVertexPointer() and glColorPointer()","glArrayPointer() only","glBegin() and glEnd()","glDrawElements() only"]]];
+
+const SETS={1:"Display & Graphics Hardware",2:"OpenGL Types & Primitives",3:"OpenGL & GLUT Basics",4:"C++ Functions",5:"Graphics Concepts",6:"Pipeline, Arrays & GLUT Events"};
+const BANK=DATA.map(r=>({s:r[0],q:r[1],c:r[2],flag:r[3]}));
+const KEYS=["A","B","C","D","E","F","G","H"];
+const stage=document.getElementById("stage");
+let opts={set:"all",shuffleQ:true,shuffleC:true,nav:false},deck=[],at=0;
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function formatQtext(text){const parts=String(text).split("```");let html="";parts.forEach((part,i)=>{if(i%2===1){html+=`<pre class="code">${esc(part.trim())}</pre>`}else{const paras=part.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);html+=paras.map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("")}});return html}
+function qCompact(text){const t=String(text).replace(/```([\s\S]*?)```/g,(m,c)=>" "+c.trim().replace(/\n+/g," ")+" ");return esc(t.replace(/\s*\n\s*/g," ").replace(/\s{2,}/g," ").trim())}
+function downloadFile(){const b=new Blob(["<!DOCTYPE html>\n"+document.documentElement.outerHTML],{type:"text/html"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="CG_Midterm_Reviewer.html";document.body.appendChild(a);a.click();a.remove()}
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const pool=()=>opts.set==="all"?BANK.slice():BANK.filter(q=>q.s===+opts.set);
+function rng(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296}}
+function fixed(a,q){const r=rng(q.q);a=a.slice();for(let i=a.length-1;i>0;i--){const j=r()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function order(q){const n=q.c.length;if(n===2)return q.c[0]==="True"?[0,1]:(opts.shuffleC?[0,1].sort(()=>Math.random()-.5):fixed([0,1],q));
+ const idx=[...Array(n).keys()],last=idx.filter(i=>/^All of the above$/.test(q.c[i])),rest=idx.filter(i=>!last.includes(i));return (opts.shuffleC?shuf(rest):fixed(rest,q)).concat(last)}
+function buildDeck(list){deck=(opts.shuffleQ?shuf(list):list.slice()).map(q=>({ref:q,order:order(q),picked:null,skipped:false}));at=0}
+const answered=d=>d.picked!==null,ok=d=>d.picked===0,
+ stateOf=d=>answered(d)?(ok(d)?"ok":"no"):(d.skipped?"sk":""),
+ pending=()=>deck.map((d,i)=>i).filter(i=>!answered(deck[i]));
+function renderSetup(){
+ const cnt=k=>BANK.filter(q=>q.s===k).length;
+ stage.innerHTML=`<div class="field"><p class="lede">Which set do you want to drill?</p><p class="hint">Every question from the reviewer, one entry each, no duplicates. All multiple choice.</p>
+ <div class="segs"><button class="seg" type="button" data-set="all" aria-pressed="false">Full reviewer<span class="n">${BANK.length} questions</span></button>
+ ${Object.keys(SETS).map(k=>`<button class="seg" type="button" data-set="${k}" aria-pressed="false">${SETS[k]}<span class="n">${cnt(+k)} questions</span></button>`).join("")}</div></div>
+ <div class="field"><p class="lede">Shuffling</p><label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}><span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+ <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}><span>Shuffle the choices<small>Stops you from remembering "the third one". Off keeps one fixed choice order.</small></span></label></div>
+ <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+ const segs=[...stage.querySelectorAll(".seg")],paint=()=>segs.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===opts.set)));
+ segs.forEach(b=>b.onclick=()=>{opts.set=b.dataset.set;paint()});paint();
+ stage.querySelector("#sq").onchange=e=>opts.shuffleQ=e.target.checked;
+ stage.querySelector("#sc").onchange=e=>opts.shuffleC=e.target.checked;
+ stage.querySelector("#go").onclick=()=>{buildDeck(pool());renderQuestion()};
+}
+function renderQuestion(){
+ const it=deck[at],q=it.ref,done=answered(it),right=deck.filter(d=>stateOf(d)==="ok").length,pend=pending().length;
+ stage.innerHTML=`<div class="meter">${deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("")}</div>
+ <div class="qhead"><span>Question ${at+1} / ${deck.length}</span><span>${SETS[q.s]} &middot; ${right} correct</span></div>
+ <div class="navtog"><button class="btn quiet sm" id="navtog" type="button" aria-expanded="${opts.nav}">${opts.nav?"Hide":"Show"} number navigation</button></div>
+ ${opts.nav?`<div class="grid">${deck.map((d,i)=>`<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}" aria-label="Go to question ${i+1}">${i+1}</button>`).join("")}
+ <div class="legend"><s><b style="background:var(--right)"></b>correct</s><s><b style="background:var(--wrong)"></b>wrong</s><s><b style="background:var(--skip)"></b>skipped</s><s><b style="background:var(--rule)"></b>not seen</s></div></div>`:""}
+ <h2 class="qtext">${formatQtext(q.q)}</h2>
+ <div class="choices">${it.order.map((o,p)=>`<button class="choice" type="button" data-o="${o}" ${done?"disabled":""}><span class="key">${KEYS[p]}</span><span class="txt">${esc(q.c[o])}</span></button>`).join("")}</div>
+ <div class="verdict" id="verdict"></div>
+ <div class="nav"><button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}<span class="spacer"></span>
+ <button class="btn sm" id="next">Next &#9654;</button><button class="btn ghost sm" id="finish">Finish &amp; score</button>${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:""}</div>`;
+ stage.querySelector("#navtog").onclick=()=>{opts.nav=!opts.nav;renderQuestion()};
+ stage.querySelectorAll(".jump").forEach(b=>b.onclick=()=>{at=+b.dataset.i;renderQuestion()});
+ stage.querySelector("#prev").onclick=()=>{if(at>0){at--;renderQuestion()}};
+ const sk=stage.querySelector("#skip");if(sk)sk.onclick=()=>{deck[at].skipped=true;goNext()};
+ stage.querySelector("#next").onclick=goNext;stage.querySelector("#finish").onclick=renderScore;
+ if(done)reveal(false);else stage.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{it.picked=+b.dataset.o;it.skipped=false;reveal(true)});
+}
+function goNext(){if(at<deck.length-1){at++;renderQuestion();return}
+ const p=pending();if(p.length){at=p[0];renderQuestion()}else renderScore()}
+function reveal(fresh){
+ const it=deck[at],q=it.ref;
+ stage.querySelectorAll(".choice").forEach(b=>{const o=+b.dataset.o;b.disabled=true;
+  if(o===0){b.classList.add("right");b.insertAdjacentHTML("beforeend",'<span class="mark">correct</span>')}
+  else if(o===it.picked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",'<span class="mark">your answer</span>')}
+  else b.classList.add("dim")});
+ const v=stage.querySelector("#verdict");v.className="verdict show "+(ok(it)?"hit":"miss");
+ v.innerHTML=ok(it)?"<b>Correct.</b>":`<b>Not quite.</b><p>The answer is ${esc(q.c[0])}.</p>`;
+ if(q.flag)v.insertAdjacentHTML("beforeend",`<p class="flagnote">${esc(q.flag)}</p>`);
+ if(fresh){const s=stage.querySelector("#skip");if(s)s.remove();const n=stage.querySelector("#next");
+  n.textContent=(at===deck.length-1&&!pending().length)?"See your score":"Next \u25B6";n.focus()}
+}
+function reviewItem(d){const q=d.ref,good=answered(d)&&ok(d);
+ const body=good?`<p class="ok">Correct: ${esc(q.c[0])}</p>`:(answered(d)?`<p class="yours">You chose: ${esc(q.c[d.picked])}</p>`:`<p class="none">Left unanswered</p>`)+`<p class="truth">Answer: ${esc(q.c[0])}</p>`;
+ return `<div class="miss ${good?"hit":(answered(d)?"":"unans")}"><p>${qCompact(q.q)}</p>${body}</div>`}
+function renderScore(){
+ const done=deck.filter(answered),right=done.filter(ok).length,misses=done.filter(d=>!ok(d)),un=deck.filter(d=>!answered(d)),pct=deck.length?Math.round(right/deck.length*100):0;
+ const line=un.length?`Scored out of all ${deck.length} questions &mdash; ${un.length} left unanswered count as missed.`:pct===100?"Clean run. Shuffle it and see if it holds.":pct>=80?"Solid. Run the missed ones until they're automatic.":pct>=60?"Getting there. The retry below drills only what you missed.":"Worth another pass. Retry the misses first, then the full set.";
+ const redo=[...misses,...un].map(d=>d.ref);
+ stage.innerHTML=`<p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p><p class="scoreline">${line}</p>
+ <div class="btnrow"><button class="btn" id="again">Repeat quiz</button>${un.length?`<button class="btn ghost" id="back">Go back and answer ${un.length}</button>`:""}${redo.length?`<button class="btn ghost" id="redo">Drill the ${redo.length} missed</button>`:""}<button class="btn quiet" id="home">Change settings</button></div>
+ <div class="review"><h2>All ${deck.length} questions &mdash; ${right} correct, ${redo.length} to review</h2>${[...misses,...un,...done.filter(ok)].map(reviewItem).join("")}</div>`;
+ stage.querySelector("#again").onclick=()=>{buildDeck(pool());renderQuestion()};
+ stage.querySelector("#home").onclick=renderSetup;
+ const b=stage.querySelector("#back");if(b)b.onclick=()=>{at=pending()[0];renderQuestion()};
+ const r=stage.querySelector("#redo");if(r)r.onclick=()=>{buildDeck(redo);renderQuestion()};
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.addEventListener("keydown",e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;const cs=[...document.querySelectorAll(".choice")];if(!cs.length)return;
+ if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled)p.click();return}
+ if(e.key==="ArrowRight"||e.key==="Enter"){if(document.activeElement&&document.activeElement.classList.contains("choice")&&!document.activeElement.disabled)return;const n=document.getElementById("next");if(n){e.preventDefault();n.click()}return}
+ if(e.key.toLowerCase()==="s"){const k=document.getElementById("skip");if(k){e.preventDefault();k.click()}return}
+ if(answered(deck[at]))return;let i=/^[1-9]$/.test(e.key)?+e.key-1:KEYS.indexOf(e.key.toUpperCase());if(i>-1&&cs[i]){e.preventDefault();cs[i].click()}});
+renderSetup();
+
+</script>
+<script src="script.js"></script>
+</body>
+</html>
