@@ -1,2468 +1,498 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <link rel="stylesheet" href="style.css">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Software Engineering Module Quiz</title>
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #0b1020;
-      --panel: #121a2f;
-      --panel-2: #17213b;
-      --text: #edf2ff;
-      --muted: #aab6d3;
-      --line: #2a375b;
-      --accent: #6ee7f9;
-      --accent-2: #a78bfa;
-      --good: #34d399;
-      --bad: #fb7185;
-      --warn: #fbbf24;
-      --shadow: 0 18px 45px rgba(0, 0, 0, 0.32);
-    }
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS0025 Midterm Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-sunk:#f3f6f9;
+  --ink:#19222e; --ink-soft:#5a6875; --rule:#d3dae1;
+  --accent:#1d5b8f; --right:#136b45; --right-bg:#e2f3ea;
+  --wrong:#a32a1f; --wrong-bg:#fbe8e5; --skip:#8a6a17; --skip-bg:#fbf1da;
+  --shadow:0 1px 0 rgba(25,34,46,.06), 0 10px 24px -18px rgba(25,34,46,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+    --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+    --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+    --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+  --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+  --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+  --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
+}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
+  border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
 
-    * {
-      box-sizing: border-box;
-    }
+/* setup */
+.field{margin-bottom:1.5rem}
+.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
+.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+  border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
+  transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}
+.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}
+.switch span{font-size:.9rem}
+.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(110, 231, 249, 0.15), transparent 34rem),
-        radial-gradient(circle at top right, rgba(167, 139, 250, 0.14), transparent 32rem),
-        var(--bg);
-      color: var(--text);
-    }
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;
+  padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
 
-    main {
-      width: min(1120px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0 42px;
-    }
+/* nav */
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}
+.meter i.ok{background:var(--right)}
+.meter i.no{background:var(--wrong)}
+.meter i.sk{background:var(--skip)}
+.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid{position:relative;max-height:11.6rem;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+  padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}
+.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}
+.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;margin-top:.2rem}
+.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
 
-    .topbar {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}
+.qtext p{margin:0 0 .6rem}
+.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;
+  font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;
+  font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);
+  border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;
+  color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
+  flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice.picked .key{color:var(--accent)}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.choice.wrong .key{color:var(--wrong)}
+.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible,.qhead button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-    h1 {
-      margin: 0 0 6px;
-      font-size: clamp(1.6rem, 3vw, 2.6rem);
-      letter-spacing: 0;
-    }
+.verdict{margin-top:1rem;font-size:.9rem;display:none}
+.verdict.show{display:block}
+.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}
+.verdict.hit b{color:var(--right)}
+.verdict.miss b{color:var(--wrong)}
+.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.flagnote{margin-top:.8rem;font-size:.8rem;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:.6rem}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;
+  border-top:1px solid var(--rule);padding-top:1rem}
+.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace;width:100%}
 
-    .subtitle {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.5;
-      max-width: 760px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin: 18px 0;
-    }
-
-    .stat, .quiz-panel, .controls {
-      background: rgba(18, 26, 47, 0.9);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-    }
-
-    .stat {
-      padding: 14px;
-      min-width: 0;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 1.35rem;
-      margin-bottom: 3px;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 14px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .question-nav {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
-      gap: 7px;
-      max-height: 170px;
-      overflow: auto;
-      padding: 14px;
-      margin-bottom: 16px;
-      background: rgba(237, 242, 255, 0.04);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-    }
-
-    .question-nav button {
-      min-height: 38px;
-      padding: 0;
-      background: #f8fafc;
-      color: #1f2a44;
-      border-color: #cbd5e1;
-      font-weight: 700;
-    }
-
-    .question-nav button.correct {
-      background: #dcfce7;
-      color: #047857;
-      border-color: #16a34a;
-    }
-
-    .question-nav button.incorrect {
-      background: #fee2e2;
-      color: #dc2626;
-      border-color: #ef4444;
-    }
-
-    .question-nav button.current {
-      outline: 3px solid #60a5fa;
-      outline-offset: -3px;
-      border-color: #2563eb;
-      color: #1d4ed8;
-    }
-
-    .group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    button, select, input[type="number"], label.toggle {
-      border: 1px solid var(--line);
-      background: var(--panel-2);
-      color: var(--text);
-      border-radius: 8px;
-      min-height: 40px;
-      padding: 0 13px;
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-    }
-
-    button:hover {
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    button.primary {
-      background: linear-gradient(135deg, #0891b2, #7c3aed);
-      border-color: transparent;
-      font-weight: 700;
-    }
-
-    button.ghost {
-      background: transparent;
-    }
-
-    button.good {
-      border-color: rgba(52, 211, 153, 0.55);
-    }
-
-    button.warn {
-      border-color: rgba(251, 191, 36, 0.55);
-    }
-
-    label.toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-
-    input[type="checkbox"] {
-      accent-color: var(--accent);
-      width: 17px;
-      height: 17px;
-    }
-
-    input[type="number"] {
-      width: 92px;
-    }
-
-    .quiz-panel {
-      padding: clamp(16px, 3vw, 28px);
-      min-height: 460px;
-    }
-
-    .meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 0.95rem;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 999px;
-      padding: 5px 10px;
-      color: var(--muted);
-    }
-
-    .question {
-      margin: 0 0 18px;
-      font-size: clamp(1.35rem, 2.6vw, 2rem);
-      line-height: 1.25;
-    }
-
-    .options {
-      display: grid;
-      gap: 10px;
-      margin: 18px 0;
-    }
-
-    .option {
-      width: 100%;
-      min-height: auto;
-      padding: 14px 16px;
-      text-align: left;
-      line-height: 1.45;
-      background: #0f172a;
-    }
-
-    .option.correct {
-      border-color: var(--good);
-      background: rgba(52, 211, 153, 0.12);
-    }
-
-    .option.incorrect {
-      border-color: var(--bad);
-      background: rgba(251, 113, 133, 0.12);
-    }
-
-    .feedback {
-      min-height: 52px;
-      margin: 12px 0 18px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .feedback strong {
-      color: var(--text);
-    }
-
-    .actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .empty {
-      display: grid;
-      place-items: center;
-      min-height: 310px;
-      color: var(--muted);
-      text-align: center;
-      line-height: 1.5;
-    }
-
-    .review {
-      margin-top: 16px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .review-item {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.035);
-    }
-
-    .review-item b {
-      color: var(--accent);
-    }
-
-    @media (max-width: 760px) {
-      .topbar {
-        display: block;
-      }
-
-      .stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .controls {
-        align-items: stretch;
-      }
-
-      .group, button, select, input[type="number"], label.toggle {
-        width: 100%;
-      }
-
-      .group button, .group select, .group input, .group label {
-        flex: 1;
-      }
-    }
-  </style>
+/* score */
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}
+.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}
+.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}
+.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}
+.miss.unans{border-color:var(--skip)}
+.miss p{margin:0;font-size:.92rem}
+.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}
+.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}
+.miss .truth{color:var(--right);font-size:.85rem}
+.miss.hit{border-color:var(--right)}.miss .ok{color:var(--right);font-size:.85rem;margin-top:.25rem}
+.allgood{color:var(--right);font-size:.92rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+.navtog{margin-bottom:1.1rem}
+/* ---------- mobile ---------- */
+html{-webkit-text-size-adjust:100%}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.wrap,.panel,.qtext,.choice .txt,.miss p{overflow-wrap:anywhere}
+.choice .txt{min-width:0;flex:1}
+@media (max-width:600px){
+  body{padding:max(12px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) calc(56px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));font-size:15px}
+  .masthead{margin-bottom:1rem}
+  .masthead h1{font-size:1.02rem}
+  .panel{padding:14px}
+  .segs{flex-direction:column}
+  .seg{flex:1 1 auto;width:100%;min-height:48px}
+  .switch{padding:.7rem 0}
+  .switch input{width:1.3rem;height:1.3rem}
+  .btn,.btn.sm{min-height:44px;padding:.65rem 1rem}
+  .btnrow .btn{flex:1 1 100%}
+  .qhead{flex-direction:column;gap:.15rem}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(2.7rem,1fr));max-height:9.5rem;padding:.6rem;gap:.35rem}
+  .jump{min-height:2.5rem;font-size:.85rem}
+  .qtext{font-size:1rem}
+  .choice{padding:.85rem .75rem;min-height:48px;font-size:.95rem}
+  .choice .mark{font-size:.68rem}
+  .nav{gap:.5rem}
+  .nav #prev,.nav #skip{flex:1 1 calc(50% - .25rem)}
+  .nav .spacer{display:none}
+  .nav #next,.nav #finish{flex:1 1 100%}
+  .nav #next{order:-1}
+  .score b{font-size:2.4rem}
+  .foot{font-size:.74rem}
+}
+@media (hover:none){
+  .choice:hover:not(:disabled){border-color:var(--rule)}
+  .jump:hover{border-color:var(--rule);color:var(--ink-soft)}
+}
+</style>
 </head>
 <body>
-  <main>
-    <section class="topbar">
-      <div>
-        <h1>Software Engineering Module Quiz</h1>
-        <p class="subtitle">Multiple choice practice based on your modules and formatives. Pick a module, then use Know and Don't know to build a retry set for the topics that need another pass.</p>
+<div class="wrap">
+  <header class="masthead">
+    <span class="code">CS0025</span>
+    <h1>Software Engineering &amp; Project Management</h1>
+    <p>Midterm reviewer</p>
+  </header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">Modified version of Vin's CS0025 Reviewer to follow my format because half of the features in his reviewer doesn't work :P</p>
+  <p class="foot">If you'd also like to study this material offline, <a href="#" onclick="downloadFile('https://raw.githubusercontent.com/akiiresu/reviewers-compilation/refs/heads/main/SoftEng%201%20-%20CS0025/CS0025_Vin-Midterm_Reviewer.html','CS0025_Vin-Midterm_Reviewer.html')">download it here.</a></p>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+  </div>
+
+<script>
+const SETS = {1:"Module 1: Software & Information Systems",2:"Module 2: Projects & System Analysis",3:"Module 3: Agile Methodologies",4:"Module 4: Systems Modeling & Requirements"};
+const BANK = [{"s":1,"q":"Which best describes software?","c":["Only the physical components of a computer","A collection of computer programs, procedures, and documentation that perform tasks on a computer system","A device used to store information","A network connection between computers"],"a":1},{"s":1,"q":"Which type of software is a collection of programs written to service other programs?","c":["Application Software","Embedded Software","System Software","Product-line Software"],"a":2},{"s":1,"q":"Which software category usually consists of stand-alone programs that solve specific business needs?","c":["Engineering Software","System Software","Application Software","Embedded Software"],"a":2},{"s":1,"q":"Which type of software resides within a product or system and implements control features?","c":["Web Application","Product-line Software","Application Software","Embedded Software"],"a":3},{"s":1,"q":"What is a major characteristic of legacy software?","c":["It was developed only for mobile devices.","It consists of older programs developed decades ago.","It cannot be modified.","It is always inexpensive to maintain."],"a":1},{"s":1,"q":"Which is considered an \u201cinfant\u201d software technology in the module?","c":["Legacy Software","System Software","WebApps","Engineering Software"],"a":2},{"s":1,"q":"What does cloud computing enable users to do?","c":["Eliminate the need for computing devices","Use computing resources only from one location","Use only stand-alone applications","Share or use computing resources on a broad scale from anywhere or anytime"],"a":3},{"s":1,"q":"Software engineering is best described as:","c":["The physical repair of computer hardware","The process of purchasing computer programs","A process, collection of methods, and tools for building high-quality computer software","The study of computer networks only"],"a":2},{"s":1,"q":"Which two qualities are required in software engineering according to the module?","c":["Speed and complexity","Cost and size","Adaptability and agility","Hardware and networking"],"a":2},{"s":1,"q":"What is the foundation of software engineering as a layered technology?","c":["Tools","Methods","Programming","Process"],"a":3},{"s":1,"q":"Which chapter objective says to identify and define two software types?","c":["Identify and define legacy and infant software","Differentiate types of information systems","Apply the use of SDLC methodology","Define what is system software"],"a":0},{"s":1,"q":"Which topic belongs to Chapter 01?","c":["IS Business Perspective and Key Components","Software Process Framework","SDLC Phases","Types of Information Systems"],"a":1},{"s":1,"q":"Which topic belongs to Chapter 02?","c":["Software Guidelines","Legacy Software","Information Management","Software Engineering Principles"],"a":2},{"s":1,"q":"Which topic belongs to Chapter 03?","c":["System Development Life Cycle vs. Software Development Life Cycle","Infant Software","Systems and Types","Software Realities"],"a":0},{"s":1,"q":"Which chapter includes the objective: Define what is system software?","c":["Chapter 03","Chapter 01","Chapter 02","References"],"a":2},{"s":1,"q":"Which chapter includes the objective: Apply the use of SDLC methodology?","c":["Chapter 02","Chapter 03","Chapter 01","References"],"a":1},{"s":1,"q":"Which pair is directly compared in Chapter 03?","c":["System Development Life Cycle and Software Development Life Cycle","Legacy Software and WebApps","Information Management and Software Guidelines","Tools and Programming"],"a":0},{"s":1,"q":"Which of the following is listed as a Chapter 01 topic?","c":["IS Activities and Resource Approach","What is SDLC?","What is Software?","Types of Information Systems"],"a":2},{"s":1,"q":"Which of the following is listed as a Chapter 02 topic?","c":["Information Systems","Software Categories","SDLC Phases","Software Engineering Principles"],"a":0},{"s":1,"q":"Which of the following is listed as a Chapter 03 topic?","c":["Legacy Software","What is SDLC?","Software Realities","Information Management"],"a":1},{"s":1,"q":"According to the module, software may be described as a set of instructions/codes or a computer program that, when executed, provides what?","c":["Desired features, function and performance","Only physical storage space","A network connection","A hardware replacement"],"a":0},{"s":1,"q":"Which software category is described as a broad array of number crunching programs?","c":["Application Software","Engineering/Scientific Software","Embedded Software","Product-line Software"],"a":1},{"s":1,"q":"Which software category is designed to provide specific capabilities for use by many customers?","c":["Product-line Software","System Software","Embedded Software","Artificial Intelligence Software"],"a":0},{"s":1,"q":"Which software category makes use of nonnumerical algorithms to solve complex problems?","c":["Web/Mobile Application","Artificial Intelligence Software","System Software","Legacy Software"],"a":1},{"s":1,"q":"What is one stated reality about legacy software?","c":["It is never modified after release.","It is always inexpensive to maintain.","It can be costly to maintain and risky to evolve.","It exists only as mobile applications."],"a":2},{"s":1,"q":"WebApps are described as sophisticated computing tools that can provide stand-alone function and also integrate what?","c":["Databases and corporate applications","Only hardware drivers","Printed manuals","Operating system kernels only"],"a":0},{"s":1,"q":"Mobile applications take advantage of what part of the mobile platform?","c":["Unique interaction mechanisms","Only server architecture","Desktop-only menus","Mainframe terminals"],"a":0},{"s":1,"q":"Software engineering is described as a systematic, disciplined and quantifiable approach to what?","c":["Development, operation and maintenance of software","Hardware selling and inventory","Network cabling only","Manual filing of documents"],"a":0},{"s":1,"q":"Which layer sits at the base of the software engineering layer diagram?","c":["Quality Focus","Process","Methods","Tools"],"a":0},{"s":1,"q":"Which term means a collection of activities, actions and tasks performed when a work product is to be created?","c":["Task","Activity","Process","Deployment"],"a":2},{"s":1,"q":"Which term strives to achieve a broad objective?","c":["Activity","Action","Task","Feedback"],"a":0},{"s":1,"q":"Which term is a set of tasks that produce a major work product?","c":["Process","Activity","Action","Planning"],"a":2},{"s":1,"q":"Which framework activity means communicating and collaborating with the user to understand objectives?","c":["Construction","Modeling","Communication","Deployment"],"a":2},{"s":1,"q":"Which framework activity is described as a sketch of the project to understand the big picture?","c":["Modeling","Planning","Construction","Deployment"],"a":0},{"s":1,"q":"Which framework activity is the building of the software project?","c":["Communication","Construction","Planning","Deployment"],"a":1},{"s":1,"q":"Which software engineering principle means all design should be as simple as possible, but no simpler?","c":["Maintain the Vision","Think!","KISS","Plan Ahead for Reuse"],"a":2},{"s":1,"q":"Which principle says never design yourself in the corner?","c":["Be open to the Future","The Reason it all Exists","What you produce, others Consume","Maintain the Vision"],"a":0},{"s":1,"q":"Which best describes a system according to the module?","c":["A set of interacting or interdependent entities forming an integrated whole","A single program with no related parts","Only a database file","A random list of unrelated activities"],"a":0},{"s":1,"q":"Which type of system has outputs or results that cannot be determined precisely but can only be guessed?","c":["Closed System","Open System","Database System","Workflow System"],"a":1},{"s":1,"q":"Which type of system can be predicted with certainty?","c":["Open System","Probabilistic System","Closed System","Expert System"],"a":2},{"s":1,"q":"An information system collects, stores, processes, helps analyze, supports decision-making, and performs what other function in an organization?","c":["Control functions","Physical repair","Food ordering only","Code compilation only"],"a":0},{"s":1,"q":"Which IS activity starts with acquisition of raw data and introduces it to the system?","c":["Feedback","Output","Input","Process"],"a":2},{"s":1,"q":"Which IS activity involves data processing, classifying, arranging, and calculating data?","c":["Input","Process","Output","Feedback"],"a":1},{"s":1,"q":"In the IS activities, what does output mean?","c":["The evaluation","The acquisition of raw data","The processed data becomes an information","The deletion of all records"],"a":2},{"s":1,"q":"Which of the following is listed as a characteristic of useful information?","c":["Less Uncertainty","More confusion","Delayed timing","No decision-making value"],"a":0},{"s":1,"q":"Which component of an information system consists of raw facts and has external and internal sources?","c":["Information","Database","Data","Process"],"a":2},{"s":1,"q":"Which component is a collection of all relevant and related organized data in an integrated file?","c":["Database","Feedback","Output","Workflow"],"a":0},{"s":1,"q":"Which component of IS generates the most useful information for decision-making?","c":["Data","Database","Process","Input"],"a":2},{"s":1,"q":"Which type of information system is primarily used for record keeping and periodic report generation?","c":["DSS","TPS","EIS","ERP"],"a":1},{"s":1,"q":"Which of the following is an example of TPS from the module?","c":["Sales order entry","Trend analysis","Drill-down dashboard","Strategic plan shaping"],"a":0},{"s":1,"q":"Which information system has sophisticated data analysis tools for problem-specific decision-making?","c":["TPS","DSS","Workflow System","Production Workflow System"],"a":1},{"s":1,"q":"According to the module, DSS helps in decision-making but does not do what?","c":["Use data","Support managers","Make any decision","Assist problem-specific decisions"],"a":2},{"s":1,"q":"Which information system is also called the Executive Support System?","c":["EIS","MIS","TPS","ERP"],"a":0},{"s":1,"q":"Which system provides management routine summaries of basic operations of the organization?","c":["MIS","Expert System","Workflow System","DSS"],"a":0},{"s":1,"q":"Which system directs, coordinates, and monitors an interrelated set of tasks arranged to form a business process?","c":["Workflow System","Transaction Processing System","Executive Information System","Expert System"],"a":0},{"s":1,"q":"Which type of workflow system focuses on tracking expense reports, travel requests, and messages?","c":["Production Workflow System","Administrative Workflow System","Ad-hoc Workflow System","Expert System"],"a":1},{"s":1,"q":"Which type of workflow system deals with shaping products, sales proposals, and strategic plans?","c":["Administrative Workflow System","Production Workflow System","Ad-hoc Workflow System","ERP"],"a":2},{"s":1,"q":"Which system allows an organization to use integrated programs to manage vital business operations for a multi-site, global organization?","c":["ERP","TPS","EIS","Closed System"],"a":0},{"s":1,"q":"Which system can make suggestions and act like an expert in a particular field of an organization?","c":["Expert System","MIS","TPS","Open System"],"a":0},{"s":2,"q":"Which statement best defines a project?","c":["A permanent activity performed every day","A temporary endeavor designed to produce a unique product or service","A routine activity without a specific goal","An activity with no beginning or end"],"a":1},{"s":2,"q":"Which of the following is NOT considered a project?","c":["Creating a unique software application","Developing a new service","Performing routine activities","Constructing a new system"],"a":2},{"s":2,"q":"Project management is the practice of:","c":["Programming software only","Initiating, planning, executing, controlling, and closing the work of a team","Hiring employees only","Performing routine activities without planning"],"a":1},{"s":2,"q":"What is the primary challenge of project management?","c":["Avoiding project documentation","Increasing the number of team members","Achieving project goals within given constraints","Removing all project deadlines"],"a":2},{"s":2,"q":"Who is accountable for accomplishing the stated project objectives?","c":["Customer","Project Manager","Programmer only","End user"],"a":1},{"s":2,"q":"Who is known as the father of planning and control techniques and is famous for the Gantt Chart?","c":["Henri Fayol","Henry Gantt","Frederick Taylor","Robert Pressman"],"a":1},{"s":2,"q":"In the Gantt Chart shown in the module, the red marks indicate the:","c":["Shortest task","Completed tasks","Critical path or longest stretch of the project","Project budget"],"a":2},{"s":2,"q":"What does PERT stand for?","c":["Project Evaluation and Resource Tracking","Program/Project Evaluation and Review Technique","Planning, Execution, Review, and Testing","Project Engineering and Research Technique"],"a":1},{"s":2,"q":"What is a PERT Chart primarily used for?","c":["Designing computer interfaces","Scheduling, organizing, and coordinating project tasks","Writing program code","Creating financial statements"],"a":1},{"s":2,"q":"What does analysis mean in system analysis?","c":["Combining separate elements into a whole","Breaking down a whole into parts","Removing all system components","Creating a final product immediately"],"a":1},{"s":2,"q":"A project is usually time-constrained and often constrained by what?","c":["Funding or staffing","Color scheme only","Keyboard layout","Internet speed only"],"a":0},{"s":2,"q":"Which field is listed as an application area for projects?","c":["Computer Software (IT-based)","Only social media browsing","Only routine chores","Unplanned daily tasks"],"a":0},{"s":2,"q":"Project management aims to achieve specific goals and meet specific success criteria at what?","c":["The specified time","Any random time","Only after the budget is removed","No particular time"],"a":0},{"s":2,"q":"According to the module, project management is not a tool or a person; it is a:","c":["Practice","Database","Programming language","Routine chore"],"a":0},{"s":2,"q":"Two forefathers of project management identified in the module are Henry Gantt and who?","c":["Henri Fayol","Ian Sommerville","Robert Pressman","Frederick Brooks"],"a":0},{"s":2,"q":"The 1950s marked the beginning of what era in project management?","c":["Modern project management era","Mobile application era","Legacy-only era","No-documentation era"],"a":0},{"s":2,"q":"Which two mathematical project-scheduling models were developed at that time?","c":["CPM and PERT","TPS and MIS","HTML and CSS","ERP and EIS"],"a":0},{"s":2,"q":"A PERT chart helps identify what for the total project?","c":["The minimum time needed to complete it","The final color palette","The number of keyboards needed","The exact salary of every worker"],"a":0},{"s":2,"q":"Project management methods are often customized based on size, nature, and what?","c":["Industry","Font style","Screen brightness","Random preference only"],"a":0},{"s":2,"q":"Which of the following belongs to the 4 P's in project management from the module?","c":["People","Pixels","Password","Printer"],"a":0},{"s":2,"q":"In the 4 P's, which one refers to lines of authority, decision-makers, organograms, and policies?","c":["Power","Plan","People","Process"],"a":0},{"s":2,"q":"Which item is one of the project management knowledge areas listed in the module?","c":["Risk management","Color grading","Typing speed","Device charging"],"a":0},{"s":2,"q":"Which is a project management process group listed in the module?","c":["Initiation","Decoration","Compilation only","Unplanned browsing"],"a":0},{"s":2,"q":"The initiating processes determine the nature and what of the project?","c":["Scope","Font","Logo only","Operating system only"],"a":0},{"s":2,"q":"The main purpose of planning is to plan time, cost, and resources adequately to estimate work and manage what?","c":["Risk","Brightness","Keyboard shortcuts","Wallpaper"],"a":0},{"s":2,"q":"Which phase ensures that the project management plan's deliverables are executed accordingly?","c":["Execution","Initiation","Closing","Documentation only"],"a":0},{"s":2,"q":"Monitoring and controlling observes project execution so potential problems can be identified when?","c":["In a timely manner","Only after the project ends","Never","Before any plan exists"],"a":0},{"s":2,"q":"Closing includes formal acceptance and what of the project?","c":["Ending","Restarting without review","Deleting all files","Avoiding documentation"],"a":0},{"s":2,"q":"Which closing activity means completing and settling each contract?","c":["Contract closure","Project tracking","Risk management","Technical review"],"a":0},{"s":2,"q":"According to the module, documenting everything within a project is key to being:","c":["Successful","Delayed","More confusing","Undocumented"],"a":0},{"s":2,"q":"Which statement is a characteristic of projects from the module?","c":["Projects should always have specific start and end dates.","Projects should never have goals.","Projects are permanent daily routines.","Projects produce no output."],"a":0},{"s":2,"q":"Which umbrella activity assesses risks that may affect the product outcome?","c":["Risk Management","Quality Assurance","Measurement","Configuration Management"],"a":0},{"s":2,"q":"Which umbrella activity conducts activities to ensure product quality?","c":["Quality Assurance","Technical Review","Reusability Management","Project Tracking and Control"],"a":0},{"s":2,"q":"Which umbrella activity assesses the work product to identify errors beforehand?","c":["Technical Review","Measurement","Configuration Management","Work Product Preparation and Production"],"a":0},{"s":2,"q":"Which umbrella activity manages the effects of changes in the software process?","c":["Configuration Management","Risk Management","Quality Assurance","Planning and design"],"a":0},{"s":2,"q":"Synthesis means:","c":["Combining separate elements or components to form a coherent whole","Breaking down a whole into parts","Removing all stakeholders","Avoiding requirements"],"a":0},{"s":2,"q":"System analysis is the process of studying a procedure or business to identify its goals and purposes and create what?","c":["Systems and procedures that will achieve them efficiently","A random list of unrelated ideas","Only final code without study","A permanent daily routine"],"a":0},{"s":2,"q":"System analysis is also a problem-solving technique that breaks down a system into what?","c":["Component pieces","Marketing slogans","Unrelated reports","Finished products only"],"a":0},{"s":2,"q":"The analysis phase involves gathering what for the system?","c":["Requirements","Only colors","Only salaries","Only advertisements"],"a":0},{"s":2,"q":"In the analysis phase, business needs are studied with the intention of making business processes more:","c":["Efficient","Decorative","Random","Expensive only"],"a":0},{"s":2,"q":"The system analysis phase focuses on what the system will do and views all stakeholders as viable sources of what?","c":["Information","Hardware only","Errors only","Final payment"],"a":0},{"s":2,"q":"Which system analysis activity clearly defines objectives and requirements necessary to meet a project's requirements?","c":["Scope Definition","Problem analysis","Logical design","Decision analysis"],"a":0},{"s":2,"q":"Which system analysis activity is the process of understanding problems and needs and arriving at solutions?","c":["Problem analysis","Requirements analysis","Logical design","Decision analysis"],"a":0},{"s":2,"q":"Which system analysis activity determines the conditions that need to be met?","c":["Requirements analysis","Scope Definition","Decision analysis","Logical design"],"a":0},{"s":2,"q":"Which system analysis activity looks at the logical relationship among objects?","c":["Logical design","Problem analysis","Scope Definition","Project close"],"a":0},{"s":2,"q":"Which system analysis activity involves making a final decision?","c":["Decision analysis","Logical design","Scope Definition","Requirements analysis"],"a":0},{"s":2,"q":"Which of the following is listed as a trend in computer science research?","c":["Artificial intelligence and robotics","Routine filing only","Manual payroll only","No data protection"],"a":0},{"s":2,"q":"Which research trend is described as controversial, intriguing, and still in its early stages?","c":["Artificial intelligence","Manual documentation","Closed systems","Project close"],"a":0},{"s":2,"q":"Big data analytics is everywhere as companies try to make better use of enormous datasets to personalize and improve what?","c":["Their services","Their keyboard shortcuts","Their office paint only","Their routine chores"],"a":0},{"s":2,"q":"Computer-assisted education uses computers and software to assist education and/or what?","c":["Training","Project closing only","Payroll deletion","Hardware selling"],"a":0},{"s":2,"q":"Bioinformatics uses programming and software development to build enormous datasets of what kind of information?","c":["Biological information","Project budgets only","Gantt chart colors","Keyboard models"],"a":0},{"s":2,"q":"In today's hyper-connected world, what is no longer optional for individuals or nations?","c":["Data protection","Ignoring security","Removing networks","Avoiding all software"],"a":0},{"s":3,"q":"Which statement best describes Agile software development?","c":["Development follows a fixed sequence with no changes","Requirements and solutions evolve through collaboration","Documentation must be completed before development begins","Customers participate only after the product is completed"],"a":1},{"s":3,"q":"Which of the following is one of the Agile Development Values?","c":["Processes and tools over individuals and interactions","Contract negotiation over customer collaboration","Working software over comprehensive documentation","Following a plan over responding to change"],"a":2},{"s":3,"q":"According to Agile principles, what is the primary measure of progress?","c":["Completed documentation","Working software","Number of meetings","Project budget"],"a":1},{"s":3,"q":"Which characteristic distinguishes Agile from the Waterfall model?","c":["Agile follows only one development phase.","Agile discourages customer involvement.","Agile uses an incremental and iterative approach.","Agile requires all requirements to remain unchanged."],"a":2},{"s":3,"q":"Agile encourages teams to respond to changing requirements:","c":["Only before development starts","Only during planning","Even late in development","Never after requirements are approved"],"a":2},{"s":3,"q":"Which Agile methodology focuses primarily on people and their interactions rather than processes and tools?","c":["DSDM","Crystal Methodology","FDD","Waterfall"],"a":1},{"s":3,"q":"Who developed the Crystal Methodology?","c":["Kent Beck","Alistair Cockburn","Ken Schwaber","Mary Poppendieck"],"a":1},{"s":3,"q":"Which sequence correctly represents the three phases of Crystal Methodology?","c":["Planning, Coding, Testing","Analysis, Design, Deployment","Chartering, Cyclic Delivery, Wrap Up","Feasibility, Development, Maintenance"],"a":2},{"s":3,"q":"Agile emphasizes individuals and interactions over processes and tools.","c":["True","False"],"a":0},{"s":3,"q":"Agile considers comprehensive documentation more important than working software.","c":["True","False"],"a":1},{"s":3,"q":"Agile advocates adaptive planning, evolutionary development, early delivery, continual improvement, and what kind of response to change?","c":["Rapid and flexible response","No response","Delayed response only","Contract-only response"],"a":0},{"s":3,"q":"Which methodology is identified as a type of methodology under Agile?","c":["Scrum","Waterfall","Closed System","TPS"],"a":0},{"s":3,"q":"Which Agile value is paired against contract negotiation?","c":["Customer Collaboration","Processes and tools","Comprehensive documentation","Following a plan"],"a":0},{"s":3,"q":"Which Agile value is paired against following a plan?","c":["Responding to Change","Contract negotiation","Comprehensive documentation","Processes and tools"],"a":0},{"s":3,"q":"Why does Agile still value documentation?","c":["It helps people understand how software is built and how to use it.","It replaces the software product.","It prevents customer collaboration.","It removes the need for testing."],"a":0},{"s":3,"q":"Agile breaks product development work into small increments to minimize what?","c":["Up-front planning and design","Customer feedback","Working software","Iteration reviews"],"a":0},{"s":3,"q":"At the end of an Agile iteration, what is demonstrated to stakeholders?","c":["A working product","Only a contract","Only a budget sheet","A cancelled plan"],"a":0},{"s":3,"q":"Which function is included in Agile product development according to the module?","c":["Testing","Payroll only","Data deletion","Hardware repair only"],"a":0},{"s":3,"q":"In the Agile vs Waterfall comparison, how does Waterfall development flow?","c":["Sequentially from start point to end point","Only in random cycles","Without phases","Only through daily scrums"],"a":0},{"s":3,"q":"In Agile, when can errors be fixed according to the comparison table?","c":["In the middle of the project","Only at the end","Never","Only before planning"],"a":0},{"s":3,"q":"In Waterfall, when is user acceptance performed?","c":["At the end of the project","At the end of every sprint","Before requirements","Every morning"],"a":0},{"s":3,"q":"Scrum is designed for teams of what size according to the module?","c":["Ten or fewer members","At least 100 members","Only one member","Unlimited members only"],"a":0},{"s":3,"q":"In Scrum, timeboxed iterations are called:","c":["Sprints","Contracts","Waterfalls","Tickets only"],"a":0},{"s":3,"q":"Daily scrums are time-boxed to how long?","c":["15 minutes","2 hours","1 month","4 hours"],"a":0},{"s":3,"q":"Which benefit is listed for Scrum methodology?","c":["Flexibility and adaptability","Higher costs only","No customer satisfaction","No quality improvement"],"a":0},{"s":3,"q":"Which role facilitates the scrum development process and enforces scrum rules?","c":["Scrum Master","Product Owner","Stakeholder only","End user only"],"a":0},{"s":3,"q":"Which Scrum role represents stakeholders and administers the scrum backlog?","c":["Product Owner","Scrum Master","Development Team","Waterfall Manager"],"a":0},{"s":3,"q":"The scrum development team is self-organized and usually has how many individuals?","c":["Three to ten","One hundred to two hundred","Only two","Unlimited"],"a":0},{"s":3,"q":"Which Scrum event establishes a sprint goal and required product backlog items?","c":["Sprint Planning","Sprint Review","Sprint Retrospective","Backlog Refinement"],"a":0},{"s":3,"q":"For a two-week sprint, sprint planning should maintain what duration?","c":["Four hours","15 minutes","One-and-a-half hours","Two days"],"a":0},{"s":3,"q":"Which question is typically asked during the daily scrum?","c":["What did I complete yesterday that contributed to the sprint goal?","What is the final contract price?","Why should we stop communicating?","How do we remove all testing?"],"a":0},{"s":3,"q":"At the sprint review, incomplete work:","c":["Cannot be demonstrated","Must always be demonstrated","Replaces completed work","Cancels the sprint"],"a":0},{"s":3,"q":"At the sprint retrospective, the team reflects on the past sprint and identifies what?","c":["Continuous process improvement actions","Only the budget","Only employee salaries","A final contract"],"a":0},{"s":3,"q":"Backlog refinement was formerly called:","c":["Grooming","Closing","Contract closure","Waterfalling"],"a":0},{"s":3,"q":"Crystal method focuses primarily on people and their interactions rather than what?","c":["Processes and tools","Customers and users","Communication and skills","Project outcomes"],"a":0},{"s":3,"q":"Alistair Cockburn believed the biggest impact on project outcome came from people's skills, talents, and what?","c":["How they communicate","How many contracts they sign","How much documentation replaces software","How long they avoid users"],"a":0},{"s":3,"q":"In Crystal Methodology, which phase includes creating a development team, preliminary feasibility analysis, initial planning, and fine-tuning the methodology?","c":["Chartering","Cyclic Delivery","Wrap Up","Backlog Refinement"],"a":0},{"s":3,"q":"In Crystal Methodology, the main development phase consists of two or more delivery cycles. Which phase is this?","c":["Cyclic Delivery","Chartering","Wrap Up","Implementation"],"a":0},{"s":3,"q":"In Crystal Methodology, deployment into the user environment and post-deployment reviews happen during which phase?","c":["Wrap Up","Chartering","Cyclic Delivery","Planning"],"a":0},{"s":3,"q":"DSDM requires users to be involved actively and gives teams the power to:","c":["Make decisions","Avoid delivery","Remove requirements","Skip users"],"a":0},{"s":3,"q":"In DSDM, frequent delivery of product becomes the active:","c":["Focus","Obstacle","Replacement for users","Budget only"],"a":0},{"s":3,"q":"Timeboxing completes a project incrementally by splitting it into portions with fixed budget and what?","c":["Delivery date","Unlimited time","No requirements","Random scope"],"a":0},{"s":3,"q":"MoSCoW stands for Must have, Should have, Could have, and:","c":["Won't have","Will test","Waterfall only","Work hard"],"a":0},{"s":3,"q":"Prototyping enables early discovery of shortcomings and allows future users to:","c":["Test-drive the system","Avoid the system","Skip feedback","Delete requirements"],"a":0},{"s":3,"q":"Which is a DSDM phase listed in the module?","c":["Feasibility Study","Sprint Retrospective","Daily Scrum","Story Cardboard"],"a":0},{"s":3,"q":"Feature Driven Development is focused around designing and building:","c":["Features","Contracts only","Meeting notes","Hardware cables"],"a":0},{"s":3,"q":"Which is a Feature Driven Development practice listed in the module?","c":["Component/Class Ownership","Daily Scrum","MoSCoW only","Pilot Launch"],"a":0},{"s":3,"q":"Lean software development is adapted from what system?","c":["Toyota Production System","Waterfall Model","PERT Chart","Executive Information System"],"a":0},{"s":3,"q":"Lean software development is based on the principle:","c":["Just in time production","Documentation over software","No user involvement","One final delivery only"],"a":0},{"s":3,"q":"Which is one of the seven Lean principles listed in the module?","c":["Eliminating Waste","Avoiding learning","Late delivery only","Ignoring the team"],"a":0},{"s":3,"q":"Lean says software value is measured in fitness for use and not in:","c":["Conformance to requirements","Customer feedback","Iterations","Learning"],"a":0},{"s":3,"q":"Which Lean principle delays decisions until they can be made based on facts?","c":["Defer Commitment","Early Delivery","Building Integrity","Eliminating Waste"],"a":0},{"s":3,"q":"Extreme Programming is helpful when customer demands or requirements are:","c":["Constantly changing","Completely absent","Forbidden","Always fixed forever"],"a":0},{"s":3,"q":"XP advocates frequent releases in short development cycles to improve productivity and create a checkpoint for:","c":["Customer requirements","Removing all tests","Avoiding feedback","Skipping code"],"a":0},{"s":3,"q":"In XP, which phase includes capturing and prioritizing stories in the Parking lot?","c":["Analysis","Planning","Execution","Closure"],"a":0},{"s":3,"q":"In XP, which phase includes coding, unit testing, manual test execution, and defect report generation?","c":["Execution","Design","Planning","Closure"],"a":0},{"s":3,"q":"In XP, which phase includes pilot launch, training, production launch, and production support?","c":["Closure","Wrapping","Design","Analysis"],"a":0},{"s":3,"q":"Story Cardboard is a traditional way of collecting stories on a board in the form of:","c":["Stick notes","Contracts","Database tables only","Gantt bars only"],"a":0},{"s":4,"q":"What is a model in systems development?","c":["A complete copy of an existing system","A simplified description of a system","A collection of programming codes","A list of hardware components"],"a":1},{"s":4,"q":"What does systems modeling use to conceptualize and construct systems?","c":["Models and diagrams","Programming languages only","Financial statements","Marketing plans"],"a":0},{"s":4,"q":"Which modeling approach represents the functions, activities, and operations within a system?","c":["Enterprise modeling","Data modeling","Functional modeling","Financial modeling"],"a":2},{"s":4,"q":"In functional modeling, which element illustrates the transformation of input into output?","c":["Process","Data store","External entity","Flow line"],"a":0},{"s":4,"q":"What does a Functional Flow Block Diagram primarily present?","c":["Database table relationships","Time-sequenced functional activities","Hardware prices","Employee records"],"a":1},{"s":4,"q":"What is system architecture?","c":["A list of users who can access a system","A conceptual model of a system's structure and behavior","A financial plan for system development","A collection of programming errors"],"a":1},{"s":4,"q":"What is the primary purpose of Business Process Modeling?","c":["To identify computer specifications","To represent, analyze, and improve organizational processes","To determine employee salaries","To install software applications"],"a":1},{"s":4,"q":"Which type of business process creates the organization's primary value stream?","c":["Management process","Supporting process","Operational process","Documentation process"],"a":2},{"s":4,"q":"Which of the following is an example of a supporting process?","c":["Strategic management","Product manufacturing","Marketing and sales","Recruitment and technical support"],"a":3},{"s":4,"q":"What is the purpose of Business Process Model and Notation (BPMN)?","c":["To provide a graphical notation for business processes","To identify computer hardware","To calculate software costs","To create database records"],"a":0},{"s":4,"q":"Modeling a system means identifying its characteristics, states or statuses, and what else using a notation?","c":["Behavior","Salary","Advertising","Keyboard layout"],"a":0},{"s":4,"q":"Systems modeling is described as an interdisciplinary study used in business and what other development area?","c":["IT development","Food service only","Sports training","Music production"],"a":0},{"s":4,"q":"Which is one of the modeling approaches listed in the module?","c":["Enterprise Modeling","Payroll Modeling","Color Modeling","Keyboard Modeling"],"a":0},{"s":4,"q":"Functional modeling helps assist with discovery of what needs?","c":["Information needs","Hardware prices","Employee birthdays","Marketing slogans"],"a":0},{"s":4,"q":"A functional modeling perspective concentrates on describing what kind of process?","c":["Dynamic process","Static salary process","Manual-only process","Financial-only process"],"a":0},{"s":4,"q":"In functional modeling, what symbol usually denotes a store?","c":["A rectangle with the right side open","A triangle","A cloud only","A double circle only"],"a":0},{"s":4,"q":"In functional modeling, what represents movement of data or material in the process?","c":["Flow","External entity","Store","Architecture"],"a":0},{"s":4,"q":"An external entity is external to the modeled system but does what?","c":["Interacts with it","Deletes it","Replaces every process","Stores all code"],"a":0},{"s":4,"q":"A functional block diagram describes the functions and what of a system?","c":["Interrelationships","Salaries","Marketing plans","Employee benefits"],"a":0},{"s":4,"q":"In a functional block diagram, input and output elements of a block are pictured with:","c":["Lines","Stars","Pie charts","Tables only"],"a":0},{"s":4,"q":"FFBDs are used to define detailed operational and support sequences for systems and also processes in what activity?","c":["Developing and producing systems","Hiring staff only","Marketing campaigns only","Printing reports only"],"a":0},{"s":4,"q":"In a system context, FFBD functional flow steps may include hardware, software, personnel, facilities, and/or:","c":["Procedures","Salaries","Advertisements","Furniture prices"],"a":0},{"s":4,"q":"A system architecture can consist of system components and what else that work together to implement the overall system?","c":["Sub-systems","Unrelated files","Only users","Only contracts"],"a":0},{"s":4,"q":"A common business objective of BPM is to increase process speed or reduce what?","c":["Cycle time","User access","All documentation","All diagrams"],"a":0},{"s":4,"q":"A business model represents core aspects of a business, including purpose, offerings, strategies, infrastructure, organizational structures, trading practices, and:","c":["Operational processes and policies","Keyboard shortcuts","Personal hobbies","Weather reports"],"a":0},{"s":4,"q":"Which business process governs system operation including corporate governance and strategic management?","c":["Management Process","Operational Process","Supporting Process","Documentation Process"],"a":0},{"s":4,"q":"Operational processes create primary value streams for purchasing, manufacturing, marketing, and:","c":["Sales","Recruitment","Technical support","Accounting only"],"a":0},{"s":4,"q":"BPMN specifies business processes in what kind of diagram?","c":["Business Process Diagram","Payroll Diagram","Hardware Diagram","Salary Chart"],"a":0},{"s":4,"q":"BPMN aims to support both technical users and what other users?","c":["Business users","Only programmers","Only accountants","Only customers"],"a":0},{"s":4,"q":"Enterprise modeling is an abstract representation of the structure, processes, information, and resources of what?","c":["An identifiable business, government body, or large organization","Only one file","Only a computer mouse","A personal schedule only"],"a":0},{"s":4,"q":"Data modeling defines business requirements for a:","c":["Database","Keyboard","Printer","Meeting room"],"a":0},{"s":4,"q":"A data model normally consists of entity types, attributes, relationships, integrity rules, and:","c":["Definitions of those objects","Employee photos","Marketing slogans","Only hardware costs"],"a":0},{"s":4,"q":"Which is an example of a design diagram listed in the module?","c":["Data flow diagram","Budget receipt","Social media post","Hardware invoice"],"a":0},{"s":4,"q":"Design diagrams serve as a communications tool by providing what kind of medium for complex plans or problem solutions?","c":["Concrete, visual medium","Hidden verbal-only medium","Audio-only medium","Financial-only medium"],"a":0},{"s":4,"q":"Design diagrams provide an overview by showing important elements and relationships free of what?","c":["Extraneous details","All labels","All processes","All relationships"],"a":0},{"s":4,"q":"Design diagrams facilitate troubleshooting because they serve as a blueprint of what?","c":["The inner workings of a system","Employee salaries","Advertising plans","Printer settings"],"a":0},{"s":4,"q":"A Data Flow Diagram is a graphic illustration showing the flow of data and what within a system?","c":["Logic","Color","Salary","Furniture"],"a":0},{"s":4,"q":"In a DFD, rectangles denote input and output elements called:","c":["Entities","Processes","Data stores","Flow lines"],"a":0},{"s":4,"q":"In a DFD, activities and operations are represented by a rounded rectangle or sometimes a:","c":["Circle","Triangle","Star","Hexagon only"],"a":0},{"s":4,"q":"In a DFD, data flow or flow lines are represented by:","c":["An arrow","An open rectangle","A rounded rectangle only","A table"],"a":0},{"s":4,"q":"In a DFD, data stores are represented by:","c":["An open rectangle","A triangle","A circle only","A closed diamond"],"a":0},{"s":4,"q":"Which DFD guideline says not to mix different levels of detail on one chart?","c":["Draw several DFDs, each with a different level of detail.","Never label symbols.","Use every notation at once.","Avoid desk checking."],"a":0},{"s":4,"q":"Which DFD guideline says to select one notation and use it consistently?","c":["Use either Gane and Sarson or Yourdon and DeMarco notation.","Use all symbols randomly.","Use no symbols.","Use only flowchart notation."],"a":0},{"s":4,"q":"What should be done to all DFD symbols and connectors?","c":["Name and label them","Erase them","Leave them blank","Make them all identical without labels"],"a":0},{"s":4,"q":"System requirements are the required specifications a device must have in order to use certain:","c":["Hardware or software","Marketing plans","Employee schedules","Office rules only"],"a":0},{"s":4,"q":"Most software defines which two sets of system requirements?","c":["Minimum and recommended","Internal and external","Manual and automated","Business and personal"],"a":0},{"s":4,"q":"Which is a common software system requirement listed in the module?","c":["Minimum system memory (RAM)","Employee salary","Marketing slogan","Customer age"],"a":0},{"s":4,"q":"Which is a common hardware system requirement listed in the module?","c":["Available ports","Code comments","Meeting notes","Payroll deductions"],"a":0},{"s":4,"q":"A video game may function with minimum CPU and GPU, but it performs better with:","c":["Recommended hardware","No hardware","Only documentation","No operating system"],"a":0},{"s":4,"q":"Which system requirements are described as not flexible?","c":["Operating system and disk space required for installation","CPU, GPU, and RAM only","User preferences only","Screen brightness"],"a":0},{"s":4,"q":"Requirements analysis includes investigation, scoping, and definition of what?","c":["A new or altered system","A final advertisement","A social media account","A salary plan only"],"a":0},{"s":4,"q":"The first activity in requirements analysis is to do the:","c":["Preliminary investigation","Production launch","Final exam","Sprint retrospective"],"a":0},{"s":4,"q":"During preliminary investigation, what activity is very important?","c":["Data collecting","Final deployment","Marketing only","Hiring only"],"a":0},{"s":4,"q":"Who helps identify the needs or requirements of a client during requirements analysis?","c":["Requirements engineers and business analysts","Customers only","Recruiters only","Graphic designers only"],"a":0},{"s":4,"q":"Which fact-finding technique lets analysts collect information from potential users about the current system?","c":["Interviews","Data stores","BPMN","FFBD"],"a":0},{"s":4,"q":"Which fact-finding technique uses reports, bills, policy manuals, regulations, and standard operating procedures?","c":["Record inspections or reviews","Observation","Open-ended questionnaires","Timeboxing"],"a":0},{"s":4,"q":"Which fact-finding technique can collect data from large groups?","c":["Questionnaires","BPMN","System architecture","Data store"],"a":0},{"s":4,"q":"Open-ended questionnaires are qualitative because respondents answer:","c":["In their own words","Only with prescribed answers","Only yes or no","Only with numbers"],"a":0},{"s":4,"q":"Closed-ended questionnaires use prescribed answers and generate what kind of results?","c":["Quantitative results","No results","Only diagrams","Only interviews"],"a":0},{"s":4,"q":"Which fact-finding technique requires analysts to identify the right information, person, and place?","c":["Observation","Record inspection","BPMN","Functional block diagram"],"a":0},{"s":4,"q":"Which advanced fact-finding technique obtains information from published materials or documents to check and verify facts?","c":["Research","Interview","Data flow","Timeboxing"],"a":0}];
+
+const KEYS = ["A","B","C","D","E"];
+const stage = document.getElementById("stage");
+let opts = {set:"all", shuffleQ:true, shuffleC:true, nav:true};
+let deck = [], at = 0;
+
+function pool(){
+  if(opts.set!=="all") return BANK.filter(q=>q.s===+opts.set);
+  return BANK.slice();
+}
+function shuffled(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function buildDeck(list){
+  const qs = opts.shuffleQ ? shuffled(list) : list.slice();
+  deck = qs.map(q=>({ref:q, order:((opts.shuffleC&&!isTF(q))?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i)), picked:null, skipped:false, tempPicks:[]}));
+  at=0;
+}
+const isTF = q => q.c.length===2 && q.c[0]==="True" && q.c[1]==="False";
+const isMulti = q => Array.isArray(q.a);
+const isRightIdx = (q,i) => isMulti(q) ? q.a.includes(i) : i===q.a;
+function sameSet(a,b){
+  if(a.length!==b.length) return false;
+  const sa=[...a].sort((x,y)=>x-y), sb=[...b].sort((x,y)=>x-y);
+  return sa.every((v,i)=>v===sb[i]);
+}
+const isCorrectPick = (q,picked) => {
+  if(picked===null) return false;
+  return isMulti(q) ? sameSet(picked,q.a) : isRightIdx(q,picked);
+};
+function correctLabel(q){
+  if(!isMulti(q)) return esc(q.c[q.a]);
+  return q.a.map(i=>esc(q.c[i])).join(" &middot; ");
+}
+function pickedLabel(d){
+  if(!answered(d)) return "";
+  if(isMulti(d.ref)) return d.picked.map(i=>esc(d.ref.c[i])).join(" &middot; ");
+  return esc(d.ref.c[d.picked]);
+}
+const answered = it => it.picked !== null;
+const stateOf = it => answered(it) ? (isCorrectPick(it.ref,it.picked)?"ok":"no") : (it.skipped?"sk":"");
+const pendingIdx = () => deck.map((it,i)=>i).filter(i=>!answered(deck[i]));
+function nextPending(from){
+  for(let k=1;k<=deck.length;k++){const i=(from+k)%deck.length; if(!answered(deck[i])) return i;}
+  return -1;
+}
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  const cnt=k=>BANK.filter(q=>q.s===k).length;
+  stage.innerHTML = `
+    <div class="field">
+      <p class="lede">Which set do you want to drill?</p>
+      <p class="hint">Every unique question from Modules 1&ndash;4 and Formatives 1&ndash;4, duplicates removed.</p>
+      <div class="segs">
+        <button class="seg" type="button" data-set="all" aria-pressed="false">Full reviewer<span class="n">${BANK.length} questions</span></button>
+        ${Object.keys(SETS).map(Number).map(k=>`<button class="seg" type="button" data-set="${k}" aria-pressed="false">${SETS[k]}<span class="n">${cnt(k)} questions</span></button>`).join("")}
       </div>
-    </section>
+    </div>
+    <div class="field">
+      <p class="lede">Shuffling</p>
+      <label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}>
+        <span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+      <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}>
+        <span>Shuffle the choices<small>Stops you from remembering "the third one".</small></span></label>
+    </div>
+    <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+  const segs=[...stage.querySelectorAll(".seg")];
+  const paint=()=>segs.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===opts.set)));
+  segs.forEach(b=>b.addEventListener("click",()=>{opts.set=b.dataset.set;paint();}));
+  paint();
+  stage.querySelector("#sq").addEventListener("change",e=>opts.shuffleQ=e.target.checked);
+  stage.querySelector("#sc").addEventListener("change",e=>opts.shuffleC=e.target.checked);
+  stage.querySelector("#go").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+}
 
-    <section class="stats" aria-label="Quiz statistics">
-      <div class="stat"><strong id="score">0/0</strong><span>Score</span></div>
-      <div class="stat"><strong id="remaining">0</strong><span>Remaining</span></div>
-      <div class="stat"><strong id="knowCount">0</strong><span>Know</span></div>
-      <div class="stat"><strong id="dontKnowCount">0</strong><span>Don't know</span></div>
-    </section>
+/* ---------- question ---------- */
+function renderQuestion(){
+  const oldGrid=document.getElementById("grid"); const keepScroll=oldGrid?oldGrid.scrollTop:0;
+  const it=deck[at], q=it.ref, done=answered(it);
+  const right=deck.filter(d=>stateOf(d)==="ok").length;
+  const pend=pendingIdx().length;
 
-    <section class="controls" aria-label="Quiz controls">
-      <div class="group">
-        <select id="moduleSelect" aria-label="Module">
-          <option value="all">All modules</option>
-          <option value="module1">Module 1</option>
-          <option value="module2">Module 2</option>
-          <option value="module3">Module 3</option>
-          <option value="module4">Module 4</option>
-        </select>
-        <select id="mode" aria-label="Question mode">
-          <option value="all">All questions</option>
-          <option value="dontKnow">Retry: Don't know</option>
-          <option value="wrong">Retry: Wrong answers</option>
-          <option value="unanswered">Unanswered only</option>
-        </select>
-        <label class="toggle"><input type="checkbox" id="shuffleToggle"> Shuffle questions</label>
+  const meter=deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("");
+  const jumps=deck.map((d,i)=>
+    `<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}"
+      aria-label="Go to question ${i+1}">${i+1}</button>`).join("");
+
+  stage.innerHTML = `
+    <div class="meter">${meter}</div>
+    <div class="qhead">
+      <span>Question ${at+1} / ${deck.length}</span>
+      <span>${SETS[q.s]} &middot; ${right} correct</span>
+    </div>
+    <div class="grid" id="grid">
+      ${jumps}
+      <div class="legend">
+        <s><b style="background:var(--right)"></b>correct</s>
+        <s><b style="background:var(--wrong)"></b>wrong</s>
+        <s><b style="background:var(--skip)"></b>skipped</s>
+        <s><b style="background:var(--rule)"></b>not seen</s>
       </div>
-      <div class="group">
-        <input type="number" id="jumpInput" min="1" value="1" aria-label="Question number">
-        <button id="jumpBtn">Go to question</button>
-      </div>
-      <div class="group">
-        <button class="ghost" id="resetBtn">Reset progress</button>
-        <button class="primary" id="startBtn">Start quiz</button>
-      </div>
-    </section>
+    </div>
+    <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:``}</h2>
+    <div class="choices">
+      ${it.order.map((orig,pos)=>{
+        const picked = !done && isMulti(q) && it.tempPicks.includes(orig);
+        return `
+        <button class="choice${picked?" picked":""}" type="button" data-orig="${orig}" ${done?"disabled":""} ${isMulti(q)?`aria-pressed="${picked}"`:``}>
+          <span class="key">${KEYS[pos]}</span>
+          <span class="txt">${esc(q.c[orig])}</span>
+        </button>`;}).join("")}
+    </div>
+    ${(!done && isMulti(q))?`
+    <div class="btnrow">
+      <button class="btn sm" id="submitMulti" ${it.tempPicks.length!==q.a.length?"disabled":""}>Submit answer</button>
+      <span class="pending">${it.tempPicks.length} of ${q.a.length} selected</span>
+    </div>`:``}
+    <div class="verdict" id="verdict"></div>
+    <div class="nav">
+      <button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>
+      ${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}
+      <span class="spacer"></span>
+      <button class="btn sm" id="next">Next &#9654;</button>
+      <button class="btn ghost sm" id="finish">Finish &amp; score</button>
+      ${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:``}
+    </div>`;
 
-    <section class="question-nav" id="questionNav" aria-label="Question number navigation"></section>
+  const g=stage.querySelector("#grid"), cur=g&&g.querySelector(".jump.now");
+  if(g){ g.scrollTop=keepScroll; if(cur && (cur.offsetTop<g.scrollTop || cur.offsetTop+cur.offsetHeight>g.scrollTop+g.clientHeight)) g.scrollTop=Math.max(0,cur.offsetTop-g.clientHeight/2); }
+  stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();}));
+  stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();}});
+  const sk=stage.querySelector("#skip");
+  if(sk) sk.addEventListener("click",()=>{deck[at].skipped=true;goNext();});
+  stage.querySelector("#next").addEventListener("click",goNext);
+  stage.querySelector("#finish").addEventListener("click",renderScore);
 
-    <section class="quiz-panel" id="quizPanel"></section>
-    <p style="text-align: center;" class="foot">If you'd also like to study this material offline, <a href="#" onclick="downloadFile('https://raw.githubusercontent.com/akiiresu/reviewers-compilation/refs/heads/main/SoftEng%201%20-%20CS0025/CS0025_Vin-Midterm_Reviewer.html','CS0025_Vin-Midterm_Reviewer.html')">download it here.</a></p>
-    <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
-  </main>
-
-  <script>
-    const questions = [
-      {
-        source: "Formative 1",
-        prompt: "Which best describes software?",
-        options: [
-          "Only the physical components of a computer",
-          "A collection of computer programs, procedures, and documentation that perform tasks on a computer system",
-          "A device used to store information",
-          "A network connection between computers"
-        ],
-        answer: "A collection of computer programs, procedures, and documentation that perform tasks on a computer system",
-        note: "Software is more than the program alone; it includes procedures and documentation."
-      },
-      {
-        source: "Formative 1",
-        prompt: "Which type of software is a collection of programs written to service other programs?",
-        options: ["Application Software", "Embedded Software", "System Software", "Product-line Software"],
-        answer: "System Software",
-        note: "The module places system software under software categories."
-      },
-      {
-        source: "Formative 1",
-        prompt: "Which software category usually consists of stand-alone programs that solve specific business needs?",
-        options: ["Engineering Software", "System Software", "Application Software", "Embedded Software"],
-        answer: "Application Software",
-        note: "Application software focuses on specific user or business tasks."
-      },
-      {
-        source: "Formative 1",
-        prompt: "Which type of software resides within a product or system and implements control features?",
-        options: ["Web Application", "Product-line Software", "Application Software", "Embedded Software"],
-        answer: "Embedded Software",
-        note: "Embedded software is built into a product or system."
-      },
-      {
-        source: "Formative 1",
-        prompt: "What is a major characteristic of legacy software?",
-        options: [
-          "It was developed only for mobile devices.",
-          "It consists of older programs developed decades ago.",
-          "It cannot be modified.",
-          "It is always inexpensive to maintain."
-        ],
-        answer: "It consists of older programs developed decades ago.",
-        note: "The module separates legacy software as an important topic."
-      },
-      {
-        source: "Formative 1",
-        prompt: "Which is considered an “infant” software technology in the module?",
-        options: ["Legacy Software", "System Software", "WebApps", "Engineering Software"],
-        answer: "WebApps",
-        note: "The formative item identifies WebApps as the infant technology."
-      },
-      {
-        source: "Formative 1",
-        prompt: "What does cloud computing enable users to do?",
-        options: [
-          "Eliminate the need for computing devices",
-          "Use computing resources only from one location",
-          "Use only stand-alone applications",
-          "Share or use computing resources on a broad scale from anywhere or anytime"
-        ],
-        answer: "Share or use computing resources on a broad scale from anywhere or anytime",
-        note: "Cloud computing emphasizes broad access to shared computing resources."
-      },
-      {
-        source: "Formative 1",
-        prompt: "Software engineering is best described as:",
-        options: [
-          "The physical repair of computer hardware",
-          "The process of purchasing computer programs",
-          "A process, collection of methods, and tools for building high-quality computer software",
-          "The study of computer networks only"
-        ],
-        answer: "A process, collection of methods, and tools for building high-quality computer software",
-        note: "The module lists software engineering, process framework, methods, tools, and principles."
-      },
-      {
-        source: "Formative 1",
-        prompt: "Which two qualities are required in software engineering according to the module?",
-        options: ["Speed and complexity", "Cost and size", "Adaptability and agility", "Hardware and networking"],
-        answer: "Adaptability and agility",
-        note: "The formative item points to adaptability and agility."
-      },
-      {
-        source: "Formative 1",
-        prompt: "What is the foundation of software engineering as a layered technology?",
-        options: ["Tools", "Methods", "Programming", "Process"],
-        answer: "Process",
-        note: "In the layered view, process provides the foundation."
-      },
-      {
-        source: "Module 01",
-        prompt: "Which chapter objective says to identify and define two software types?",
-        options: [
-          "Identify and define legacy and infant software",
-          "Differentiate types of information systems",
-          "Apply the use of SDLC methodology",
-          "Define what is system software"
-        ],
-        answer: "Identify and define legacy and infant software",
-        note: "This wording appears under Chapter 01 objectives."
-      },
-      {
-        source: "Module 01",
-        prompt: "Which topic belongs to Chapter 01?",
-        options: ["IS Business Perspective and Key Components", "Software Process Framework", "SDLC Phases", "Types of Information Systems"],
-        answer: "Software Process Framework",
-        note: "Chapter 01 includes Software Process Framework."
-      },
-      {
-        source: "Module 01",
-        prompt: "Which topic belongs to Chapter 02?",
-        options: ["Software Guidelines", "Legacy Software", "Information Management", "Software Engineering Principles"],
-        answer: "Information Management",
-        note: "Chapter 02 includes Information Management."
-      },
-      {
-        source: "Module 01",
-        prompt: "Which topic belongs to Chapter 03?",
-        options: ["System Development Life Cycle vs. Software Development Life Cycle", "Infant Software", "Systems and Types", "Software Realities"],
-        answer: "System Development Life Cycle vs. Software Development Life Cycle",
-        note: "Chapter 03 includes this comparison topic."
-      },
-      {
-        source: "Module 01",
-        prompt: "Which chapter includes the objective: Define what is system software?",
-        options: ["Chapter 03", "Chapter 01", "Chapter 02", "References"],
-        answer: "Chapter 02",
-        note: "The objective appears on the Chapter 02 objective slide."
-      },
-      {
-        source: "Module 01",
-        prompt: "Which chapter includes the objective: Apply the use of SDLC methodology?",
-        options: ["Chapter 02", "Chapter 03", "Chapter 01", "References"],
-        answer: "Chapter 03",
-        note: "The objective appears on the Chapter 03 objective slide."
-      },
-      {
-        source: "Module 01",
-        prompt: "Which pair is directly compared in Chapter 03?",
-        options: [
-          "System Development Life Cycle and Software Development Life Cycle",
-          "Legacy Software and WebApps",
-          "Information Management and Software Guidelines",
-          "Tools and Programming"
-        ],
-        answer: "System Development Life Cycle and Software Development Life Cycle",
-        note: "The module states: Compare and contrast System Development Life Cycle and Software Development Life Cycle."
-      },
-      {
-        source: "Module 01",
-        prompt: "Which of the following is listed as a Chapter 01 topic?",
-        options: ["IS Activities and Resource Approach", "What is SDLC?", "What is Software?", "Types of Information Systems"],
-        answer: "What is Software?",
-        note: "Chapter 01 begins with What is Software?"
-      },
-      {
-        source: "Module 01",
-        prompt: "Which of the following is listed as a Chapter 02 topic?",
-        options: ["Information Systems", "Software Categories", "SDLC Phases", "Software Engineering Principles"],
-        answer: "Information Systems",
-        note: "Information Systems is listed under Chapter 02."
-      },
-      {
-        source: "Module 01",
-        prompt: "Which of the following is listed as a Chapter 03 topic?",
-        options: ["Legacy Software", "What is SDLC?", "Software Realities", "Information Management"],
-        answer: "What is SDLC?",
-        note: "What is SDLC? appears under Chapter 03."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "According to the module, software may be described as a set of instructions/codes or a computer program that, when executed, provides what?",
-        options: [
-          "Desired features, function and performance",
-          "Only physical storage space",
-          "A network connection",
-          "A hardware replacement"
-        ],
-        answer: "Desired features, function and performance",
-        note: "The module defines software by the features, function and performance it provides when executed."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which software category is described as a broad array of number crunching programs?",
-        options: ["Application Software", "Engineering/Scientific Software", "Embedded Software", "Product-line Software"],
-        answer: "Engineering/Scientific Software",
-        note: "Engineering/Scientific Software is described as number crunching programs."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which software category is designed to provide specific capabilities for use by many customers?",
-        options: ["Product-line Software", "System Software", "Embedded Software", "Artificial Intelligence Software"],
-        answer: "Product-line Software",
-        note: "Product-line Software provides specific capabilities for many customers."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which software category makes use of nonnumerical algorithms to solve complex problems?",
-        options: ["Web/Mobile Application", "Artificial Intelligence Software", "System Software", "Legacy Software"],
-        answer: "Artificial Intelligence Software",
-        note: "AI software uses nonnumerical algorithms for complex problems not amenable to computation or forward analysis."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "What is one stated reality about legacy software?",
-        options: [
-          "It is never modified after release.",
-          "It is always inexpensive to maintain.",
-          "It can be costly to maintain and risky to evolve.",
-          "It exists only as mobile applications."
-        ],
-        answer: "It can be costly to maintain and risky to evolve.",
-        note: "The module says legacy software can be costly to maintain and risky to evolve."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "WebApps are described as sophisticated computing tools that can provide stand-alone function and also integrate what?",
-        options: [
-          "Databases and corporate applications",
-          "Only hardware drivers",
-          "Printed manuals",
-          "Operating system kernels only"
-        ],
-        answer: "Databases and corporate applications",
-        note: "The module says WebApps can integrate databases and corporate applications."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Mobile applications take advantage of what part of the mobile platform?",
-        options: [
-          "Unique interaction mechanisms",
-          "Only server architecture",
-          "Desktop-only menus",
-          "Mainframe terminals"
-        ],
-        answer: "Unique interaction mechanisms",
-        note: "The module highlights the mobile platform's unique interaction mechanisms."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Software engineering is described as a systematic, disciplined and quantifiable approach to what?",
-        options: [
-          "Development, operation and maintenance of software",
-          "Hardware selling and inventory",
-          "Network cabling only",
-          "Manual filing of documents"
-        ],
-        answer: "Development, operation and maintenance of software",
-        note: "The module uses this exact scope for software engineering."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "In software engineering layered technology, what layer is the foundation?",
-        options: ["Tools", "Methods", "Process", "Programming language"],
-        answer: "Process",
-        note: "The module says the process layer is the foundation."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which layer sits at the base of the software engineering layer diagram?",
-        options: ["Quality Focus", "Process", "Methods", "Tools"],
-        answer: "Quality Focus",
-        note: "The diagram shows Quality Focus at the base, then Process, Methods, and Tools."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which term means a collection of activities, actions and tasks performed when a work product is to be created?",
-        options: ["Task", "Activity", "Process", "Deployment"],
-        answer: "Process",
-        note: "The module defines process as a collection of activities, actions and tasks."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which term strives to achieve a broad objective?",
-        options: ["Activity", "Action", "Task", "Feedback"],
-        answer: "Activity",
-        note: "Activity is the broad-objective level in the module."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which term is a set of tasks that produce a major work product?",
-        options: ["Process", "Activity", "Action", "Planning"],
-        answer: "Action",
-        note: "An action is made of tasks and produces a major work product."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which framework activity means communicating and collaborating with the user to understand objectives?",
-        options: ["Construction", "Modeling", "Communication", "Deployment"],
-        answer: "Communication",
-        note: "Communication is about collaborating with the user to understand objectives."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which framework activity is described as a sketch of the project to understand the big picture?",
-        options: ["Modeling", "Planning", "Construction", "Deployment"],
-        answer: "Modeling",
-        note: "The module connects modeling with blueprints or software requirements design."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which framework activity is the building of the software project?",
-        options: ["Communication", "Construction", "Planning", "Deployment"],
-        answer: "Construction",
-        note: "Construction is where the software project is built."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which software engineering principle means all design should be as simple as possible, but no simpler?",
-        options: ["Maintain the Vision", "Think!", "KISS", "Plan Ahead for Reuse"],
-        answer: "KISS",
-        note: "KISS stands for Keep It Simple, STUPID! in the module."
-      },
-      {
-        source: "M1S1 - Chapter 01",
-        prompt: "Which principle says never design yourself in the corner?",
-        options: ["Be open to the Future", "The Reason it all Exists", "What you produce, others Consume", "Maintain the Vision"],
-        answer: "Be open to the Future",
-        note: "The module pairs this principle with the warning to avoid designing yourself into a corner."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which best describes a system according to the module?",
-        options: [
-          "A set of interacting or interdependent entities forming an integrated whole",
-          "A single program with no related parts",
-          "Only a database file",
-          "A random list of unrelated activities"
-        ],
-        answer: "A set of interacting or interdependent entities forming an integrated whole",
-        note: "The module defines a system as interacting or interdependent entities forming an integrated whole."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which type of system has outputs or results that cannot be determined precisely but can only be guessed?",
-        options: ["Closed System", "Open System", "Database System", "Workflow System"],
-        answer: "Open System",
-        note: "Open or probabilistic systems cannot be predicted precisely."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which type of system can be predicted with certainty?",
-        options: ["Open System", "Probabilistic System", "Closed System", "Expert System"],
-        answer: "Closed System",
-        note: "Closed systems can be predicted with certainty."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "An information system collects, stores, processes, helps analyze, supports decision-making, and performs what other function in an organization?",
-        options: ["Control functions", "Physical repair", "Food ordering only", "Code compilation only"],
-        answer: "Control functions",
-        note: "The module includes control functions in its definition of an information system."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which IS activity starts with acquisition of raw data and introduces it to the system?",
-        options: ["Feedback", "Output", "Input", "Process"],
-        answer: "Input",
-        note: "Input starts with acquiring raw data."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which IS activity involves data processing, classifying, arranging, and calculating data?",
-        options: ["Input", "Process", "Output", "Feedback"],
-        answer: "Process",
-        note: "The module defines process as the data handling stage."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "In the IS activities, what does output mean?",
-        options: [
-          "The evaluation",
-          "The acquisition of raw data",
-          "The processed data becomes an information",
-          "The deletion of all records"
-        ],
-        answer: "The processed data becomes an information",
-        note: "Output is the processed data becoming information."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which of the following is listed as a characteristic of useful information?",
-        options: ["Less Uncertainty", "More confusion", "Delayed timing", "No decision-making value"],
-        answer: "Less Uncertainty",
-        note: "The module lists Accuracy, Timeliness, Less Uncertainty, surprise value, decision-making aid, and updated knowledge."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which component of an information system consists of raw facts and has external and internal sources?",
-        options: ["Information", "Database", "Data", "Process"],
-        answer: "Data",
-        note: "Data consists of raw facts."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which component is a collection of all relevant and related organized data in an integrated file?",
-        options: ["Database", "Feedback", "Output", "Workflow"],
-        answer: "Database",
-        note: "The module defines database as related organized data in an integrated file."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which component of IS generates the most useful information for decision-making?",
-        options: ["Data", "Database", "Process", "Input"],
-        answer: "Process",
-        note: "Process is the IS component that generates useful information for decision-making."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which type of information system is primarily used for record keeping and periodic report generation?",
-        options: ["DSS", "TPS", "EIS", "ERP"],
-        answer: "TPS",
-        note: "TPS is used for record keeping and scheduled, on-demand, or exception reports."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which of the following is an example of TPS from the module?",
-        options: ["Sales order entry", "Trend analysis", "Drill-down dashboard", "Strategic plan shaping"],
-        answer: "Sales order entry",
-        note: "The module gives sales order entry, payroll, and shipping records as TPS examples."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which information system has sophisticated data analysis tools for problem-specific decision-making?",
-        options: ["TPS", "DSS", "Workflow System", "Production Workflow System"],
-        answer: "DSS",
-        note: "DSS supports and assists problem-specific decision-making."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "According to the module, DSS helps in decision-making but does not do what?",
-        options: ["Use data", "Support managers", "Make any decision", "Assist problem-specific decisions"],
-        answer: "Make any decision",
-        note: "The module says DSS helps the decision-making process and does not make any decision."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which information system is also called the Executive Support System?",
-        options: ["EIS", "MIS", "TPS", "ERP"],
-        answer: "EIS",
-        note: "EIS is also called the Executive Support System."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which system provides management routine summaries of basic operations of the organization?",
-        options: ["MIS", "Expert System", "Workflow System", "DSS"],
-        answer: "MIS",
-        note: "MIS provides routine information to managers and decision makers."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which system directs, coordinates, and monitors an interrelated set of tasks arranged to form a business process?",
-        options: ["Workflow System", "Transaction Processing System", "Executive Information System", "Expert System"],
-        answer: "Workflow System",
-        note: "The module defines workflow system as rule-based management for business process tasks."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which type of workflow system focuses on tracking expense reports, travel requests, and messages?",
-        options: ["Production Workflow System", "Administrative Workflow System", "Ad-hoc Workflow System", "Expert System"],
-        answer: "Administrative Workflow System",
-        note: "Administrative workflow systems track expense reports, travel requests, and messages."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which type of workflow system deals with shaping products, sales proposals, and strategic plans?",
-        options: ["Administrative Workflow System", "Production Workflow System", "Ad-hoc Workflow System", "ERP"],
-        answer: "Ad-hoc Workflow System",
-        note: "Ad-hoc workflow is tied to shaping products, sales proposals, and strategic plans."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which system allows an organization to use integrated programs to manage vital business operations for a multi-site, global organization?",
-        options: ["ERP", "TPS", "EIS", "Closed System"],
-        answer: "ERP",
-        note: "ERP is business process management software for integrated company operations."
-      },
-      {
-        source: "M1S2 - Chapter 02",
-        prompt: "Which system can make suggestions and act like an expert in a particular field of an organization?",
-        options: ["Expert System", "MIS", "TPS", "Open System"],
-        answer: "Expert System",
-        note: "Expert systems act like an expert and use an extensive knowledge base."
-      },
-      {
-        source: "Formative 2",
-        prompt: "Which statement best defines a project?",
-        options: [
-          "A permanent activity performed every day",
-          "A temporary endeavor designed to produce a unique product or service",
-          "A routine activity without a specific goal",
-          "An activity with no beginning or end"
-        ],
-        answer: "A temporary endeavor designed to produce a unique product or service",
-        note: "A project is temporary and produces a unique product or service."
-      },
-      {
-        source: "Formative 2",
-        prompt: "Which of the following is NOT considered a project?",
-        options: [
-          "Creating a unique software application",
-          "Developing a new service",
-          "Performing routine activities",
-          "Constructing a new system"
-        ],
-        answer: "Performing routine activities",
-        note: "Routine activities are not considered projects because projects have unique goals."
-      },
-      {
-        source: "Formative 2",
-        prompt: "Project management is the practice of:",
-        options: [
-          "Programming software only",
-          "Initiating, planning, executing, controlling, and closing the work of a team",
-          "Hiring employees only",
-          "Performing routine activities without planning"
-        ],
-        answer: "Initiating, planning, executing, controlling, and closing the work of a team",
-        note: "The module defines project management through initiating, planning, executing, controlling, and closing work."
-      },
-      {
-        source: "Formative 2",
-        prompt: "What is the primary challenge of project management?",
-        options: [
-          "Avoiding project documentation",
-          "Increasing the number of team members",
-          "Achieving project goals within given constraints",
-          "Removing all project deadlines"
-        ],
-        answer: "Achieving project goals within given constraints",
-        note: "The primary challenge is achieving project goals within given constraints."
-      },
-      {
-        source: "Formative 2",
-        prompt: "Who is accountable for accomplishing the stated project objectives?",
-        options: ["Customer", "Project Manager", "Programmer only", "End user"],
-        answer: "Project Manager",
-        note: "The module says project managers are accountable for accomplishing the stated objectives."
-      },
-      {
-        source: "Formative 2",
-        prompt: "Who is known as the father of planning and control techniques and is famous for the Gantt Chart?",
-        options: ["Henri Fayol", "Henry Gantt", "Frederick Taylor", "Robert Pressman"],
-        answer: "Henry Gantt",
-        note: "Henry Gantt is associated with planning and control techniques and the Gantt Chart."
-      },
-      {
-        source: "Formative 2",
-        prompt: "In the Gantt Chart shown in the module, the red marks indicate the:",
-        options: [
-          "Shortest task",
-          "Completed tasks",
-          "Critical path or longest stretch of the project",
-          "Project budget"
-        ],
-        answer: "Critical path or longest stretch of the project",
-        note: "The module says the red marks indicate the critical path or longest stretch of the project."
-      },
-      {
-        source: "Formative 2",
-        prompt: "What does PERT stand for?",
-        options: [
-          "Project Evaluation and Resource Tracking",
-          "Program/Project Evaluation and Review Technique",
-          "Planning, Execution, Review, and Testing",
-          "Project Engineering and Research Technique"
-        ],
-        answer: "Program/Project Evaluation and Review Technique",
-        note: "PERT stands for Program/Project Evaluation and Review Technique."
-      },
-      {
-        source: "Formative 2",
-        prompt: "What is a PERT Chart primarily used for?",
-        options: [
-          "Designing computer interfaces",
-          "Scheduling, organizing, and coordinating project tasks",
-          "Writing program code",
-          "Creating financial statements"
-        ],
-        answer: "Scheduling, organizing, and coordinating project tasks",
-        note: "A PERT chart is used to schedule, organize, and coordinate project tasks."
-      },
-      {
-        source: "Formative 2",
-        prompt: "What does analysis mean in system analysis?",
-        options: [
-          "Combining separate elements into a whole",
-          "Breaking down a whole into parts",
-          "Removing all system components",
-          "Creating a final product immediately"
-        ],
-        answer: "Breaking down a whole into parts",
-        note: "Analysis means breaking down a whole into parts."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "A project is usually time-constrained and often constrained by what?",
-        options: ["Funding or staffing", "Color scheme only", "Keyboard layout", "Internet speed only"],
-        answer: "Funding or staffing",
-        note: "The module says projects are usually time-constrained and often constrained by funding or staffing."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which field is listed as an application area for projects?",
-        options: ["Computer Software (IT-based)", "Only social media browsing", "Only routine chores", "Unplanned daily tasks"],
-        answer: "Computer Software (IT-based)",
-        note: "The module lists Computer Software (IT-based), schools and universities, civil and industry, and military and state."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Project management aims to achieve specific goals and meet specific success criteria at what?",
-        options: ["The specified time", "Any random time", "Only after the budget is removed", "No particular time"],
-        answer: "The specified time",
-        note: "The module includes meeting success criteria at the specified time."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "According to the module, project management is not a tool or a person; it is a:",
-        options: ["Practice", "Database", "Programming language", "Routine chore"],
-        answer: "Practice",
-        note: "The slide states: Project Management is not a tool or a person, it's a practice."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Two forefathers of project management identified in the module are Henry Gantt and who?",
-        options: ["Henri Fayol", "Ian Sommerville", "Robert Pressman", "Frederick Brooks"],
-        answer: "Henri Fayol",
-        note: "The module names Henry Gantt and Henri Fayol."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "The 1950s marked the beginning of what era in project management?",
-        options: ["Modern project management era", "Mobile application era", "Legacy-only era", "No-documentation era"],
-        answer: "Modern project management era",
-        note: "The module says the 1950s marked the beginning of the modern project management era."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which two mathematical project-scheduling models were developed at that time?",
-        options: ["CPM and PERT", "TPS and MIS", "HTML and CSS", "ERP and EIS"],
-        answer: "CPM and PERT",
-        note: "The module lists Critical Path Method (CPM) and Program/Project Evaluation and Review Technique (PERT)."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "A PERT chart helps identify what for the total project?",
-        options: [
-          "The minimum time needed to complete it",
-          "The final color palette",
-          "The number of keyboards needed",
-          "The exact salary of every worker"
-        ],
-        answer: "The minimum time needed to complete it",
-        note: "PERT analyzes tasks and task time to identify the minimum project completion time."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Project management methods are often customized based on size, nature, and what?",
-        options: ["Industry", "Font style", "Screen brightness", "Random preference only"],
-        answer: "Industry",
-        note: "The module says project management is customized by size, nature, and industry."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which of the following belongs to the 4 P's in project management from the module?",
-        options: ["People", "Pixels", "Password", "Printer"],
-        answer: "People",
-        note: "The module lists Plan, Process, People, and Power."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "In the 4 P's, which one refers to lines of authority, decision-makers, organograms, and policies?",
-        options: ["Power", "Plan", "People", "Process"],
-        answer: "Power",
-        note: "Power covers authority, decision-makers, organograms, and implementation policies."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which item is one of the project management knowledge areas listed in the module?",
-        options: ["Risk management", "Color grading", "Typing speed", "Device charging"],
-        answer: "Risk management",
-        note: "The module lists areas such as Integration, Scope, Time, Cost, Quality, Communications, Risk management, and Stakeholder management."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which is a project management process group listed in the module?",
-        options: ["Initiation", "Decoration", "Compilation only", "Unplanned browsing"],
-        answer: "Initiation",
-        note: "The module lists Initiation, Planning and design, Execution, Monitoring and Controlling, and Closing or Completion."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "The initiating processes determine the nature and what of the project?",
-        options: ["Scope", "Font", "Logo only", "Operating system only"],
-        answer: "Scope",
-        note: "Initiating processes determine the nature and scope of the project."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "The main purpose of planning is to plan time, cost, and resources adequately to estimate work and manage what?",
-        options: ["Risk", "Brightness", "Keyboard shortcuts", "Wallpaper"],
-        answer: "Risk",
-        note: "Planning helps estimate work and manage risk during project execution."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which phase ensures that the project management plan's deliverables are executed accordingly?",
-        options: ["Execution", "Initiation", "Closing", "Documentation only"],
-        answer: "Execution",
-        note: "The implementation or execution phase carries out the deliverables."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Monitoring and controlling observes project execution so potential problems can be identified when?",
-        options: ["In a timely manner", "Only after the project ends", "Never", "Before any plan exists"],
-        answer: "In a timely manner",
-        note: "The module says monitoring and controlling identifies potential problems in a timely manner."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Closing includes formal acceptance and what of the project?",
-        options: ["Ending", "Restarting without review", "Deleting all files", "Avoiding documentation"],
-        answer: "Ending",
-        note: "Closing includes formal acceptance and ending of the project."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which closing activity means completing and settling each contract?",
-        options: ["Contract closure", "Project tracking", "Risk management", "Technical review"],
-        answer: "Contract closure",
-        note: "Contract closure completes and settles each contract."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "According to the module, documenting everything within a project is key to being:",
-        options: ["Successful", "Delayed", "More confusing", "Undocumented"],
-        answer: "Successful",
-        note: "The module says documenting everything is key to being successful."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which statement is a characteristic of projects from the module?",
-        options: [
-          "Projects should always have specific start and end dates.",
-          "Projects should never have goals.",
-          "Projects are permanent daily routines.",
-          "Projects produce no output."
-        ],
-        answer: "Projects should always have specific start and end dates.",
-        note: "The module lists specific start and end dates as a project characteristic."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which umbrella activity assesses risks that may affect the product outcome?",
-        options: ["Risk Management", "Quality Assurance", "Measurement", "Configuration Management"],
-        answer: "Risk Management",
-        note: "Risk Management assesses risks that may affect product outcome."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which umbrella activity conducts activities to ensure product quality?",
-        options: ["Quality Assurance", "Technical Review", "Reusability Management", "Project Tracking and Control"],
-        answer: "Quality Assurance",
-        note: "Quality Assurance ensures product quality."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which umbrella activity assesses the work product to identify errors beforehand?",
-        options: ["Technical Review", "Measurement", "Configuration Management", "Work Product Preparation and Production"],
-        answer: "Technical Review",
-        note: "Technical Review assesses work products to identify errors beforehand."
-      },
-      {
-        source: "M2S1 - Chapter 01",
-        prompt: "Which umbrella activity manages the effects of changes in the software process?",
-        options: ["Configuration Management", "Risk Management", "Quality Assurance", "Planning and design"],
-        answer: "Configuration Management",
-        note: "Configuration Management manages the effects of changes in the software process."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Synthesis means:",
-        options: [
-          "Combining separate elements or components to form a coherent whole",
-          "Breaking down a whole into parts",
-          "Removing all stakeholders",
-          "Avoiding requirements"
-        ],
-        answer: "Combining separate elements or components to form a coherent whole",
-        note: "The module contrasts analysis with synthesis."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "System analysis is the process of studying a procedure or business to identify its goals and purposes and create what?",
-        options: [
-          "Systems and procedures that will achieve them efficiently",
-          "A random list of unrelated ideas",
-          "Only final code without study",
-          "A permanent daily routine"
-        ],
-        answer: "Systems and procedures that will achieve them efficiently",
-        note: "The module defines system analysis as studying goals and creating efficient systems and procedures."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "System analysis is also a problem-solving technique that breaks down a system into what?",
-        options: ["Component pieces", "Marketing slogans", "Unrelated reports", "Finished products only"],
-        answer: "Component pieces",
-        note: "System analysis breaks a system into component pieces to study how they work and interact."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "The analysis phase involves gathering what for the system?",
-        options: ["Requirements", "Only colors", "Only salaries", "Only advertisements"],
-        answer: "Requirements",
-        note: "The analysis phase involves gathering requirements."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "In the analysis phase, business needs are studied with the intention of making business processes more:",
-        options: ["Efficient", "Decorative", "Random", "Expensive only"],
-        answer: "Efficient",
-        note: "The module says business needs are studied to make business processes more efficient."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "The system analysis phase focuses on what the system will do and views all stakeholders as viable sources of what?",
-        options: ["Information", "Hardware only", "Errors only", "Final payment"],
-        answer: "Information",
-        note: "The module says stakeholders are viable sources of information."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Which system analysis activity clearly defines objectives and requirements necessary to meet a project's requirements?",
-        options: ["Scope Definition", "Problem analysis", "Logical design", "Decision analysis"],
-        answer: "Scope Definition",
-        note: "Scope Definition clarifies objectives and requirements."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Which system analysis activity is the process of understanding problems and needs and arriving at solutions?",
-        options: ["Problem analysis", "Requirements analysis", "Logical design", "Decision analysis"],
-        answer: "Problem analysis",
-        note: "Problem analysis means understanding problems and needs and arriving at solutions."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Which system analysis activity determines the conditions that need to be met?",
-        options: ["Requirements analysis", "Scope Definition", "Decision analysis", "Logical design"],
-        answer: "Requirements analysis",
-        note: "Requirements analysis determines conditions that need to be met."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Which system analysis activity looks at the logical relationship among objects?",
-        options: ["Logical design", "Problem analysis", "Scope Definition", "Project close"],
-        answer: "Logical design",
-        note: "Logical design looks at logical relationships among objects."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Which system analysis activity involves making a final decision?",
-        options: ["Decision analysis", "Logical design", "Scope Definition", "Requirements analysis"],
-        answer: "Decision analysis",
-        note: "Decision analysis is making a final decision."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Which of the following is listed as a trend in computer science research?",
-        options: ["Artificial intelligence and robotics", "Routine filing only", "Manual payroll only", "No data protection"],
-        answer: "Artificial intelligence and robotics",
-        note: "The module lists AI and robotics, big data analytics, computer-assisted education, bioinformatics, and cyber security."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Which research trend is described as controversial, intriguing, and still in its early stages?",
-        options: ["Artificial intelligence", "Manual documentation", "Closed systems", "Project close"],
-        answer: "Artificial intelligence",
-        note: "The module describes AI as controversial, intriguing, and still early."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Big data analytics is everywhere as companies try to make better use of enormous datasets to personalize and improve what?",
-        options: ["Their services", "Their keyboard shortcuts", "Their office paint only", "Their routine chores"],
-        answer: "Their services",
-        note: "The module says big data helps companies personalize and improve services."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Computer-assisted education uses computers and software to assist education and/or what?",
-        options: ["Training", "Project closing only", "Payroll deletion", "Hardware selling"],
-        answer: "Training",
-        note: "Computer-assisted education assists education and/or training."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "Bioinformatics uses programming and software development to build enormous datasets of what kind of information?",
-        options: ["Biological information", "Project budgets only", "Gantt chart colors", "Keyboard models"],
-        answer: "Biological information",
-        note: "Bioinformatics builds large datasets of biological information."
-      },
-      {
-        source: "M2S2 - Chapter 02",
-        prompt: "In today's hyper-connected world, what is no longer optional for individuals or nations?",
-        options: ["Data protection", "Ignoring security", "Removing networks", "Avoiding all software"],
-        answer: "Data protection",
-        note: "The module states that data protection is no longer optional."
-      },
-      {
-        source: "Formative 3",
-        prompt: "Which statement best describes Agile software development?",
-        options: [
-          "Development follows a fixed sequence with no changes",
-          "Requirements and solutions evolve through collaboration",
-          "Documentation must be completed before development begins",
-          "Customers participate only after the product is completed"
-        ],
-        answer: "Requirements and solutions evolve through collaboration",
-        note: "Agile lets requirements and solutions evolve through collaboration."
-      },
-      {
-        source: "Formative 3",
-        prompt: "Which of the following is one of the Agile Development Values?",
-        options: [
-          "Processes and tools over individuals and interactions",
-          "Contract negotiation over customer collaboration",
-          "Working software over comprehensive documentation",
-          "Following a plan over responding to change"
-        ],
-        answer: "Working software over comprehensive documentation",
-        note: "Agile values working software over comprehensive documentation."
-      },
-      {
-        source: "Formative 3",
-        prompt: "According to Agile principles, what is the primary measure of progress?",
-        options: ["Completed documentation", "Working software", "Number of meetings", "Project budget"],
-        answer: "Working software",
-        note: "Working software is the primary measure of progress."
-      },
-      {
-        source: "Formative 3",
-        prompt: "Which characteristic distinguishes Agile from the Waterfall model?",
-        options: [
-          "Agile follows only one development phase.",
-          "Agile discourages customer involvement.",
-          "Agile uses an incremental and iterative approach.",
-          "Agile requires all requirements to remain unchanged."
-        ],
-        answer: "Agile uses an incremental and iterative approach.",
-        note: "Agile is incremental and iterative, unlike the sequential waterfall flow."
-      },
-      {
-        source: "Formative 3",
-        prompt: "Agile encourages teams to respond to changing requirements:",
-        options: ["Only before development starts", "Only during planning", "Even late in development", "Never after requirements are approved"],
-        answer: "Even late in development",
-        note: "Agile welcomes changing requirements, even late in development."
-      },
-      {
-        source: "Formative 3",
-        prompt: "Which Agile methodology focuses primarily on people and their interactions rather than processes and tools?",
-        options: ["DSDM", "Crystal Methodology", "FDD", "Waterfall"],
-        answer: "Crystal Methodology",
-        note: "Crystal focuses on people and interactions."
-      },
-      {
-        source: "Formative 3",
-        prompt: "Who developed the Crystal Methodology?",
-        options: ["Kent Beck", "Alistair Cockburn", "Ken Schwaber", "Mary Poppendieck"],
-        answer: "Alistair Cockburn",
-        note: "Crystal Methodology was developed by Alistair Cockburn."
-      },
-      {
-        source: "Formative 3",
-        prompt: "Which sequence correctly represents the three phases of Crystal Methodology?",
-        options: [
-          "Planning, Coding, Testing",
-          "Analysis, Design, Deployment",
-          "Chartering, Cyclic Delivery, Wrap Up",
-          "Feasibility, Development, Maintenance"
-        ],
-        answer: "Chartering, Cyclic Delivery, Wrap Up",
-        note: "The three Crystal phases are Chartering, Cyclic Delivery, and Wrap Up."
-      },
-      {
-        source: "Formative 3",
-        prompt: "Agile emphasizes individuals and interactions over processes and tools.",
-        options: ["True", "False"],
-        answer: "True",
-        note: "This is one of the Agile values."
-      },
-      {
-        source: "Formative 3",
-        prompt: "Agile considers comprehensive documentation more important than working software.",
-        options: ["True", "False"],
-        answer: "False",
-        note: "Agile values working software over comprehensive documentation."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Agile advocates adaptive planning, evolutionary development, early delivery, continual improvement, and what kind of response to change?",
-        options: ["Rapid and flexible response", "No response", "Delayed response only", "Contract-only response"],
-        answer: "Rapid and flexible response",
-        note: "The module says Agile encourages rapid and flexible response to change."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Which methodology is identified as a type of methodology under Agile?",
-        options: ["Scrum", "Waterfall", "Closed System", "TPS"],
-        answer: "Scrum",
-        note: "The module says Scrum is a type of methodology under Agile."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Which Agile value is paired against contract negotiation?",
-        options: ["Customer Collaboration", "Processes and tools", "Comprehensive documentation", "Following a plan"],
-        answer: "Customer Collaboration",
-        note: "Agile values customer collaboration over contract negotiation."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Which Agile value is paired against following a plan?",
-        options: ["Responding to Change", "Contract negotiation", "Comprehensive documentation", "Processes and tools"],
-        answer: "Responding to Change",
-        note: "Agile values responding to change over following a plan."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Why does Agile still value documentation?",
-        options: [
-          "It helps people understand how software is built and how to use it.",
-          "It replaces the software product.",
-          "It prevents customer collaboration.",
-          "It removes the need for testing."
-        ],
-        answer: "It helps people understand how software is built and how to use it.",
-        note: "The module says good documentation is useful, but the main point is to create software."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Agile breaks product development work into small increments to minimize what?",
-        options: ["Up-front planning and design", "Customer feedback", "Working software", "Iteration reviews"],
-        answer: "Up-front planning and design",
-        note: "The module says Agile breaks work into small increments that minimize up-front planning and design."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "At the end of an Agile iteration, what is demonstrated to stakeholders?",
-        options: ["A working product", "Only a contract", "Only a budget sheet", "A cancelled plan"],
-        answer: "A working product",
-        note: "A working product is demonstrated to minimize risk and adapt quickly."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Which function is included in Agile product development according to the module?",
-        options: ["Testing", "Payroll only", "Data deletion", "Hardware repair only"],
-        answer: "Testing",
-        note: "The module lists Planning, Analysis, Design, Coding, and Testing."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "In the Agile vs Waterfall comparison, how does Waterfall development flow?",
-        options: [
-          "Sequentially from start point to end point",
-          "Only in random cycles",
-          "Without phases",
-          "Only through daily scrums"
-        ],
-        answer: "Sequentially from start point to end point",
-        note: "The module describes Waterfall as sequential."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "In Agile, when can errors be fixed according to the comparison table?",
-        options: ["In the middle of the project", "Only at the end", "Never", "Only before planning"],
-        answer: "In the middle of the project",
-        note: "The module says errors can be fixed in the middle of the project."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "In Waterfall, when is user acceptance performed?",
-        options: ["At the end of the project", "At the end of every sprint", "Before requirements", "Every morning"],
-        answer: "At the end of the project",
-        note: "The comparison says user acceptance is performed at the end of the project in Waterfall."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Scrum is designed for teams of what size according to the module?",
-        options: ["Ten or fewer members", "At least 100 members", "Only one member", "Unlimited members only"],
-        answer: "Ten or fewer members",
-        note: "The module says Scrum is designed for teams of ten or fewer members."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "In Scrum, timeboxed iterations are called:",
-        options: ["Sprints", "Contracts", "Waterfalls", "Tickets only"],
-        answer: "Sprints",
-        note: "Scrum iterations are called sprints."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Daily scrums are time-boxed to how long?",
-        options: ["15 minutes", "2 hours", "1 month", "4 hours"],
-        answer: "15 minutes",
-        note: "The module says daily scrums are 15-minute time-boxed meetings."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Which benefit is listed for Scrum methodology?",
-        options: ["Flexibility and adaptability", "Higher costs only", "No customer satisfaction", "No quality improvement"],
-        answer: "Flexibility and adaptability",
-        note: "The module lists Scrum benefits including flexibility, lower costs, quality improvement, and customer satisfaction."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Which role facilitates the scrum development process and enforces scrum rules?",
-        options: ["Scrum Master", "Product Owner", "Stakeholder only", "End user only"],
-        answer: "Scrum Master",
-        note: "The scrum master facilitates the process and ensures scrum rules are applied."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Which Scrum role represents stakeholders and administers the scrum backlog?",
-        options: ["Product Owner", "Scrum Master", "Development Team", "Waterfall Manager"],
-        answer: "Product Owner",
-        note: "The product owner represents stakeholders and manages the backlog."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "The scrum development team is self-organized and usually has how many individuals?",
-        options: ["Three to ten", "One hundred to two hundred", "Only two", "Unlimited"],
-        answer: "Three to ten",
-        note: "The module describes the scrum team as three to ten individuals."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Which Scrum event establishes a sprint goal and required product backlog items?",
-        options: ["Sprint Planning", "Sprint Review", "Sprint Retrospective", "Backlog Refinement"],
-        answer: "Sprint Planning",
-        note: "Each sprint starts with sprint planning."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "For a two-week sprint, sprint planning should maintain what duration?",
-        options: ["Four hours", "15 minutes", "One-and-a-half hours", "Two days"],
-        answer: "Four hours",
-        note: "The module states four hours for a two-week sprint planning session."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Which question is typically asked during the daily scrum?",
-        options: [
-          "What did I complete yesterday that contributed to the sprint goal?",
-          "What is the final contract price?",
-          "Why should we stop communicating?",
-          "How do we remove all testing?"
-        ],
-        answer: "What did I complete yesterday that contributed to the sprint goal?",
-        note: "Daily scrum questions cover yesterday, today, and impediments."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "At the sprint review, incomplete work:",
-        options: ["Cannot be demonstrated", "Must always be demonstrated", "Replaces completed work", "Cancels the sprint"],
-        answer: "Cannot be demonstrated",
-        note: "The sprint review guidelines say incomplete work cannot be demonstrated."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "At the sprint retrospective, the team reflects on the past sprint and identifies what?",
-        options: ["Continuous process improvement actions", "Only the budget", "Only employee salaries", "A final contract"],
-        answer: "Continuous process improvement actions",
-        note: "The retrospective focuses on improvement actions."
-      },
-      {
-        source: "M3S1 - Chapter 01",
-        prompt: "Backlog refinement was formerly called:",
-        options: ["Grooming", "Closing", "Contract closure", "Waterfalling"],
-        answer: "Grooming",
-        note: "The module says backlog refinement was formerly called grooming."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Crystal method focuses primarily on people and their interactions rather than what?",
-        options: ["Processes and tools", "Customers and users", "Communication and skills", "Project outcomes"],
-        answer: "Processes and tools",
-        note: "Crystal focuses on people and interactions rather than processes and tools."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Alistair Cockburn believed the biggest impact on project outcome came from people's skills, talents, and what?",
-        options: ["How they communicate", "How many contracts they sign", "How much documentation replaces software", "How long they avoid users"],
-        answer: "How they communicate",
-        note: "The module highlights skills, talents, and communication."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "In Crystal Methodology, which phase includes creating a development team, preliminary feasibility analysis, initial planning, and fine-tuning the methodology?",
-        options: ["Chartering", "Cyclic Delivery", "Wrap Up", "Backlog Refinement"],
-        answer: "Chartering",
-        note: "Those activities are listed under Chartering."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "In Crystal Methodology, the main development phase consists of two or more delivery cycles. Which phase is this?",
-        options: ["Cyclic Delivery", "Chartering", "Wrap Up", "Implementation"],
-        answer: "Cyclic Delivery",
-        note: "Cyclic Delivery is the main development phase."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "In Crystal Methodology, deployment into the user environment and post-deployment reviews happen during which phase?",
-        options: ["Wrap Up", "Chartering", "Cyclic Delivery", "Planning"],
-        answer: "Wrap Up",
-        note: "Wrap Up includes deployment and post-deployment reviews/reflections."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "DSDM requires users to be involved actively and gives teams the power to:",
-        options: ["Make decisions", "Avoid delivery", "Remove requirements", "Skip users"],
-        answer: "Make decisions",
-        note: "The module says DSDM gives teams decision-making power."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "In DSDM, frequent delivery of product becomes the active:",
-        options: ["Focus", "Obstacle", "Replacement for users", "Budget only"],
-        answer: "Focus",
-        note: "Frequent product delivery is the active focus in DSDM."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Timeboxing completes a project incrementally by splitting it into portions with fixed budget and what?",
-        options: ["Delivery date", "Unlimited time", "No requirements", "Random scope"],
-        answer: "Delivery date",
-        note: "Each portion has a fixed budget and delivery date."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "MoSCoW stands for Must have, Should have, Could have, and:",
-        options: ["Won't have", "Will test", "Waterfall only", "Work hard"],
-        answer: "Won't have",
-        note: "MoSCoW is a prioritization technique for requirements."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Prototyping enables early discovery of shortcomings and allows future users to:",
-        options: ["Test-drive the system", "Avoid the system", "Skip feedback", "Delete requirements"],
-        answer: "Test-drive the system",
-        note: "Prototyping lets users test-drive the system early."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Which is a DSDM phase listed in the module?",
-        options: ["Feasibility Study", "Sprint Retrospective", "Daily Scrum", "Story Cardboard"],
-        answer: "Feasibility Study",
-        note: "DSDM phases include Pre-project, Feasibility Study, Business Study, iterations, Implementation, and Post-project."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Feature Driven Development is focused around designing and building:",
-        options: ["Features", "Contracts only", "Meeting notes", "Hardware cables"],
-        answer: "Features",
-        note: "FDD focuses on designing and building features."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Which is a Feature Driven Development practice listed in the module?",
-        options: ["Component/Class Ownership", "Daily Scrum", "MoSCoW only", "Pilot Launch"],
-        answer: "Component/Class Ownership",
-        note: "FDD practices include Domain Object Modeling, Development by feature, Component/Class Ownership, Feature Teams, and more."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Lean software development is adapted from what system?",
-        options: ["Toyota Production System", "Waterfall Model", "PERT Chart", "Executive Information System"],
-        answer: "Toyota Production System",
-        note: "Lean is adapted from the Toyota Production System."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Lean software development is based on the principle:",
-        options: ["Just in time production", "Documentation over software", "No user involvement", "One final delivery only"],
-        answer: "Just in time production",
-        note: "The module links Lean to just in time production."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Which is one of the seven Lean principles listed in the module?",
-        options: ["Eliminating Waste", "Avoiding learning", "Late delivery only", "Ignoring the team"],
-        answer: "Eliminating Waste",
-        note: "Lean principles include eliminating waste, amplifying learning, defer commitment, early delivery, empowering the team, building integrity, and optimizing the whole."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Lean says software value is measured in fitness for use and not in:",
-        options: ["Conformance to requirements", "Customer feedback", "Iterations", "Learning"],
-        answer: "Conformance to requirements",
-        note: "The module states software value is measured in fitness for use."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Which Lean principle delays decisions until they can be made based on facts?",
-        options: ["Defer Commitment", "Early Delivery", "Building Integrity", "Eliminating Waste"],
-        answer: "Defer Commitment",
-        note: "Defer Commitment delays decisions until they are based on facts."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Extreme Programming is helpful when customer demands or requirements are:",
-        options: ["Constantly changing", "Completely absent", "Forbidden", "Always fixed forever"],
-        answer: "Constantly changing",
-        note: "XP is useful when requirements constantly change or customers are unsure about functionality."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "XP advocates frequent releases in short development cycles to improve productivity and create a checkpoint for:",
-        options: ["Customer requirements", "Removing all tests", "Avoiding feedback", "Skipping code"],
-        answer: "Customer requirements",
-        note: "XP makes it easier to implement customer requirements through frequent releases."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "In XP, which phase includes capturing and prioritizing stories in the Parking lot?",
-        options: ["Analysis", "Planning", "Execution", "Closure"],
-        answer: "Analysis",
-        note: "The XP Analysis phase includes capturing and prioritizing stories in the Parking lot."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "In XP, which phase includes coding, unit testing, manual test execution, and defect report generation?",
-        options: ["Execution", "Design", "Planning", "Closure"],
-        answer: "Execution",
-        note: "Execution includes coding, unit testing, manual tests, defect reports, and reviews."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "In XP, which phase includes pilot launch, training, production launch, and production support?",
-        options: ["Closure", "Wrapping", "Design", "Analysis"],
-        answer: "Closure",
-        note: "Closure includes pilot launch, training, production launch, SLA assurance, SOA review, and production support."
-      },
-      {
-        source: "M3S2 - Chapter 02",
-        prompt: "Story Cardboard is a traditional way of collecting stories on a board in the form of:",
-        options: ["Stick notes", "Contracts", "Database tables only", "Gantt bars only"],
-        answer: "Stick notes",
-        note: "Story Cardboard tracks daily XP activities using stick notes."
-      },
-      {
-        source: "Formative 4",
-        prompt: "What is a model in systems development?",
-        options: [
-          "A complete copy of an existing system",
-          "A simplified description of a system",
-          "A collection of programming codes",
-          "A list of hardware components"
-        ],
-        answer: "A simplified description of a system",
-        note: "The module describes a model as a simplified description where details are removed systematically."
-      },
-      {
-        source: "Formative 4",
-        prompt: "What does systems modeling use to conceptualize and construct systems?",
-        options: ["Models and diagrams", "Programming languages only", "Financial statements", "Marketing plans"],
-        answer: "Models and diagrams",
-        note: "Systems modeling uses models or diagrams to conceptualize and construct systems."
-      },
-      {
-        source: "Formative 4",
-        prompt: "Which modeling approach represents the functions, activities, and operations within a system?",
-        options: ["Enterprise modeling", "Data modeling", "Functional modeling", "Financial modeling"],
-        answer: "Functional modeling",
-        note: "Functional modeling represents functions, activities, actions, processes, and operations."
-      },
-      {
-        source: "Formative 4",
-        prompt: "In functional modeling, which element illustrates the transformation of input into output?",
-        options: ["Process", "Data store", "External entity", "Flow line"],
-        answer: "Process",
-        note: "A process illustrates transformation from input to output."
-      },
-      {
-        source: "Formative 4",
-        prompt: "What does a Functional Flow Block Diagram primarily present?",
-        options: ["Database table relationships", "Time-sequenced functional activities", "Hardware prices", "Employee records"],
-        answer: "Time-sequenced functional activities",
-        note: "An FFBD is a multi-tier, time-sequenced, step-by-step flow diagram."
-      },
-      {
-        source: "Formative 4",
-        prompt: "What is system architecture?",
-        options: [
-          "A list of users who can access a system",
-          "A conceptual model of a system's structure and behavior",
-          "A financial plan for system development",
-          "A collection of programming errors"
-        ],
-        answer: "A conceptual model of a system's structure and behavior",
-        note: "System architecture defines structure, behavior, and more views of a system."
-      },
-      {
-        source: "Formative 4",
-        prompt: "What is the primary purpose of Business Process Modeling?",
-        options: [
-          "To identify computer specifications",
-          "To represent, analyze, and improve organizational processes",
-          "To determine employee salaries",
-          "To install software applications"
-        ],
-        answer: "To represent, analyze, and improve organizational processes",
-        note: "BPM represents processes so the current process may be analyzed, improved, and automated."
-      },
-      {
-        source: "Formative 4",
-        prompt: "Which type of business process creates the organization's primary value stream?",
-        options: ["Management process", "Supporting process", "Operational process", "Documentation process"],
-        answer: "Operational process",
-        note: "Operational processes constitute the core business and create the primary value stream."
-      },
-      {
-        source: "Formative 4",
-        prompt: "Which of the following is an example of a supporting process?",
-        options: ["Strategic management", "Product manufacturing", "Marketing and sales", "Recruitment and technical support"],
-        answer: "Recruitment and technical support",
-        note: "Supporting processes support core processes, such as accounting, recruitment, and technical support."
-      },
-      {
-        source: "Formative 4",
-        prompt: "What is the purpose of Business Process Model and Notation (BPMN)?",
-        options: [
-          "To provide a graphical notation for business processes",
-          "To identify computer hardware",
-          "To calculate software costs",
-          "To create database records"
-        ],
-        answer: "To provide a graphical notation for business processes",
-        note: "BPMN provides a graphical notation for specifying business processes."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Modeling a system means identifying its characteristics, states or statuses, and what else using a notation?",
-        options: ["Behavior", "Salary", "Advertising", "Keyboard layout"],
-        answer: "Behavior",
-        note: "The module says modeling identifies characteristics, states/statuses, and behavior."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Systems modeling is described as an interdisciplinary study used in business and what other development area?",
-        options: ["IT development", "Food service only", "Sports training", "Music production"],
-        answer: "IT development",
-        note: "The module says systems modeling is used in business and IT development."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Which is one of the modeling approaches listed in the module?",
-        options: ["Enterprise Modeling", "Payroll Modeling", "Color Modeling", "Keyboard Modeling"],
-        answer: "Enterprise Modeling",
-        note: "The module lists Functional Modeling, System Architecture, Business Process Modeling, and Enterprise Modeling."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Functional modeling helps assist with discovery of what needs?",
-        options: ["Information needs", "Hardware prices", "Employee birthdays", "Marketing slogans"],
-        answer: "Information needs",
-        note: "One purpose of functional modeling is to assist with discovery of information needs."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "A functional modeling perspective concentrates on describing what kind of process?",
-        options: ["Dynamic process", "Static salary process", "Manual-only process", "Financial-only process"],
-        answer: "Dynamic process",
-        note: "The functional perspective concentrates on describing the dynamic process."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "In functional modeling, what symbol usually denotes a store?",
-        options: ["A rectangle with the right side open", "A triangle", "A cloud only", "A double circle only"],
-        answer: "A rectangle with the right side open",
-        note: "The module says a store is denoted by a rectangle with usually the right side open."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "In functional modeling, what represents movement of data or material in the process?",
-        options: ["Flow", "External entity", "Store", "Architecture"],
-        answer: "Flow",
-        note: "Flow is movement of data or material, carried by arrows or flow-lines."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "An external entity is external to the modeled system but does what?",
-        options: ["Interacts with it", "Deletes it", "Replaces every process", "Stores all code"],
-        answer: "Interacts with it",
-        note: "External entities interact with the modeled system."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "A functional block diagram describes the functions and what of a system?",
-        options: ["Interrelationships", "Salaries", "Marketing plans", "Employee benefits"],
-        answer: "Interrelationships",
-        note: "A functional block diagram describes functions and interrelationships."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "In a functional block diagram, input and output elements of a block are pictured with:",
-        options: ["Lines", "Stars", "Pie charts", "Tables only"],
-        answer: "Lines",
-        note: "The module says inputs and outputs are pictured with lines."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "FFBDs are used to define detailed operational and support sequences for systems and also processes in what activity?",
-        options: ["Developing and producing systems", "Hiring staff only", "Marketing campaigns only", "Printing reports only"],
-        answer: "Developing and producing systems",
-        note: "The module says FFBDs define processes in developing and producing systems."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "In a system context, FFBD functional flow steps may include hardware, software, personnel, facilities, and/or:",
-        options: ["Procedures", "Salaries", "Advertisements", "Furniture prices"],
-        answer: "Procedures",
-        note: "The module lists hardware, software, personnel, facilities, and/or procedures."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "A system architecture can consist of system components and what else that work together to implement the overall system?",
-        options: ["Sub-systems", "Unrelated files", "Only users", "Only contracts"],
-        answer: "Sub-systems",
-        note: "System architecture can consist of components and sub-systems."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "A common business objective of BPM is to increase process speed or reduce what?",
-        options: ["Cycle time", "User access", "All documentation", "All diagrams"],
-        answer: "Cycle time",
-        note: "The module says BPM may aim to increase process speed or reduce cycle time."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "A business model represents core aspects of a business, including purpose, offerings, strategies, infrastructure, organizational structures, trading practices, and:",
-        options: ["Operational processes and policies", "Keyboard shortcuts", "Personal hobbies", "Weather reports"],
-        answer: "Operational processes and policies",
-        note: "Those are listed as core aspects represented by a business model."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Which business process governs system operation including corporate governance and strategic management?",
-        options: ["Management Process", "Operational Process", "Supporting Process", "Documentation Process"],
-        answer: "Management Process",
-        note: "Management processes govern system operation."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Operational processes create primary value streams for purchasing, manufacturing, marketing, and:",
-        options: ["Sales", "Recruitment", "Technical support", "Accounting only"],
-        answer: "Sales",
-        note: "The module lists purchasing, manufacturing, marketing, and sales."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "BPMN specifies business processes in what kind of diagram?",
-        options: ["Business Process Diagram", "Payroll Diagram", "Hardware Diagram", "Salary Chart"],
-        answer: "Business Process Diagram",
-        note: "BPMN specifies business processes in a Business Process Diagram."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "BPMN aims to support both technical users and what other users?",
-        options: ["Business users", "Only programmers", "Only accountants", "Only customers"],
-        answer: "Business users",
-        note: "BPMN provides notation intuitive to business users while supporting complex process semantics."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Enterprise modeling is an abstract representation of the structure, processes, information, and resources of what?",
-        options: ["An identifiable business, government body, or large organization", "Only one file", "Only a computer mouse", "A personal schedule only"],
-        answer: "An identifiable business, government body, or large organization",
-        note: "The module defines enterprise modeling at an organizational scale."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Data modeling defines business requirements for a:",
-        options: ["Database", "Keyboard", "Printer", "Meeting room"],
-        answer: "Database",
-        note: "Data modeling is a technique for defining business requirements for a database."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "A data model normally consists of entity types, attributes, relationships, integrity rules, and:",
-        options: ["Definitions of those objects", "Employee photos", "Marketing slogans", "Only hardware costs"],
-        answer: "Definitions of those objects",
-        note: "The module lists entity types, attributes, relationships, integrity rules, and definitions."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Which is an example of a design diagram listed in the module?",
-        options: ["Data flow diagram", "Budget receipt", "Social media post", "Hardware invoice"],
-        answer: "Data flow diagram",
-        note: "Design diagrams include data flow diagrams, structured charts, and decision trees."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Design diagrams serve as a communications tool by providing what kind of medium for complex plans or problem solutions?",
-        options: ["Concrete, visual medium", "Hidden verbal-only medium", "Audio-only medium", "Financial-only medium"],
-        answer: "Concrete, visual medium",
-        note: "The module says design diagrams communicate ideas through a concrete visual medium."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Design diagrams provide an overview by showing important elements and relationships free of what?",
-        options: ["Extraneous details", "All labels", "All processes", "All relationships"],
-        answer: "Extraneous details",
-        note: "They give a bird's-eye view of major steps and processes."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Design diagrams facilitate troubleshooting because they serve as a blueprint of what?",
-        options: ["The inner workings of a system", "Employee salaries", "Advertising plans", "Printer settings"],
-        answer: "The inner workings of a system",
-        note: "The module describes design diagrams as blueprints for diagnosing failures."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "A Data Flow Diagram is a graphic illustration showing the flow of data and what within a system?",
-        options: ["Logic", "Color", "Salary", "Furniture"],
-        answer: "Logic",
-        note: "A DFD shows the flow of data and logic within a system."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "In a DFD, rectangles denote input and output elements called:",
-        options: ["Entities", "Processes", "Data stores", "Flow lines"],
-        answer: "Entities",
-        note: "The module says rectangles denote input and output entities."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "In a DFD, activities and operations are represented by a rounded rectangle or sometimes a:",
-        options: ["Circle", "Triangle", "Star", "Hexagon only"],
-        answer: "Circle",
-        note: "DFD processes use rounded rectangles or sometimes circles."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "In a DFD, data flow or flow lines are represented by:",
-        options: ["An arrow", "An open rectangle", "A rounded rectangle only", "A table"],
-        answer: "An arrow",
-        note: "Data flow is represented by arrows."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "In a DFD, data stores are represented by:",
-        options: ["An open rectangle", "A triangle", "A circle only", "A closed diamond"],
-        answer: "An open rectangle",
-        note: "Data stores are represented by an open rectangle."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Which DFD guideline says not to mix different levels of detail on one chart?",
-        options: ["Draw several DFDs, each with a different level of detail.", "Never label symbols.", "Use every notation at once.", "Avoid desk checking."],
-        answer: "Draw several DFDs, each with a different level of detail.",
-        note: "The module says to avoid mixing levels of detail and draw separate diagrams."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "Which DFD guideline says to select one notation and use it consistently?",
-        options: ["Use either Gane and Sarson or Yourdon and DeMarco notation.", "Use all symbols randomly.", "Use no symbols.", "Use only flowchart notation."],
-        answer: "Use either Gane and Sarson or Yourdon and DeMarco notation.",
-        note: "The module says to choose one notation and stay consistent."
-      },
-      {
-        source: "M4S1 - Chapter 01",
-        prompt: "What should be done to all DFD symbols and connectors?",
-        options: ["Name and label them", "Erase them", "Leave them blank", "Make them all identical without labels"],
-        answer: "Name and label them",
-        note: "The module says to name and label all symbols and connectors."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "System requirements are the required specifications a device must have in order to use certain:",
-        options: ["Hardware or software", "Marketing plans", "Employee schedules", "Office rules only"],
-        answer: "Hardware or software",
-        note: "The module defines system requirements as specifications needed to use hardware or software."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Most software defines which two sets of system requirements?",
-        options: ["Minimum and recommended", "Internal and external", "Manual and automated", "Business and personal"],
-        answer: "Minimum and recommended",
-        note: "The module says most software defines minimum and recommended requirements."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Which is a common software system requirement listed in the module?",
-        options: ["Minimum system memory (RAM)", "Employee salary", "Marketing slogan", "Customer age"],
-        answer: "Minimum system memory (RAM)",
-        note: "The module lists RAM, storage, OS, CPU/GPU, and audio hardware."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Which is a common hardware system requirement listed in the module?",
-        options: ["Available ports", "Code comments", "Meeting notes", "Payroll deductions"],
-        answer: "Available ports",
-        note: "Hardware requirements include OS, ports, wireless connectivity, and minimum GPU."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "A video game may function with minimum CPU and GPU, but it performs better with:",
-        options: ["Recommended hardware", "No hardware", "Only documentation", "No operating system"],
-        answer: "Recommended hardware",
-        note: "Recommended hardware can improve graphics and faster frame rates."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Which system requirements are described as not flexible?",
-        options: ["Operating system and disk space required for installation", "CPU, GPU, and RAM only", "User preferences only", "Screen brightness"],
-        answer: "Operating system and disk space required for installation",
-        note: "OS and disk space are given as examples of requirements that are not flexible."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Requirements analysis includes investigation, scoping, and definition of what?",
-        options: ["A new or altered system", "A final advertisement", "A social media account", "A salary plan only"],
-        answer: "A new or altered system",
-        note: "The module defines requirements analysis around a new or altered system."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "The first activity in requirements analysis is to do the:",
-        options: ["Preliminary investigation", "Production launch", "Final exam", "Sprint retrospective"],
-        answer: "Preliminary investigation",
-        note: "The module says the first activity is preliminary investigation."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "During preliminary investigation, what activity is very important?",
-        options: ["Data collecting", "Final deployment", "Marketing only", "Hiring only"],
-        answer: "Data collecting",
-        note: "The module says data collecting is very important during preliminary investigation."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Who helps identify the needs or requirements of a client during requirements analysis?",
-        options: ["Requirements engineers and business analysts", "Customers only", "Recruiters only", "Graphic designers only"],
-        answer: "Requirements engineers and business analysts",
-        note: "The module mentions requirements engineers, business analysts, systems engineers, and software developers."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Which fact-finding technique lets analysts collect information from potential users about the current system?",
-        options: ["Interviews", "Data stores", "BPMN", "FFBD"],
-        answer: "Interviews",
-        note: "Interviews help analysts discover misunderstandings, unrealistic expectations, and problems."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Which fact-finding technique uses reports, bills, policy manuals, regulations, and standard operating procedures?",
-        options: ["Record inspections or reviews", "Observation", "Open-ended questionnaires", "Timeboxing"],
-        answer: "Record inspections or reviews",
-        note: "Records like reports and manuals help analysts understand the system."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Which fact-finding technique can collect data from large groups?",
-        options: ["Questionnaires", "BPMN", "System architecture", "Data store"],
-        answer: "Questionnaires",
-        note: "Questionnaires are used to collect data from large groups."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Open-ended questionnaires are qualitative because respondents answer:",
-        options: ["In their own words", "Only with prescribed answers", "Only yes or no", "Only with numbers"],
-        answer: "In their own words",
-        note: "Open-ended questionnaires capture feelings, opinions, and experiences in the respondent's own words."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Closed-ended questionnaires use prescribed answers and generate what kind of results?",
-        options: ["Quantitative results", "No results", "Only diagrams", "Only interviews"],
-        answer: "Quantitative results",
-        note: "Closed-ended questionnaires use selected responses and generate quantitative results."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Which fact-finding technique requires analysts to identify the right information, person, and place?",
-        options: ["Observation", "Record inspection", "BPMN", "Functional block diagram"],
-        answer: "Observation",
-        note: "Observation requires analysts to know what, who, and where to observe."
-      },
-      {
-        source: "M4S2 - Chapter 02",
-        prompt: "Which advanced fact-finding technique obtains information from published materials or documents to check and verify facts?",
-        options: ["Research", "Interview", "Data flow", "Timeboxing"],
-        answer: "Research",
-        note: "Research uses published materials or documents to verify facts."
-      }
-    ];
-
-    const state = {
-      order: [],
-      index: 0,
-      selected: null,
-      answered: {},
-      know: {},
-      dontKnow: {},
-      currentMode: "all"
-    };
-
-    const quizPanel = document.getElementById("quizPanel");
-    const questionNav = document.getElementById("questionNav");
-    const scoreEl = document.getElementById("score");
-    const remainingEl = document.getElementById("remaining");
-    const knowCountEl = document.getElementById("knowCount");
-    const dontKnowCountEl = document.getElementById("dontKnowCount");
-    const moduleSelect = document.getElementById("moduleSelect");
-    const modeEl = document.getElementById("mode");
-    const jumpInput = document.getElementById("jumpInput");
-    const shuffleToggle = document.getElementById("shuffleToggle");
-
-    function shuffle(array) {
-      const copy = [...array];
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
-
-    function getQuestionModule(question) {
-      if (question.source.startsWith("Formative 4") || question.source.startsWith("M4")) return "module4";
-      if (question.source.startsWith("Formative 3") || question.source.startsWith("M3")) return "module3";
-      return question.source.startsWith("Formative 2") || question.source.startsWith("M2") ? "module2" : "module1";
-    }
-
-    function activeModuleIds() {
-      const selectedModule = moduleSelect.value;
-      return questions
-        .map((question, index) => ({ question, index }))
-        .filter(item => selectedModule === "all" || getQuestionModule(item.question) === selectedModule)
-        .map(item => item.index);
-    }
-
-    function buildOrder() {
-      const mode = modeEl.value;
-      let ids = activeModuleIds();
-      if (mode === "dontKnow") ids = ids.filter(id => state.dontKnow[id]);
-      if (mode === "wrong") ids = ids.filter(id => state.answered[id] && !state.answered[id].correct);
-      if (mode === "unanswered") ids = ids.filter(id => !state.answered[id]);
-      state.currentMode = mode;
-      state.order = shuffleToggle.checked ? shuffle(ids) : ids;
-      state.index = 0;
-      state.selected = null;
-      render();
-    }
-
-    function getScore() {
-      const moduleIds = new Set(activeModuleIds());
-      const answered = Object.entries(state.answered)
-        .filter(([id]) => moduleIds.has(Number(id)))
-        .map(([, answer]) => answer);
-      const correct = answered.filter(item => item.correct).length;
-      return `${correct}/${answered.length}`;
-    }
-
-    function updateStats() {
-      const moduleIds = new Set(activeModuleIds());
-      scoreEl.textContent = getScore();
-      remainingEl.textContent = Math.max(state.order.length - state.index, 0);
-      knowCountEl.textContent = Object.keys(state.know).filter(id => moduleIds.has(Number(id))).length;
-      dontKnowCountEl.textContent = Object.keys(state.dontKnow).filter(id => moduleIds.has(Number(id))).length;
-      jumpInput.max = Math.max(state.order.length, 1);
-      jumpInput.value = state.order.length ? Math.min(state.index + 1, state.order.length) : 1;
-      renderQuestionNav();
-    }
-
-    function optionLetters(index) {
-      return ["A", "B", "C", "D"][index] || "";
-    }
-
-    function renderQuestionNav() {
-      if (!questionNav) return;
-      if (!state.order.length) {
-        questionNav.innerHTML = "";
-        return;
-      }
-
-      questionNav.innerHTML = state.order.map((id, index) => {
-        const answered = state.answered[id];
-        let className = "";
-        if (answered?.correct) className = "correct";
-        if (answered && !answered.correct) className = "incorrect";
-        if (index === state.index) className = `${className} current`.trim();
-        return `<button class="${className}" data-question-index="${index}" aria-label="Go to question ${index + 1}">${index + 1}</button>`;
-      }).join("");
-
-      questionNav.querySelectorAll("button").forEach(button => {
-        button.addEventListener("click", () => {
-          state.index = Number(button.dataset.questionIndex);
-          state.selected = null;
-          render();
-        });
-      });
-    }
-
-    function render() {
-      updateStats();
-      if (state.order.length === 0) {
-        quizPanel.innerHTML = `
-          <div class="empty">
-            <div>
-              <h2>No questions in this set</h2>
-              <p>Try All questions, or mark some questions as Don't know first.</p>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      if (state.index >= state.order.length) {
-        renderSummary();
-        return;
-      }
-
-      const id = state.order[state.index];
-      const q = questions[id];
-      const previous = state.answered[id];
-      const selected = state.selected || previous?.selected || null;
-      const optionList = q._optionOrder || (q._optionOrder = shuffle(q.options));
-
-      quizPanel.innerHTML = `
-        <div class="meta">
-          <span class="pill">${q.source}</span>
-          <span>Question ${state.index + 1} of ${state.order.length}</span>
-        </div>
-        <h2 class="question">${q.prompt}</h2>
-        <div class="options">
-          ${optionList.map((option, index) => {
-            let className = "option";
-            if (previous && option === q.answer) className += " correct";
-            if (previous && option === previous.selected && option !== q.answer) className += " incorrect";
-            return `<button class="${className}" data-option="${encodeURIComponent(option)}">${optionLetters(index)}. ${option}</button>`;
-          }).join("")}
-        </div>
-        <div class="feedback" id="feedback">
-          ${previous ? feedbackHtml(q, previous) : "Choose an answer. It will show correct or wrong immediately."}
-        </div>
-        <div class="actions">
-          <div class="group">
-            <button id="prevBtn" class="ghost">Previous</button>
-          </div>
-          <div class="group">
-            <button id="knowBtn" class="good">Know</button>
-            <button id="dontKnowBtn" class="warn">Don't know</button>
-            <button id="nextBtn">Next</button>
-          </div>
-        </div>
-      `;
-
-      document.querySelectorAll(".option").forEach(button => {
-        button.addEventListener("click", () => {
-          if (state.answered[id]) return;
-          state.selected = decodeURIComponent(button.dataset.option);
-          checkAnswer(id);
-        });
-        if (!previous && decodeURIComponent(button.dataset.option) === selected) {
-          button.style.outline = "2px solid var(--accent)";
-        }
-      });
-
-      document.getElementById("knowBtn").addEventListener("click", () => markKnow(id));
-      document.getElementById("dontKnowBtn").addEventListener("click", () => markDontKnow(id));
-      document.getElementById("nextBtn").addEventListener("click", nextQuestion);
-      document.getElementById("prevBtn").addEventListener("click", previousQuestion);
-    }
-
-    function feedbackHtml(q, result) {
-      if (result.correct) {
-        return `<strong>Correct.</strong> ${q.note}`;
-      }
-      return `<strong>Not quite.</strong> Correct answer: <strong>${q.answer}</strong><br>${q.note}`;
-    }
-
-    function checkAnswer(id) {
-      if (!state.selected) {
-        document.getElementById("feedback").innerHTML = "<strong>Pick one choice first.</strong>";
-        return;
-      }
-      const q = questions[id];
-      state.answered[id] = {
-        selected: state.selected,
-        correct: state.selected === q.answer
-      };
-      if (state.selected !== q.answer) state.dontKnow[id] = true;
-      render();
-    }
-
-    function markKnow(id) {
-      state.know[id] = true;
-      delete state.dontKnow[id];
-      updateStats();
-      nextQuestion();
-    }
-
-    function markDontKnow(id) {
-      state.dontKnow[id] = true;
-      delete state.know[id];
-      updateStats();
-      nextQuestion();
-    }
-
-    function nextQuestion() {
-      state.index += 1;
-      state.selected = null;
-      render();
-    }
-
-    function previousQuestion() {
-      state.index = Math.max(0, state.index - 1);
-      state.selected = null;
-      render();
-    }
-
-    function jumpToQuestion() {
-      if (!state.order.length) return;
-      const target = Number(jumpInput.value);
-      if (!Number.isInteger(target) || target < 1 || target > state.order.length) {
-        jumpInput.value = state.index + 1;
-        return;
-      }
-      state.index = target - 1;
-      state.selected = null;
-      render();
-    }
-
-    function renderSummary() {
-      const moduleIds = new Set(activeModuleIds());
-      const wrongIds = Object.keys(state.answered)
-        .map(Number)
-        .filter(id => moduleIds.has(id))
-        .filter(id => !state.answered[id].correct);
-      quizPanel.innerHTML = `
-        <div class="empty">
-          <div>
-            <h2>Set complete</h2>
-            <p>Score so far: <strong>${getScore()}</strong>. Use the menu above to retry Don't know, Wrong answers, or Unanswered only.</p>
-            <button class="primary" id="againBtn">Practice this set again</button>
-          </div>
-        </div>
-        ${wrongIds.length ? `
-          <div class="review">
-            ${wrongIds.map(id => `
-              <div class="review-item">
-                <b>${questions[id].source}</b><br>
-                ${questions[id].prompt}<br>
-                Correct answer: <strong>${questions[id].answer}</strong>
-              </div>
-            `).join("")}
-          </div>
-        ` : ""}
-      `;
-      document.getElementById("againBtn").addEventListener("click", buildOrder);
-      updateStats();
-    }
-
-    document.getElementById("startBtn").addEventListener("click", buildOrder);
-    document.getElementById("jumpBtn").addEventListener("click", jumpToQuestion);
-    jumpInput.addEventListener("keydown", event => {
-      if (event.key === "Enter") jumpToQuestion();
+  { const r=stage.getBoundingClientRect(); if(r.top<0) window.scrollTo({top:window.scrollY+r.top-8}); }
+  if(done) reveal(false);
+  else {
+    stage.querySelectorAll(".choice").forEach(b=>{
+      const orig=parseInt(b.dataset.orig,10);
+      b.addEventListener("click",()=> isMulti(q) ? toggleChoice(orig) : answer(orig));
     });
-    moduleSelect.addEventListener("change", buildOrder);
-    modeEl.addEventListener("change", buildOrder);
-    shuffleToggle.addEventListener("change", buildOrder);
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      state.answered = {};
-      state.know = {};
-      state.dontKnow = {};
-      questions.forEach(q => delete q._optionOrder);
-      buildOrder();
-    });
+    const sm=stage.querySelector("#submitMulti");
+    if(sm) sm.addEventListener("click",submitMulti);
+  }
+}
 
-    buildOrder();
-  </script>
-  <script src="script.js"></script>
+function toggleChoice(orig){
+  const it=deck[at], q=it.ref;
+  const i=it.tempPicks.indexOf(orig);
+  if(i>-1) it.tempPicks.splice(i,1);
+  else if(it.tempPicks.length<q.a.length) it.tempPicks.push(orig);
+  renderQuestion();
+}
+
+function submitMulti(){
+  const it=deck[at], q=it.ref;
+  if(it.tempPicks.length!==q.a.length) return;
+  it.picked=it.tempPicks.slice();
+  it.skipped=false;
+  reveal(true);
+}
+
+function goNext(){
+  if(at < deck.length-1){ at++; renderQuestion(); return; }
+  const np = nextPending(at);
+  if(np > -1){ at = np; renderQuestion(); }
+  else renderScore();
+}
+
+function reveal(fresh){
+  const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
+  stage.querySelectorAll(".choice").forEach(b=>{
+    const o=+b.dataset.orig; b.disabled=true;
+    const wasPicked = isMulti(q) ? it.picked.includes(o) : o===it.picked;
+    if(isRightIdx(q,o)){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`);}
+    else if(wasPicked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`);}
+    else b.classList.add("dim");
+  });
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b>` : `<b>Not quite.</b><p>The answer is ${correctLabel(q)}.</p>`;
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const pend=pendingIdx().length;
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pend===0) ? "See your score" : "Next \u25B6";
+    n.focus({preventScroll:true});
+    v.scrollIntoView({block:"nearest",behavior:"smooth"});
+  }
+}
+
+function answer(orig){
+  const it=deck[at];
+  if(answered(it)) return;
+  it.picked=orig; it.skipped=false;
+  reveal(true);
+}
+
+/* ---------- score ---------- */
+function renderScore(){
+  const done=deck.filter(answered);
+  const right=done.filter(d=>isCorrectPick(d.ref,d.picked)).length;
+  const misses=done.filter(d=>!isCorrectPick(d.ref,d.picked));
+  const unans=deck.filter(d=>!answered(d));
+  const pct=deck.length?Math.round(right/deck.length*100):0;
+  const line = unans.length ? `Scored out of all ${deck.length} questions &mdash; ${unans.length} left unanswered count as missed.`
+    : pct===100 ? "Clean run. Shuffle it and see if it holds."
+    : pct>=80 ? "Solid. Run the missed ones until they're automatic."
+    : pct>=60 ? "Getting there. The retry below drills only what you missed."
+    : "Worth another pass. Retry the misses first, then the full set.";
+  const redoList=[...misses.map(d=>d.ref), ...unans.map(d=>d.ref)];
+
+  stage.innerHTML = `
+    <p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p>
+    <p class="scoreline">${line}</p>
+    <div class="btnrow">
+      <button class="btn" id="again">Repeat this set</button>
+      ${unans.length?`<button class="btn ghost" id="back">Go back and answer ${unans.length}</button>`:``}
+      ${redoList.length?`<button class="btn ghost" id="redo">Drill the ${redoList.length} missed</button>`:``}
+      <button class="btn quiet" id="home">Change settings</button>
+    </div>
+    <div class="review">
+      <h2>All ${deck.length} questions &mdash; ${right} correct, ${redoList.length} to review</h2>
+      ${[...misses,...unans,...done.filter(d=>isCorrectPick(d.ref,d.picked))].map(d=>{
+        const ok=answered(d)&&isCorrectPick(d.ref,d.picked);
+        return `<div class="miss ${ok?"hit":(answered(d)?"":"unans")}">
+          <p>${qCompact(d.ref.q)}</p>
+          ${ok?`<p class="ok">Correct: ${correctLabel(d.ref)}</p>`:(answered(d)?`<p class="yours">You chose: ${pickedLabel(d)}</p>`:`<p class="none">Left unanswered</p>`)}
+          ${ok?``:`<p class="truth">Answer: ${correctLabel(d.ref)}</p>`}
+        </div>`;}).join("")}
+    </div>`;
+
+  stage.querySelector("#again").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+  stage.querySelector("#home").addEventListener("click",renderSetup);
+  const bk=stage.querySelector("#back");
+  if(bk) bk.addEventListener("click",()=>{const p=pendingIdx();at=p[0];renderQuestion();});
+  const rd=stage.querySelector("#redo");
+  if(rd) rd.addEventListener("click",()=>{buildDeck(redoList);renderQuestion();});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* keyboard */
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const btns=[...document.querySelectorAll(".choice")];
+  if(!btns.length) return;
+  const it=deck[at];
+  if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click();}return;}
+  if(e.key==="Enter"){const sm=document.getElementById("submitMulti");if(sm&&!sm.disabled){e.preventDefault();sm.click();return;}}
+  if(e.key==="ArrowRight"||e.key==="Enter"){const n=document.getElementById("next");if(n){e.preventDefault();n.click();}return;}
+  if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click();}return;}
+  if(answered(it)) return;
+  let i=-1;
+  if(/^[1-5]$/.test(e.key)) i=+e.key-1;
+  else {const k=KEYS.indexOf(e.key.toUpperCase()); if(k>-1) i=k;}
+  if(i>-1&&btns[i]){e.preventDefault();btns[i].click();}
+});
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+
+function formatQtext(text){
+  const parts = String(text).split("```");
+  let html = "";
+  parts.forEach((part,i)=>{
+    if(i % 2 === 1){
+      html += `<pre class="code">${esc(part.trim())}</pre>`;
+    } else {
+      const paras = part.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+      html += paras.map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
+    }
+  });
+  return html;
+}
+
+function qCompact(text){
+  const stripped = String(text).replace(/```([\s\S]*?)```/g, (m,c)=>" "+c.trim().replace(/\n+/g," ")+" ");
+  return esc(stripped.replace(/\s*\n\s*/g," ").replace(/\s{2,}/g," ").trim());
+}
+
+renderSetup();
+</script>
+<script src="script.js"></script>
 </body>
 </html>
