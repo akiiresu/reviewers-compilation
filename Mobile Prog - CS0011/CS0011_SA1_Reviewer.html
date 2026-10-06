@@ -155,6 +155,15 @@ body{
 .foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 .navtog{margin-bottom:1.1rem}
+/* mobile-friendly fixes */
+.wrap,.panel,.choices,.qtext{min-width:0;max-width:100%}
+.choice{max-width:100%}
+.choice .txt{min-width:0;flex:1 1 auto;overflow-wrap:anywhere;word-break:break-word}
+.qtext,.qtext p,.verdict,.flagnote,.hint,.miss p,.switch span,.seg{overflow-wrap:anywhere}
+.qtext pre.code{max-width:100%;overflow-x:auto}
+.qhead{flex-wrap:wrap}
+img,svg,table{max-width:100%}
+body{overflow-x:hidden}
 </style>
 </head>
 <body>

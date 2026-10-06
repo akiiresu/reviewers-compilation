@@ -162,6 +162,15 @@ body{
 .choice .txt{word-break:break-word}
 :root{box-sizing:border-box}
 
+/* mobile-friendly fixes */
+.wrap,.panel,.choices,.qtext{min-width:0;max-width:100%}
+.choice{max-width:100%}
+.choice .txt{min-width:0;flex:1 1 auto;overflow-wrap:anywhere;word-break:break-word}
+.qtext,.qtext p,.verdict,.flagnote,.hint,.miss p,.switch span,.seg{overflow-wrap:anywhere}
+.qtext pre.code{max-width:100%;overflow-x:auto}
+.qhead{flex-wrap:wrap}
+img,svg,table{max-width:100%}
+body{overflow-x:hidden}
 </style>
 </head>
 <body>
