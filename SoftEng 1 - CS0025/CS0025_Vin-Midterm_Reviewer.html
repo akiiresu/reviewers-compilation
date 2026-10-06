@@ -3,7 +3,7 @@
 <head>
   <link rel="stylesheet" href="style.css">
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CS0025 Midterm Reviewer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,7 +84,7 @@ body{
 .qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
   font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
   border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
-.grid{position:relative;max-height:11.6rem;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
   padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
 .jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
   border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
@@ -155,40 +155,6 @@ body{
 .foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 .navtog{margin-bottom:1.1rem}
-/* ---------- mobile ---------- */
-html{-webkit-text-size-adjust:100%}
-button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.wrap,.panel,.qtext,.choice .txt,.miss p{overflow-wrap:anywhere}
-.choice .txt{min-width:0;flex:1}
-@media (max-width:600px){
-  body{padding:max(12px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) calc(56px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));font-size:15px}
-  .masthead{margin-bottom:1rem}
-  .masthead h1{font-size:1.02rem}
-  .panel{padding:14px}
-  .segs{flex-direction:column}
-  .seg{flex:1 1 auto;width:100%;min-height:48px}
-  .switch{padding:.7rem 0}
-  .switch input{width:1.3rem;height:1.3rem}
-  .btn,.btn.sm{min-height:44px;padding:.65rem 1rem}
-  .btnrow .btn{flex:1 1 100%}
-  .qhead{flex-direction:column;gap:.15rem}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(2.7rem,1fr));max-height:9.5rem;padding:.6rem;gap:.35rem}
-  .jump{min-height:2.5rem;font-size:.85rem}
-  .qtext{font-size:1rem}
-  .choice{padding:.85rem .75rem;min-height:48px;font-size:.95rem}
-  .choice .mark{font-size:.68rem}
-  .nav{gap:.5rem}
-  .nav #prev,.nav #skip{flex:1 1 calc(50% - .25rem)}
-  .nav .spacer{display:none}
-  .nav #next,.nav #finish{flex:1 1 100%}
-  .nav #next{order:-1}
-  .score b{font-size:2.4rem}
-  .foot{font-size:.74rem}
-}
-@media (hover:none){
-  .choice:hover:not(:disabled){border-color:var(--rule)}
-  .jump:hover{border-color:var(--rule);color:var(--ink-soft)}
-}
 </style>
 </head>
 <body>
@@ -210,7 +176,7 @@ const BANK = [{"s":1,"q":"Which best describes software?","c":["Only the physica
 
 const KEYS = ["A","B","C","D","E"];
 const stage = document.getElementById("stage");
-let opts = {set:"all", shuffleQ:true, shuffleC:true, nav:true};
+let opts = {set:"all", shuffleQ:true, shuffleC:true, nav:false};
 let deck = [], at = 0;
 
 function pool(){
@@ -287,7 +253,6 @@ function renderSetup(){
 
 /* ---------- question ---------- */
 function renderQuestion(){
-  const oldGrid=document.getElementById("grid"); const keepScroll=oldGrid?oldGrid.scrollTop:0;
   const it=deck[at], q=it.ref, done=answered(it);
   const right=deck.filter(d=>stateOf(d)==="ok").length;
   const pend=pendingIdx().length;
@@ -303,7 +268,8 @@ function renderQuestion(){
       <span>Question ${at+1} / ${deck.length}</span>
       <span>${SETS[q.s]} &middot; ${right} correct</span>
     </div>
-    <div class="grid" id="grid">
+    <div class="navtog"><button class="btn quiet sm" id="navtog" type="button" aria-expanded="${opts.nav}">${opts.nav?"Hide":"Show"} number navigation</button></div>
+    ${opts.nav?`<div class="grid" id="grid">
       ${jumps}
       <div class="legend">
         <s><b style="background:var(--right)"></b>correct</s>
@@ -311,7 +277,7 @@ function renderQuestion(){
         <s><b style="background:var(--skip)"></b>skipped</s>
         <s><b style="background:var(--rule)"></b>not seen</s>
       </div>
-    </div>
+    </div>`:""}
     <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:``}</h2>
     <div class="choices">
       ${it.order.map((orig,pos)=>{
@@ -337,8 +303,7 @@ function renderQuestion(){
       ${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:``}
     </div>`;
 
-  const g=stage.querySelector("#grid"), cur=g&&g.querySelector(".jump.now");
-  if(g){ g.scrollTop=keepScroll; if(cur && (cur.offsetTop<g.scrollTop || cur.offsetTop+cur.offsetHeight>g.scrollTop+g.clientHeight)) g.scrollTop=Math.max(0,cur.offsetTop-g.clientHeight/2); }
+  stage.querySelector("#navtog").addEventListener("click",()=>{opts.nav=!opts.nav;renderQuestion();});
   stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();}));
   stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();}});
   const sk=stage.querySelector("#skip");
