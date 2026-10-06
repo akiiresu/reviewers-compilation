@@ -102,3 +102,26 @@ body {
     text-align: left;
     padding: 0 10px;
 }
+
+.announcement-container {
+    background-color: rgb(244, 238, 173);
+    border-radius: 15px;
+    padding: 5px;
+    margin-top: 50px;
+}
+
+#announcement {
+    color: rgb(46, 92, 60);
+    font-style: italic;
+    text-align: center;
+    font-weight: bold;
+    padding: 0 20px;
+}
+
+#time-stamp {
+    color: rgb(46, 92, 60);
+    font-style: italic;
+    text-align: center;
+    padding: 0 10px;
+    font-size: 9px;
+}
