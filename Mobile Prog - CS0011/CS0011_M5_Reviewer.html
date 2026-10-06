@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Module 5: Activities Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-sunk:#f3f6f9;
+  --ink:#19222e; --ink-soft:#5a6875; --rule:#d3dae1;
+  --accent:#1d5b8f; --right:#136b45; --right-bg:#e2f3ea;
+  --wrong:#a32a1f; --wrong-bg:#fbe8e5; --skip:#8a6a17; --skip-bg:#fbf1da;
+  --shadow:0 1px 0 rgba(25,34,46,.06), 0 10px 24px -18px rgba(25,34,46,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+    --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+    --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+    --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+  --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+  --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+  --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
+}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
+  border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+
+/* setup */
+.field{margin-bottom:1.5rem}
+.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
+.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+  border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
+  transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}
+.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}
+.switch span{font-size:.9rem}
+.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;
+  padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+
+/* nav */
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}
+.meter i.ok{background:var(--right)}
+.meter i.no{background:var(--wrong)}
+.meter i.sk{background:var(--skip)}
+.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+  padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}
+.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}
+.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;margin-top:.2rem}
+.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}
+.qtext p{margin:0 0 .6rem}
+.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;
+  font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;
+  font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);
+  border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;
+  color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
+  flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice.picked .key{color:var(--accent)}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.choice.wrong .key{color:var(--wrong)}
+.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible,.qhead button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.verdict{margin-top:1rem;font-size:.9rem;display:none}
+.verdict.show{display:block}
+.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}
+.verdict.hit b{color:var(--right)}
+.verdict.miss b{color:var(--wrong)}
+.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.flagnote{margin-top:.8rem;font-size:.8rem;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:.6rem}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;
+  border-top:1px solid var(--rule);padding-top:1rem}
+.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace;width:100%}
+
+/* score */
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}
+.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}
+.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}
+.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}
+.miss.unans{border-color:var(--skip)}
+.miss p{margin:0;font-size:.92rem}
+.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}
+.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}
+.miss .truth{color:var(--right);font-size:.85rem}
+.miss.hit{border-color:var(--right)}.miss .ok{color:var(--right);font-size:.85rem;margin-top:.25rem}
+.allgood{color:var(--right);font-size:.92rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+
+.qtext pre.code{margin:.6rem 0 0}
+.navtog{margin-bottom:1.1rem}
+.choice .txt{word-break:break-word}
+:root{box-sizing:border-box}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead"><span class="code">M5</span><h1>Android Activities</h1><p>Module 5 reviewer</p></header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">17 unique questions from the Module 5: Activities reviewer, all multiple choice.</p>
+  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('raw github link','CS0011_M5_Reviewer.html')">download it here.</a></p>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+</div>
+<script>
+const DATA=[
+[1,"An Android activity represents one screen of the Android application’s user interface.",["True","False"],"As stated on Slide 3, an activity represents a single screen with a user interface, much like a window in desktop software."],
+[1,"You implement an activity as a subclass of the Content Provider class.",["False","True"],"Activities are implemented as subclasses of android.app.Activity (or AppCompatActivity), not ContentProvider."],
+[2,"In Android’s activity life cycle, this is the first method that is called when the activity is created.",["onCreate()","onStart()","onStop()","onResume()"],"onCreate() is the very first callback triggered by the system when an activity instance is initially instantiated."],
+[1,"Activity class takes care of creating a window for you in which you can place your UI with setContentView(View).",["True","False"],"The Activity superclass automatically provisions the system window; invoking setContentView() binds and displays your UI layout within that window."],
+[1,"The onPause() method is required for any kind of Activity to run the application properly.",["False","True"],"onCreate() is the only callback strictly required to launch and inflate UI. onPause() is optional and only overridden if necessary."],
+[2,"Which callback is invoked when an activity becomes visible to the user but before it gains interactive focus?",["onStart()","onResume()","onRestart()","onCreate()"],"onStart() is called when the activity becomes visible; onResume() is called when the user actually begins interacting with it."],
+[2,"Which statement accurately characterizes the state of an activity during the onPause() callback?",["The activity does not receive user input and cannot execute any code.","The activity is completely hidden and all resources are wiped from memory.","The activity window is immediately destroyed and closed by the operating system."],"Per Slide 6, a paused activity does not receive user input, cannot execute code, and is waiting while another activity is in the foreground."],
+[2,"When an activity is no longer visible to the user at all, which callback method is triggered?",["onStop()","onPause()","onDestroy()","onRestart()"],"onStop() indicates the activity has transitioned to total invisibility, having been completely obscured by another screen."],
+[2,"Under severe memory pressure, how does Android handle stopped activities when higher-priority apps need RAM?",["It kills the app process, forcing it to recreate via onCreate() when navigated back to.","It pauses background services but keeps all activity instances running intact.","It freezes system animations until the user closes the foreground app manually."],"Slide 7 illustrates that if apps with higher priority need memory, the OS kills the process; returning forces a fresh onCreate() call."],
+[3,"In which configuration file must all Android activities be declared so the OS recognizes them?",["AndroidManifest.xml","build.gradle.kts","activity_main.xml","strings.xml"],"Slide 10 mandates that all activities must be documented in AndroidManifest.xml as an <activity> child of <application>."],
+[3,"When creating a new Kotlin project with an initial activity, which two essential files are generated?",["MainActivity.kt (logic code) and activity_main.xml (UI layout)","MainActivity.java and app.json","AndroidManifest.xml and settings.gradle"],"Slide 15 specifies the generation of MainActivity.kt (Kotlin code) and activity_main.xml (layout design)."],
+[3,"What is the default root layout used in the sample project's activity_main.xml file?",["ConstraintLayout","LinearLayout","FrameLayout","RelativeLayout"],"Slides 17 & 18 specify <androidx.constraintlayout.widget.ConstraintLayout> as the root view wrapper."],
+[2,"Which callback is the first one fired when the activity is instantiated, initializes the UI, inflates the layout via setContentView(), and restores the saved state bundle?",["onCreate()","onStart()","onResume()","onDestroy()"],"Module 5 callback table: onCreate() is the Initialization / First Creation phase."],
+[2,"Which callback is called when the activity enters the active foreground and begins user interactions? The activity stays in this state until focus is diverted.",["onResume()","onStart()","onPause()","onRestart()"],"Module 5 callback table: onResume() is the Foreground / Interactive phase."],
+[2,"Which callback is fired when the current activity loses focus and the previous activity resumes?",["onPause()","onStop()","onResume()","onDestroy()"],"Module 5 callback table: onPause() is the Partial Obscurity phase. It does not receive user input and cannot execute ongoing code."],
+[2,"Which callback is called when an activity is navigated back to from a stopped state, prior to entering onStart() again?",["onRestart()","onResume()","onCreate()","onPause()"],"Module 5 callback table: onRestart() is the Re-launch from Stop phase."],
+[2,"Which callback is the final one executed before the activity instance is removed from memory and completely destroyed by the system?",["onDestroy()","onStop()","onPause()","onRestart()"],"Module 5 callback table: onDestroy() is the Termination / Clean up phase."]
+];
+
+const SETS={1:"Concepts & Architecture",2:"Lifecycle Callbacks",3:"Manifest & Kotlin Setup"};
+const BANK=DATA.map(r=>({s:r[0],q:r[1],c:r[2],flag:r[3]}));
+const KEYS=["A","B","C","D","E","F","G","H"];
+const stage=document.getElementById("stage");
+let opts={set:"all",shuffleQ:true,shuffleC:true},deck=[],at=0;
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function formatQtext(text){return String(text).split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean).map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("")}
+function qCompact(text){return esc(String(text).replace(/\s+/g," ").trim())}
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const pool=()=>opts.set==="all"?BANK.slice():BANK.filter(q=>q.s===+opts.set);
+function rng(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296}}
+function fixed(a,q){const r=rng(q.q);a=a.slice();for(let i=a.length-1;i>0;i--){const j=r()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function order(q){const n=q.c.length;if(n===2)return q.c[0]==="True"?[0,1]:(opts.shuffleC?[0,1].sort(()=>Math.random()-.5):fixed([0,1],q));
+ const idx=[...Array(n).keys()];return opts.shuffleC?shuf(idx):fixed(idx,q)}
+function buildDeck(list){deck=(opts.shuffleQ?shuf(list):list.slice()).map(q=>({ref:q,order:order(q),picked:null,skipped:false}));at=0}
+const answered=d=>d.picked!==null,ok=d=>d.picked===0,
+ stateOf=d=>answered(d)?(ok(d)?"ok":"no"):(d.skipped?"sk":""),
+ pending=()=>deck.map((d,i)=>i).filter(i=>!answered(deck[i]));
+function renderSetup(){
+ const cnt=k=>BANK.filter(q=>q.s===k).length;
+ stage.innerHTML=`<div class="field"><p class="lede">Which set do you want to drill?</p><p class="hint">Every question from the reviewer, one entry each, no duplicates. All multiple choice.</p>
+ <div class="segs"><button class="seg" type="button" data-set="all" aria-pressed="false">Full reviewer<span class="n">${BANK.length} questions</span></button>
+ ${Object.keys(SETS).map(k=>`<button class="seg" type="button" data-set="${k}" aria-pressed="false">${SETS[k]}<span class="n">${cnt(+k)} questions</span></button>`).join("")}</div></div>
+ <div class="field"><p class="lede">Shuffling</p><label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}><span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+ <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}><span>Shuffle the choices<small>Stops you from remembering "the third one". Off keeps one fixed choice order.</small></span></label></div>
+ <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+ const segs=[...stage.querySelectorAll(".seg")],paint=()=>segs.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===opts.set)));
+ segs.forEach(b=>b.onclick=()=>{opts.set=b.dataset.set;paint()});paint();
+ stage.querySelector("#sq").onchange=e=>opts.shuffleQ=e.target.checked;
+ stage.querySelector("#sc").onchange=e=>opts.shuffleC=e.target.checked;
+ stage.querySelector("#go").onclick=()=>{buildDeck(pool());renderQuestion()};
+}
+function renderQuestion(){
+ const it=deck[at],q=it.ref,done=answered(it),right=deck.filter(d=>stateOf(d)==="ok").length,pend=pending().length;
+ stage.innerHTML=`<div class="meter">${deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("")}</div>
+ <div class="qhead"><span>Question ${at+1} / ${deck.length}</span><span>${SETS[q.s]} &middot; ${right} correct</span></div>
+ <div class="grid">${deck.map((d,i)=>`<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}" aria-label="Go to question ${i+1}">${i+1}</button>`).join("")}
+ <div class="legend"><s><b style="background:var(--right)"></b>correct</s><s><b style="background:var(--wrong)"></b>wrong</s><s><b style="background:var(--skip)"></b>skipped</s><s><b style="background:var(--rule)"></b>not seen</s></div></div>
+ <h2 class="qtext">${formatQtext(q.q)}</h2>
+ <div class="choices">${it.order.map((o,p)=>`<button class="choice" type="button" data-o="${o}" ${done?"disabled":""}><span class="key">${KEYS[p]}</span><span class="txt">${esc(q.c[o])}</span></button>`).join("")}</div>
+ <div class="verdict" id="verdict"></div>
+ <div class="nav"><button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}<span class="spacer"></span>
+ <button class="btn sm" id="next">Next &#9654;</button><button class="btn ghost sm" id="finish">Finish &amp; score</button>${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:""}</div>`;
+ stage.querySelectorAll(".jump").forEach(b=>b.onclick=()=>{at=+b.dataset.i;renderQuestion()});
+ stage.querySelector("#prev").onclick=()=>{if(at>0){at--;renderQuestion()}};
+ const sk=stage.querySelector("#skip");if(sk)sk.onclick=()=>{deck[at].skipped=true;goNext()};
+ stage.querySelector("#next").onclick=goNext;stage.querySelector("#finish").onclick=renderScore;
+ if(done)reveal(false);else stage.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{it.picked=+b.dataset.o;it.skipped=false;reveal(true)});
+}
+function goNext(){if(at<deck.length-1){at++;renderQuestion();return}
+ const p=pending();if(p.length){at=p[0];renderQuestion()}else renderScore()}
+function reveal(fresh){
+ const it=deck[at],q=it.ref;
+ stage.querySelectorAll(".choice").forEach(b=>{const o=+b.dataset.o;b.disabled=true;
+  if(o===0){b.classList.add("right");b.insertAdjacentHTML("beforeend",'<span class="mark">correct</span>')}
+  else if(o===it.picked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",'<span class="mark">your answer</span>')}
+  else b.classList.add("dim")});
+ const v=stage.querySelector("#verdict");v.className="verdict show "+(ok(it)?"hit":"miss");
+ v.innerHTML=ok(it)?"<b>Correct.</b>":`<b>Not quite.</b><p>The answer is ${esc(q.c[0])}</p>`;
+ if(q.flag)v.insertAdjacentHTML("beforeend",`<p class="flagnote">${esc(q.flag)}</p>`);
+ if(fresh){const s=stage.querySelector("#skip");if(s)s.remove();const n=stage.querySelector("#next");
+  n.textContent=(at===deck.length-1&&!pending().length)?"See your score":"Next \u25B6";n.focus()}
+}
+function reviewItem(d){const q=d.ref,good=answered(d)&&ok(d);
+ const body=good?`<p class="ok">Correct: ${esc(q.c[0])}</p>`:(answered(d)?`<p class="yours">You chose: ${esc(q.c[d.picked])}</p>`:`<p class="none">Left unanswered</p>`)+`<p class="truth">Answer: ${esc(q.c[0])}</p>`;
+ return `<div class="miss ${good?"hit":(answered(d)?"":"unans")}"><p>${qCompact(q.q)}</p>${body}</div>`}
+function renderScore(){
+ const done=deck.filter(answered),right=done.filter(ok).length,misses=done.filter(d=>!ok(d)),un=deck.filter(d=>!answered(d)),pct=deck.length?Math.round(right/deck.length*100):0;
+ const line=un.length?`Scored out of all ${deck.length} questions &mdash; ${un.length} left unanswered count as missed.`:pct===100?"Clean run. Shuffle it and see if it holds.":pct>=80?"Solid. Run the missed ones until they're automatic.":pct>=60?"Getting there. The retry below drills only what you missed.":"Worth another pass. Retry the misses first, then the full set.";
+ const redo=[...misses,...un].map(d=>d.ref);
+ stage.innerHTML=`<p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p><p class="scoreline">${line}</p>
+ <div class="btnrow"><button class="btn" id="again">Repeat quiz</button>${un.length?`<button class="btn ghost" id="back">Go back and answer ${un.length}</button>`:""}${redo.length?`<button class="btn ghost" id="redo">Drill the ${redo.length} missed</button>`:""}<button class="btn quiet" id="home">Change settings</button></div>
+ <div class="review"><h2>All ${deck.length} questions &mdash; ${right} correct, ${redo.length} to review</h2>${[...misses,...un,...done.filter(ok)].map(reviewItem).join("")}</div>`;
+ stage.querySelector("#again").onclick=()=>{buildDeck(pool());renderQuestion()};
+ stage.querySelector("#home").onclick=renderSetup;
+ const b=stage.querySelector("#back");if(b)b.onclick=()=>{at=pending()[0];renderQuestion()};
+ const r=stage.querySelector("#redo");if(r)r.onclick=()=>{buildDeck(redo);renderQuestion()};
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.addEventListener("keydown",e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;const cs=[...document.querySelectorAll(".choice")];if(!cs.length)return;
+ if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled)p.click();return}
+ if(e.key==="ArrowRight"||e.key==="Enter"){if(document.activeElement&&document.activeElement.classList.contains("choice")&&!document.activeElement.disabled)return;const n=document.getElementById("next");if(n){e.preventDefault();n.click()}return}
+ if(e.key.toLowerCase()==="s"){const k=document.getElementById("skip");if(k){e.preventDefault();k.click()}return}
+ if(answered(deck[at]))return;let i=/^[1-9]$/.test(e.key)?+e.key-1:KEYS.indexOf(e.key.toUpperCase());if(i>-1&&cs[i]){e.preventDefault();cs[i].click()}});
+renderSetup();
+</script>
+<script src="script.js"></script>
+</body>
+</html>

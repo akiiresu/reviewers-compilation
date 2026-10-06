@@ -154,6 +154,7 @@ body{
 .allgood{color:var(--right);font-size:.92rem}
 .foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+.navtog{margin-bottom:1.1rem}
 </style>
 </head>
 <body>
@@ -165,7 +166,7 @@ body{
   </header>
   <main id="stage" class="panel"></main>
   <p class="foot">176 unique questions from the SA1 Reviewer, duplicates removed.</p>
-  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('https://raw.githubusercontent.com/akiiresu/reviewers-compilation/refs/heads/main/Mobile%20Prog%20-%20CS0011/Mobile-Prog-SA1-Reviewer.html','CS0011_M1-4_Reviewer.html')">download it here.</a></p>
+  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('raw github link','CS0011_M1-4_Reviewer.html')">download it here.</a></p>
   <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
 </div>
 
@@ -175,7 +176,7 @@ const BANK = [{"s": 1, "q": "The Dalvik VM enables every Android application to 
 
 const KEYS = ["A","B","C","D","E"];
 const stage = document.getElementById("stage");
-let opts = {set:"all", shuffleQ:true, shuffleC:true};
+let opts = {set:"all", shuffleQ:true, shuffleC:true, nav:false};
 let deck = [], at = 0;
 
 function pool(){
@@ -266,7 +267,8 @@ function renderQuestion(){
       <span>Question ${at+1} / ${deck.length}</span>
       <span>${SETS[q.s]} &middot; ${right} correct</span>
     </div>
-    <div class="grid" id="grid">
+    <div class="navtog"><button class="btn quiet sm" id="navtog" type="button" aria-expanded="${opts.nav}">${opts.nav?"Hide":"Show"} number navigation</button></div>
+    ${opts.nav?`<div class="grid" id="grid">
       ${jumps}
       <div class="legend">
         <s><b style="background:var(--right)"></b>correct</s>
@@ -274,7 +276,7 @@ function renderQuestion(){
         <s><b style="background:var(--skip)"></b>skipped</s>
         <s><b style="background:var(--rule)"></b>not seen</s>
       </div>
-    </div>
+    </div>`:""}
     <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:``}</h2>
     <div class="choices">
       ${it.order.map((orig,pos)=>{
@@ -300,6 +302,7 @@ function renderQuestion(){
       ${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:``}
     </div>`;
 
+  stage.querySelector("#navtog").onclick=()=>{opts.nav=!opts.nav;renderQuestion()};
   stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();}));
   stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();}});
   const sk=stage.querySelector("#skip");
