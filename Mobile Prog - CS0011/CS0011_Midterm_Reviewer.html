@@ -40,7 +40,7 @@ body{
   font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
   padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
 }
-.wrap{max-width:660px;margin:0 auto}
+.wrap{max-width:660px!important;width:100%;margin:0 auto!important}
 .masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
 .masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
   border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
@@ -54,7 +54,7 @@ body{
 .field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
 .field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
 .segs{display:flex;flex-wrap:wrap;gap:.4rem}
-.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+.seg{flex:1 1 130px;max-width:100%;text-align:left;cursor:pointer;background:var(--surface-sunk);
   border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
   transition:border-color .15s,background .15s}
 .seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
@@ -239,7 +239,7 @@ function renderSetup(){
       <p class="hint">Every unique question from the SA1 and Module 5 reviewers, duplicates removed.</p>
       <div class="segs">
         <button class="seg" type="button" data-set="all" aria-pressed="false">Full reviewer<span class="n">${BANK.length} questions</span></button>
-        ${[1,2,3,4,5,6,7].map(k=>`<button class="seg" type="button" data-set="${k}" aria-pressed="false">${SETS[k]}<span class="n">${cnt(k)} questions</span></button>`).join("")}
+        ${Object.keys(SETS).map(k=>`<button class="seg" type="button" data-set="${k}" aria-pressed="false">${SETS[k]}<span class="n">${cnt(k)} questions</span></button>`).join("")}
       </div>
     </div>
     <div class="field">
