@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS0045 Modules 5 &amp; 6 Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-sunk:#f3f6f9;
+  --ink:#19222e; --ink-soft:#5a6875; --rule:#d3dae1;
+  --accent:#1d5b8f; --right:#136b45; --right-bg:#e2f3ea;
+  --wrong:#a32a1f; --wrong-bg:#fbe8e5; --skip:#8a6a17; --skip-bg:#fbf1da;
+  --shadow:0 1px 0 rgba(25,34,46,.06), 0 10px 24px -18px rgba(25,34,46,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+    --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+    --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+    --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+  --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+  --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+  --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
+}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
+  border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+
+/* setup */
+.field{margin-bottom:1.5rem}
+.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
+.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+  border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
+  transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}
+.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}
+.switch span{font-size:.9rem}
+.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;
+  padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+
+/* nav */
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}
+.meter i.ok{background:var(--right)}
+.meter i.no{background:var(--wrong)}
+.meter i.sk{background:var(--skip)}
+.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid[hidden]{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+  padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}
+.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}
+.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;margin-top:.2rem}
+.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}
+.qtext p{margin:0 0 .6rem}
+.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;
+  font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;
+  font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);
+  border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;
+  color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
+  flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice.picked .key{color:var(--accent)}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.choice.wrong .key{color:var(--wrong)}
+.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible,.qhead button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.verdict{margin-top:1rem;font-size:.9rem;display:none}
+.verdict.show{display:block}
+.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}
+.verdict.hit b{color:var(--right)}
+.verdict.miss b{color:var(--wrong)}
+.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.flagnote{margin-top:.8rem;font-size:.8rem;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:.6rem}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;
+  border-top:1px solid var(--rule);padding-top:1rem}
+.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace;width:100%}
+
+/* score */
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}
+.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}
+.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}
+.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}
+.miss.unans{border-color:var(--skip)}
+.miss p{margin:0;font-size:.92rem}
+.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}
+.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}
+.miss .truth{color:var(--right);font-size:.85rem}
+.miss.hit{border-color:var(--right)}.miss .ok{color:var(--right);font-size:.85rem;margin-top:.25rem}
+.allgood{color:var(--right);font-size:.92rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+.filltip{margin:0 0 .7rem;font-size:.78rem;color:var(--ink-soft)}
+.bank{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem;padding:.7rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.bank.col{flex-direction:column;gap:.3rem}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;text-align:left;cursor:pointer;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:.3rem .5rem;transition:border-color .12s}
+.chip:hover:not(:disabled){border-color:var(--accent)}.chip:disabled{cursor:default;opacity:.6}
+.chip .cl{color:var(--ink-soft);margin-right:.25rem}
+.after{margin:0 0 .8rem;font-size:.92rem}
+.brow{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.5rem 0;font-size:.92rem}
+.brow .n{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--ink-soft);min-width:1.4rem}
+.brow .post{flex:1 1 14rem}
+.blank{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:.4rem .5rem;width:min(100%,17rem)}
+pre.code .blank{width:min(100%,28rem);margin:.15rem 0}
+.blank:focus{outline:2px solid var(--accent);outline-offset:1px}
+.blank.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.blank.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.fixrow{display:grid;grid-template-columns:4.5rem 1fr;gap:.1rem .6rem;margin-top:.55rem;padding-left:.6rem;border-left:2px solid var(--wrong);font-family:"IBM Plex Mono",monospace;font-size:.78rem;word-break:break-word}
+.fixrow .fn{grid-row:span 2;color:var(--ink-soft)}
+.fixrow .bad{color:var(--wrong);text-decoration:line-through}
+.fixrow .good{color:var(--right);font-weight:600}
+
+.refcode{margin:0 0 1rem}
+.refcode .lab{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;color:var(--ink-soft);margin:0 0 .3rem}
+.refcode pre{margin:0;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;padding:.7rem .8rem;
+  font-family:"IBM Plex Mono",monospace;font-size:.76rem;line-height:1.5;white-space:pre;overflow:auto;max-height:22rem;color:var(--ink)}
+.brow.wide{display:grid;grid-template-columns:1.6rem 1fr;gap:.25rem .4rem;align-items:start;margin:.8rem 0}
+.brow.wide .n{grid-row:1 / span 2;padding-top:.1rem}
+.brow.wide .post{grid-column:2;grid-row:1;flex:none}
+.brow.wide .blank{grid-column:2;grid-row:2;width:100%}
+.navtog{margin-bottom:1.1rem}
+
+pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;padding:.7rem .8rem;margin:.3rem 0 .9rem;
+  font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;line-height:1.7;white-space:pre-wrap;word-break:break-word;
+  overflow-x:auto;max-width:100%;color:var(--ink)}
+pre.code .blank{display:inline-block;width:min(100%,28rem);max-width:100%;vertical-align:middle;margin:.15rem 0}
+.choice .txt{min-width:0;overflow-wrap:anywhere}
+.chip{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.bank{min-width:0}
+.fixrow>*{min-width:0}
+.miss p{overflow-wrap:anywhere}
+.qtext,.qtext p,.verdict,.verdict p,.flagnote,.after,.brow .post{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <span class="code">M5-6</span>
+    <h1>OpenGL VBOs &amp; Matrices</h1>
+    <p>Modules 5 &amp; 6 reviewer</p>
+  </header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">108 questions from the Modules 5 &amp; 6 lessons and the P1&ndash;P4 programs</p>
+  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('raw github link','CS0045_M5-6_Reviewer.html')">download it here.</a></p>
+</div>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+<script>
+const SETS = {1:"VBO Concepts",2:"Matrices & Transformations",3:"Arrays, Color & Debugging",4:"Match the Function",5:"Code Completion"};
+const BANK = [{"s": 1, "q": "What is a Vertex Buffer Object (VBO)?", "c": ["An OpenGL feature that provides methods for uploading vertex data to the video device for rendering", "A GLUT callback that handles keyboard input", "A 4 x 4 matrix used to transform vertices", "A function that creates a top-level window"], "a": 0}, {"s": 1, "q": "Why do VBOs provide a substantial performance gain?", "c": ["The vertices are automatically converted into integers", "The vertex data resides in the video device memory rather than the system memory", "The CPU draws the triangles instead of the GPU", "The vertex data is never needed by the program"], "a": 1}, {"s": 1, "q": "Buffer objects let applications store vertex data in which kind of memory?", "c": ["Keyboard buffer memory", "Hard disk virtual memory", "Server (video card) memory", "Window title memory"], "a": 2}, {"s": 1, "q": "Which header is added to the VBO programs to access the newer buffer functions?", "c": ["GL/glbuffer.h", "GL/vbo.h", "GL/matrix.h", "GL/glew.h"], "a": 3}, {"s": 1, "q": "What does glewInit() return when initialization succeeds?", "c": ["GLEW_OK", "GL_TRUE", "GLUT_OK", "GL_VERTEX_ARRAY"], "a": 0}, {"s": 1, "q": "Why is glewInit() called before glutMainLoop() and checked in an if-statement?", "c": ["So the window is closed immediately", "So the main loop only starts when GLEW was initialized successfully", "So GLUT is initialized twice", "So the VBO is deleted early"], "a": 1}, {"s": 1, "q": "What is the purpose of #define GLEW_STATIC in the sample code?", "c": ["It makes all buffers static draw buffers", "It disables the vertex array", "It tells the program to use the statically linked version of GLEW", "It sets the window size"], "a": 2}, {"s": 1, "q": "What does glGenBuffers(n, buffers) do?", "c": ["Uploads n arrays to the GPU", "Deletes n buffer objects", "Draws n buffers on screen", "Obtains n buffer identifiers from its pool of unused buffers and stores them in buffers"], "a": 3}, {"s": 1, "q": "What does glIsBuffer(buffer) return?", "c": ["GL_TRUE if buffer is an existing buffer object", "The size of the buffer in bytes", "The memory address of the buffer", "GL_TRUE if the buffer is empty"], "a": 0}, {"s": 1, "q": "Buffer objects (glGenBuffers, glBindBuffer) are available starting from which OpenGL version, according to the slides?", "c": ["1.0 only", "1.5 and later", "3.3 only", "2.1 and earlier"], "a": 1}, {"s": 1, "q": "What does glBindBuffer(target, buffer) do?", "c": ["Copies the buffer into system memory", "Deletes the buffer", "Specifies the active buffer object and initializes it if it is new", "Draws the buffer"], "a": 2}, {"s": 1, "q": "Which glBindBuffer target is used when the buffer object holds vertex array data?", "c": ["GL_ELEMENT_ARRAY_BUFFER", "GL_VERTEX_ARRAY", "GL_STATIC_DRAW", "GL_ARRAY_BUFFER"], "a": 3}, {"s": 1, "q": "Which glBindBuffer target is used when the buffer object holds vertex array indices?", "c": ["GL_ELEMENT_ARRAY_BUFFER", "GL_ARRAY_BUFFER", "GL_INDEX_ARRAY", "GL_NORMAL_ARRAY"], "a": 0}, {"s": 1, "q": "What is the purpose of glBufferData()?", "c": ["It chooses which buffer is active", "It uploads all the array information to the graphics card memory", "It enables the vertex array client state", "It clears the screen"], "a": 1}, {"s": 1, "q": "A triangle has 3 vertices with 3 coordinates (x, y, z) each. What size is passed to glBufferData() for its vertex array?", "c": ["sizeof(GLfloat)*3", "sizeof(GLfloat)*6", "sizeof(GLfloat)*9", "sizeof(GLfloat)*18"], "a": 2}, {"s": 1, "q": "GL_STATIC_DRAW tells OpenGL that the data store contents will be ____.", "c": ["modified repeatedly and used many times", "modified once and used at most a few times", "never used for drawing", "modified once and used many times"], "a": 3}, {"s": 1, "q": "GL_DYNAMIC_DRAW tells OpenGL that the data store contents will be ____.", "c": ["modified repeatedly and used many times", "modified once and used many times", "modified once and used at most a few times", "read only by the CPU"], "a": 0}, {"s": 1, "q": "GL_STREAM_DRAW tells OpenGL that the data store contents will be ____.", "c": ["modified repeatedly and used many times", "modified once and used at most a few times", "modified once and used many times", "stored in system memory only"], "a": 1}, {"s": 1, "q": "What does glEnableClientState(GL_VERTEX_ARRAY) do?", "c": ["Creates a new VBO", "Deletes the vertex array", "Activates the vertex array so it is used when drawing", "Rotates the vertices"], "a": 2}, {"s": 1, "q": "With a VBO bound, what does the last argument of glVertexPointer(3, GL_FLOAT, 0, 0) specify?", "c": ["The number of vertices to draw", "A pointer to the color array", "The number of triangles", "A byte offset into the bound buffer"], "a": 3}, {"s": 1, "q": "In glVertexPointer(3, GL_FLOAT, 0, 0), what does the first argument 3 represent?", "c": ["Three coordinates (x, y, z) per vertex", "Three vertices per triangle", "Three buffers", "Three colors"], "a": 0}, {"s": 1, "q": "What does glBindBuffer(GL_ARRAY_BUFFER, 0) do at the end of the program?", "c": ["It binds a second buffer", "It unbinds the buffer so OpenGL switches back to normal pointer operation", "It clears the data in the buffer", "It doubles the buffer size"], "a": 1}, {"s": 1, "q": "What is the purpose of glDeleteBuffers(1, &VBOid)?", "c": ["It deletes the array from system memory", "It removes the window", "It frees the buffer object and the video card memory it used", "It disables GL_VERTEX_ARRAY"], "a": 2}, {"s": 1, "q": "Which is the correct order of steps to create and use a VBO?", "c": ["glBufferData, glGenBuffers, draw, glBindBuffer, enable client state", "Enable client state, delete buffers, glGenBuffers, draw, glBufferData", "glDeleteBuffers, glBindBuffer, glGenBuffers, draw, glBufferData", "Create the vertex array, glGenBuffers, glBindBuffer, glBufferData, enable client state, draw, then disable/unbind/delete"], "a": 3}, {"s": 1, "q": "To draw from a VBO with glDrawElements(), where must the indices be stored?", "c": ["In a buffer bound to GL_ELEMENT_ARRAY_BUFFER", "In a buffer bound to GL_ARRAY_BUFFER together with the colors", "In the display callback only", "In the GLEW library"], "a": 0}, {"s": 1, "q": "GLubyte indices[] = {0,1,2,3,4,5}; Which type is passed to glDrawElements() for this array?", "c": ["GL_FLOAT", "GL_UNSIGNED_BYTE", "GL_UNSIGNED_INT", "GL_BYTE"], "a": 1}, {"s": 1, "q": "What is the difference between glDrawArrays() and glDrawElements()?", "c": ["glDrawArrays uses indices; glDrawElements does not", "glDrawElements only works for points", "glDrawElements uses an index array to choose vertices; glDrawArrays reads vertices sequentially", "There is no difference"], "a": 2}, {"s": 1, "q": "What does glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE) return?", "c": ["The number of vertices in the buffer", "A copy of the window", "A new buffer identifier", "A pointer that maps the buffer object into the client's (application's) memory"], "a": 3}, {"s": 1, "q": "What is the synchronization issue of glMapBuffer()?", "c": ["If the GPU is still working with the buffer, glMapBuffer() will not return until the GPU finishes its job", "The buffer is deleted automatically", "It can only be called once per program", "It changes the window size"], "a": 0}, {"s": 1, "q": "What must be done after modifying VBO data through a mapped pointer?", "c": ["Call glGenBuffers() again", "Unmap the buffer with glUnmapBuffer()", "Call glEnableClientState() again", "Close the window"], "a": 1}, {"s": 1, "q": "What does the GL_READ_WRITE access mode allow when mapping a buffer?", "c": ["The data can only be read", "The data can only be written to a file", "The application can both read and modify the mapped data", "The data is erased after mapping"], "a": 2}, {"s": 1, "q": "In modifyTriangle(), mappedVertices[0], [3] and [6] are each increased by .01f. What happens to the triangle?", "c": ["It shifts upward because the y coordinates increase", "It becomes larger", "It does not change at all", "It shifts slightly to the right because the x coordinate of every vertex increases"], "a": 3}, {"s": 1, "q": "Why does the sample use a flag such as triangleUpdate (or forUpdate) in triangle()/polygon()?", "c": ["So the VBO is generated and filled only once; later redraws reuse the modified GPU data", "So the color of the triangle changes", "So the vertex array is never enabled", "So the program exits after one frame"], "a": 0}, {"s": 1, "q": "What does glutTimerFunc(1000, modifyTriangle, 0) do?", "c": ["Calls modifyTriangle 1000 times per second", "Calls modifyTriangle once after 1000 milliseconds", "Pauses the program for 1000 seconds", "Runs modifyTriangle for 1000 frames"], "a": 1}, {"s": 1, "q": "What does glutPostRedisplay() do after the vertices have been changed?", "c": ["It deletes the window", "It reloads GLEW", "It marks the window as needing to be redisplayed so the display callback runs again", "It unmaps the buffer"], "a": 2}, {"s": 1, "q": "In monitorKeyboard(), what does the condition key == 27 detect?", "c": ["The Enter key", "The letter 'a'", "The space bar", "The ESC key"], "a": 3}, {"s": 1, "q": "Why are glBindBuffer(GL_ARRAY_BUFFER, 0) and glDeleteBuffers() called before exit(0) when ESC is pressed?", "c": ["To release the memory used on the video card before quitting", "To make the window bigger", "To rotate the triangle one last time", "To restart the program"], "a": 0}, {"s": 2, "q": "What is a matrix, as described in the module?", "c": ["A one-dimensional list of integers", "A rectangular array of mathematical expressions, much like a two-dimensional array", "A GLUT callback function", "A special type of window"], "a": 1}, {"s": 2, "q": "How many rows and columns does a 3-by-2 matrix have?", "c": ["2 rows and 3 columns", "3 rows and 3 columns", "3 rows and 2 columns", "2 rows and 2 columns"], "a": 2}, {"s": 2, "q": "Matrix values are indexed by (i, j). What do i and j stand for?", "c": ["i is the column and j is the row", "i is the width and j is the height", "i is the vertex and j is the color", "i is the row and j is the column"], "a": 3}, {"s": 2, "q": "For a = [[1,2],[3,4],[5,6]], which value does the notation a31 refer to?", "c": ["5", "3", "2", "6"], "a": 0}, {"s": 2, "q": "What is the only requirement for adding or subtracting two matrices?", "c": ["They must both be square", "They must have exactly the same row and column dimensions", "They must both be 4 x 4", "They must contain only positive numbers"], "a": 1}, {"s": 2, "q": "What is [[3,2],[0,4]] + [[4,2],[2,2]]?", "c": ["[[7,4],[0,8]]", "[[12,4],[0,8]]", "[[7,4],[2,6]]", "[[1,0],[2,2]]"], "a": 2}, {"s": 2, "q": "What is [[4,2],[2,7]] - [[3,2],[0,4]]?", "c": ["[[7,4],[2,11]]", "[[1,0],[0,3]]", "[[1,4],[2,3]]", "[[1,0],[2,3]]"], "a": 3}, {"s": 2, "q": "What is 2 \u00b7 [[1,2],[3,4]]?", "c": ["[[2,4],[6,8]]", "[[3,4],[5,6]]", "[[2,2],[3,4]]", "[[1,4],[3,8]]"], "a": 0}, {"s": 2, "q": "What size of matrix does OpenGL use for transformations?", "c": ["2 x 2", "4 x 4", "3 x 3", "4 x 1"], "a": 1}, {"s": 2, "q": "When a 4 x 4 matrix is multiplied by the vector (x, y, z, w), what is the result?", "c": ["A single number", "A 4 x 4 matrix", "A new 4 x 1 vector", "A 2 x 2 matrix"], "a": 2}, {"s": 2, "q": "For [[a,b,c,d],[e,f,g,h],[i,j,k,l],[m,n,o,p]] times (x,y,z,w), what is the first component of the result?", "c": ["ax + ey + iz + mw", "ax + fy + kz + pw", "a + b + c + d", "ax + by + cz + dw"], "a": 3}, {"s": 2, "q": "Why is a fourth component w introduced in homogeneous coordinates?", "c": ["So 4 x 4 matrices can be used, and translation can be expressed as a matrix multiplication", "So the vertex can store its color", "So the vertex can store its normal", "So vertices take less memory"], "a": 0}, {"s": 2, "q": "In homogeneous coordinates, what does w == 1 mean for the vector (x, y, z, 1)?", "c": ["It is a direction", "It is a position in space", "It is a color", "It is an invalid vector"], "a": 1}, {"s": 2, "q": "In homogeneous coordinates, what does w == 0 mean for the vector (x, y, z, 0)?", "c": ["It is a position in space", "It is the origin", "It is a direction", "It is an index"], "a": 2}, {"s": 2, "q": "Which OpenGL function is the reason we can specify a w component for a vertex?", "c": ["glVertex2f", "glColor4f", "glNormal3f", "glVertex4f"], "a": 3}, {"s": 2, "q": "Where are the X, Y, Z values placed in a 4 x 4 translation matrix?", "c": ["In the top three rows of the fourth column of an identity matrix", "On the main diagonal", "In the bottom row", "In the first row only"], "a": 0}, {"s": 2, "q": "Translating the vector (10,10,10,1) by 10 units in the X direction gives which vector?", "c": ["(10, 20, 10, 1)", "(20, 10, 10, 1)", "(20, 20, 20, 1)", "(10, 10, 20, 1)"], "a": 1}, {"s": 2, "q": "What happens when a translation matrix is applied to a direction vector (x, y, z, 0)?", "c": ["It is moved by X, Y, Z", "It is scaled by 2", "It stays unchanged, because w = 0 cancels the translation column", "It becomes a position"], "a": 2}, {"s": 2, "q": "What does a scaling matrix look like?", "c": ["An identity matrix with X, Y, Z in the last column", "A matrix filled with cosine and sine values", "A matrix with all ones", "A matrix with SX, SY, SZ on the diagonal, 1 in the last diagonal entry, and zeros elsewhere"], "a": 3}, {"s": 2, "q": "Scaling a vector (x, y, z, w) by 2.0 in all directions gives which result?", "c": ["(2x, 2y, 2z, w)", "(x+2, y+2, z+2, w)", "(2x, 2y, 2z, 2w)", "(x, y, z, 2w)"], "a": 0}, {"s": 2, "q": "Which entries appear in the rotation matrices Rx, Ry and Rz?", "c": ["SX, SY and SZ", "cos\u03b8 and sin\u03b8 (including -sin\u03b8)", "X, Y and Z translation values", "Only zeros and ones"], "a": 1}, {"s": 2, "q": "Rx(\u03b8), the rotation matrix about the X axis, leaves which coordinate unchanged?", "c": ["The y coordinate", "The z coordinate", "The x coordinate", "The w coordinate"], "a": 2}, {"s": 2, "q": "What is the product of two 4-by-4 matrices?", "c": ["A 4-by-1 vector", "A single number", "An 8-by-8 matrix", "Another 4-by-4 matrix"], "a": 3}, {"s": 2, "q": "Is the matrix product M_translate \u00b7 M_scale the same as M_scale \u00b7 M_translate?", "c": ["No, the order of multiplication matters", "Yes, matrix multiplication is always commutative", "Yes, but only for 4 x 4 matrices", "Only when the vector is (0,0,0,1)"], "a": 0}, {"s": 2, "q": "What is M_translate(1,2,3) \u00b7 M_scale(2,2,2)?", "c": ["A matrix with 1, 1, 1, 1 on the diagonal and 2, 2, 2 in the last column", "A matrix with 2, 2, 2, 1 on the diagonal and 1, 2, 3 in the last column", "A matrix with 3, 3, 3, 1 on the diagonal", "The identity matrix"], "a": 1}, {"s": 2, "q": "Applying the combined matrix (M_translate(1,2,3) \u00b7 M_scale(2,2,2)) to the vector (x, y, z, 1) gives ____.", "c": ["(2(x+1), 2(y+2), 2(z+3), 1)", "(x + 2, y + 4, z + 6, 1)", "(2x + 1, 2y + 2, 2z + 3, 1)", "(x + 1, y + 2, z + 3, 2)"], "a": 2}, {"s": 2, "q": "In the Matrix Translation program, why does the loop for(int i=0; i<18; i+=3) step by 3?", "c": ["Each vertex has 3 colors", "There are only 3 vertices", "The matrix has 3 rows", "Each vertex is stored as 3 floats (x, y, z)"], "a": 3}, {"s": 2, "q": "The polygon array holds 18 floats with 3 floats per vertex. How many vertices does the polygon have?", "c": ["6", "18", "3", "9"], "a": 0}, {"s": 2, "q": "In translate(), what is the role of GLfloat w = 1.0f?", "c": ["It scales the polygon", "It makes each vertex a position so the translation column is applied", "It sets the window width", "It stores the alpha color"], "a": 1}, {"s": 2, "q": "The program translates the polygon by .025f in x on every timer tick and exits when value == 10. How far has the polygon moved before it exits?", "c": ["0.025 units to the right", "2.5 units to the right", "0.25 units to the right", "0.25 units to the left"], "a": 2}, {"s": 2, "q": "Which coordinate system does OpenGL use by default, as shown in the Left-Hand and Right-Hand slide?", "c": ["Left-handed, with +Z pointing into the screen", "Left-handed, with +Y pointing down", "A 2D system with no Z axis", "Right-handed, with +Z pointing toward the viewer"], "a": 3}, {"s": 3, "q": "What does glColorPointer(3, GL_FLOAT, 0, colors) specify?", "c": ["The location and format of the color array, with 3 color components (RGB) per entry", "That 3 triangles will be drawn", "That 3 arrays will be deleted", "The window background color"], "a": 0}, {"s": 3, "q": "Which client state must be enabled so the color array is used when drawing?", "c": ["GL_COLOR_BUFFER_BIT", "GL_COLOR_ARRAY", "GL_VERTEX_ARRAY", "GL_STATIC_DRAW"], "a": 1}, {"s": 3, "q": "What does glNormalPointer() do?", "c": ["Specifies the vertex coordinates", "Specifies the vertex colors", "Specifies the location and format of the normal array", "Draws the normal of the window"], "a": 2}, {"s": 3, "q": "What does glArrayElement(i) do between glBegin() and glEnd()?", "c": ["It deletes element i from the array", "It creates a new array of size i", "It rotates element i", "It sends the i-th element of the enabled arrays (vertex, color, etc.) as a vertex"], "a": 3}, {"s": 3, "q": "What is the purpose of glBufferSubData()?", "c": ["It replaces or fills a portion of an existing buffer's data store at a given offset", "It creates a brand new buffer", "It deletes part of the buffer", "It maps the buffer to the screen"], "a": 0}, {"s": 3, "q": "Which describes the arguments of glBufferSubData(target, offset, size, data)?", "c": ["The buffer id, the number of vertices, the color, and the draw mode", "The buffer target, the byte offset where data goes, the size of data in bytes, and the data array", "The window, the width, the height, and the data", "The primitive type, the first vertex, the count, and the data"], "a": 1}, {"s": 3, "q": "Why is glBufferData(...) called with a total size first, and glBufferSubData() called afterward?", "c": ["glBufferSubData deletes the old data, then glBufferData draws", "Both calls do exactly the same thing", "glBufferData allocates space for all data, then glBufferSubData fills in each portion (vertices, colors) at its offset", "glBufferSubData is required before glGenBuffers"], "a": 2}, {"s": 3, "q": "In the pyramid-and-cube sample, vertices[] holds a pyramid of (9*4) floats followed by a cube of (12*6) floats. Where does the cube data start in the VBO (in bytes)?", "c": ["At byte offset 0", "At byte offset (12*6)*sizeof(GLfloat) = 288", "At byte offset 9", "At byte offset (9*4)*sizeof(GLfloat) = 144"], "a": 3}, {"s": 3, "q": "Using the same layout, the color data is appended after the pyramid and cube vertices. What is the byte offset passed to glColorPointer?", "c": ["((9*4)+(12*6))*sizeof(GLfloat) = 432", "(9*4)*sizeof(GLfloat) = 144", "(12*6)*sizeof(GLfloat) = 288", "0"], "a": 0}, {"s": 3, "q": "What is the purpose of the macro #define BUFFER_OFFSET(i) ((void*)(i))?", "c": ["It allocates i bytes of memory", "It converts a byte offset into a pointer-type value for the gl*Pointer functions when a VBO is bound", "It deletes i buffers", "It sets the size of the window"], "a": 1}, {"s": 3, "q": "What do the arguments of glDrawArrays(mode, first, count) mean?", "c": ["The window, the color, and the size", "The buffer, the offset, and the stride", "The primitive type, the index of the first vertex, and the number of vertices to draw", "The matrix, the vector, and the result"], "a": 2}, {"s": 3, "q": "A cube drawn with GL_QUADS has 6 faces of 4 vertices each. How many vertices are drawn in total?", "c": ["8", "12", "36", "24"], "a": 3}, {"s": 3, "q": "The pyramid is drawn with 4 triangles using GL_TRIANGLES. How many vertices does the array contain?", "c": ["12", "4", "8", "16"], "a": 0}, {"s": 3, "q": "After converting the cube/pyramid to vertex arrays and a VBO without color data, the object appears plain white. Why?", "c": ["The vertex array was not bound", "No color was supplied, since no color array or glColor call was used", "GLEW was not initialized", "White is the default color for all vertex data in a VBO"], "a": 1}, {"s": 3, "q": "What does the glMultiDrawArrays() call in the draw-call diagram do?", "c": ["It draws one vertex", "It deletes multiple arrays", "It draws multiple ranges of the arrays in a single call", "It maps multiple buffers"], "a": 2}, {"s": 3, "q": "What is glDebugMessageCallback(MessageCallback, 0) used for?", "c": ["It speeds up rendering", "It disables all errors", "It creates the window", "It registers a function that OpenGL calls to report debug messages and errors"], "a": 3}, {"s": 3, "q": "Which call turns on OpenGL's debug message output before registering the callback?", "c": ["glEnable(GL_DEBUG_OUTPUT)", "glEnable(GL_DEPTH_TEST)", "glEnableClientState(GL_VERTEX_ARRAY)", "glutInit()"], "a": 0}, {"s": 3, "q": "In MessageCallback(), what does the expression (type == GL_DEBUG_TYPE_ERROR ? \"** GL ERROR **\" : \"\") do?", "c": ["It stops the program", "It prints an error label only when the message type is an error", "It sets the debug severity", "It changes the message text"], "a": 1}, {"s": 3, "q": "What do glGetString(GL_VERSION) and glGetString(GL_VENDOR) return?", "c": ["The window title and size", "The number of vertices and colors", "The supported OpenGL version and the vendor of the OpenGL implementation", "The GLEW version and the GLUT version"], "a": 2}, {"s": 4, "q": "Copy and paste the appropriate buffer function to be used for the following", "c": [], "list": ["glGenBuffers()", "glBindBuffer()", "glBufferData()", "glBufferSubData()", "glDeleteBuffers()", "glMapBuffer()", "glUnmapBuffer()", "glIsBuffer()"], "lp": "a", "k": ["glGenBuffers()", "glBindBuffer()", "glBufferData()", "glBufferSubData()", "glDeleteBuffers()", "glMapBuffer()", "glUnmapBuffer()", "glIsBuffer()"], "rows": [{"post": "Obtains buffer identifiers from the pool of unused buffers"}, {"post": "Specifies the active buffer object and initializes it if it is new"}, {"post": "Uploads all the array information to the graphics card memory"}, {"post": "Replaces a portion of an existing buffer's data at a given offset"}, {"post": "Frees the buffer object and its video card memory"}, {"post": "Maps the buffer object into the client's (application's) memory"}, {"post": "Releases the mapped buffer after the data has been modified"}, {"post": "Returns GL_TRUE if the identifier is an existing buffer object"}]}, {"s": 4, "q": "Copy and paste the appropriate OpenGL constant to be used for the following", "c": [], "list": ["GL_STREAM_DRAW", "GL_STATIC_DRAW", "GL_DYNAMIC_DRAW", "GL_ARRAY_BUFFER", "GL_ELEMENT_ARRAY_BUFFER", "GL_VERTEX_ARRAY", "GL_COLOR_ARRAY", "GL_NORMAL_ARRAY"], "lp": "a", "k": ["GL_STREAM_DRAW", "GL_STATIC_DRAW", "GL_DYNAMIC_DRAW", "GL_ARRAY_BUFFER", "GL_ELEMENT_ARRAY_BUFFER", "GL_VERTEX_ARRAY", "GL_COLOR_ARRAY", "GL_NORMAL_ARRAY"], "rows": [{"post": "Data will be modified once and used at most a few times"}, {"post": "Data will be modified once and used many times"}, {"post": "Data will be modified repeatedly and used many times"}, {"post": "Buffer target used for vertex array data"}, {"post": "Buffer target used for vertex array indices"}, {"post": "Client state that activates the vertex coordinate array"}, {"post": "Client state that activates the per-vertex color array"}, {"post": "Client state that activates the normal array"}]}, {"s": 4, "q": "Copy and paste the appropriate array or drawing function to be used for the following", "c": [], "list": ["glVertexPointer()", "glColorPointer()", "glNormalPointer()", "glDrawArrays()", "glDrawElements()", "glArrayElement()", "glMultiDrawArrays()", "glDebugMessageCallback()"], "lp": "a", "k": ["glVertexPointer()", "glColorPointer()", "glNormalPointer()", "glDrawArrays()", "glDrawElements()", "glArrayElement()", "glMultiDrawArrays()", "glDebugMessageCallback()"], "rows": [{"post": "Specifies the location and format of the vertex coordinates"}, {"post": "Specifies the location and format of the vertex colors"}, {"post": "Specifies the location and format of the normals"}, {"post": "Draws primitives from sequential array data (mode, first, count)"}, {"post": "Draws primitives using an index array"}, {"post": "Sends the i-th element of the enabled arrays between glBegin() and glEnd()"}, {"post": "Draws multiple ranges of the arrays in a single call"}, {"post": "Registers a function that receives OpenGL debug messages and errors"}]}, {"s": 4, "q": "Identify the correct term or value for each description from the matrix and homogeneous coordinate lessons", "c": [], "list": ["A position in space", "A direction", "4 x 4", "Row, then column", "Same dimensions", "Server (video card) memory", "Right-handed", "Client (application) memory"], "lp": "b", "k": ["A position in space", "A direction", "4 x 4", "Row, then column", "Same dimensions", "Server (video card) memory", "Right-handed", "Client (application) memory"], "rows": [{"pre": "A vector with w == 1 is", "post": ""}, {"pre": "A vector with w == 0 is", "post": ""}, {"pre": "The matrix size OpenGL uses for transformations", "post": ""}, {"pre": "The order of the (i,j) index of a matrix value", "post": ""}, {"pre": "Requirement to add or subtract two matrices", "post": ""}, {"pre": "Where a VBO stores its vertex data", "post": ""}, {"pre": "The default OpenGL coordinate system", "post": ""}, {"pre": "Where glMapBuffer() maps the buffer to", "post": ""}]}, {"s": 4, "q": "Copy and paste the appropriate matrix term to be used for the following", "c": [], "list": ["Translation matrix", "Scaling matrix", "Rotation matrix", "Matrix-vector product", "Matrix-matrix product", "Scalar product"], "lp": "a", "k": ["Scaling matrix", "Translation matrix", "Rotation matrix", "Scalar product", "Matrix-matrix product", "Matrix-vector product"], "rows": [{"post": "Has SX, SY, SZ on the diagonal and 1 in the last diagonal entry"}, {"post": "An identity matrix with X, Y, Z in the top three rows of the fourth column"}, {"post": "Contains cos\u03b8 and sin\u03b8 entries and is defined per axis (Rx, Ry, Rz)"}, {"post": "Multiplying every element of a matrix by a single number"}, {"post": "Combining transformations by multiplying two 4-by-4 matrices"}, {"post": "Multiplying a 4 x 4 matrix by (x, y, z, w) to transform a vertex"}]}, {"s": 4, "q": "Copy and paste the appropriate GLUT function used in the Module 5 and 6 sample programs for the following", "c": [], "list": ["glutInitWindowSize()", "glutInitWindowPosition()", "glutCreateWindow()", "glutDisplayFunc()", "glutKeyboardFunc()", "glutTimerFunc()", "glutPostRedisplay()", "glutMainLoop()"], "lp": "a", "k": ["glutDisplayFunc()", "glutKeyboardFunc()", "glutTimerFunc()", "glutPostRedisplay()", "glutMainLoop()", "glutCreateWindow()", "glutInitWindowSize()", "glutInitWindowPosition()"], "rows": [{"post": "Sets the display callback for the current window"}, {"post": "Sets the keyboard callback (e.g. to detect the ESC key)"}, {"post": "Registers a callback to be triggered after a number of milliseconds"}, {"post": "Marks the current window as needing to be redisplayed"}, {"post": "Enters the GLUT event processing loop"}, {"post": "Creates a top-level window"}, {"post": "Sets the initial window size"}, {"post": "Sets the initial window position"}]}, {"s": 5, "q": "P1 (Translation Demo). Copy and paste the appropriate code to be used for the following", "c": [], "code": "#include <iostream>\n#include <GL/glut.h>\nusing namespace std;\n\nvoid triangle() {\n    glBegin(GL_TRIANGLES);\n        glVertex2f(-0.2f, -0.2f);\n        glVertex2f( 0.2f, -0.2f);\n        glVertex2f( 0.0f,  0.2f);\n    glEnd();\n}\n\nvoid display(){\n    glClear(GL_COLOR_BUFFER_BIT);\n\n    //Original Triangle\n    glColor3f(1.0f, 1.0f, 0.0f);\n\n    //first translation\n    glPushMatrix();\n        glTranslatef(-0.5,0.0,0.0);\n        triangle();\n    glPopMatrix();\n\n    //Moved Triangle\n    glColor3f(0.0f, 1.0f, 1.0f);\n\n    //Second translation\n    glPushMatrix();\n        glTranslatef(0.5, -0.5, 0.0);\n        triangle();\n    glPopMatrix();\n\n    glFlush();\n}\n\n\nint main(int argc, char** argv) {\n    glutInit(&argc, argv);\n    glutInitWindowSize(800, 600);\n    glutCreateWindow(\"Translation Demo\");\n\n    glutDisplayFunc(display);\n    glutMainLoop();\n\n    return 0;\n}", "list": ["glPopMatrix();", "glColor3f(1.0f, 1.0f, 0.0f);", "glFlush();", "glTranslatef(-0.5, 0.0, 0.0);", "glColor3f(0.0f, 1.0f, 1.0f);", "glPushMatrix();", "glTranslatef(0.5, -0.5, 0.0);", "glClear(GL_COLOR_BUFFER_BIT);"], "lp": "a", "k": ["glPushMatrix();", "glPopMatrix();", "glTranslatef(-0.5, 0.0, 0.0);", "glTranslatef(0.5, -0.5, 0.0);", "glColor3f(1.0f, 1.0f, 0.0f);", "glColor3f(0.0f, 1.0f, 1.0f);", "glClear(GL_COLOR_BUFFER_BIT);", "glFlush();"], "rows": [{"post": "Saves the current matrix so a translation only affects the triangle drawn inside the block"}, {"post": "Restores the saved matrix after the triangle is drawn; without the push/pop pair the translations would accumulate"}, {"post": "Draws the first triangle to the left of the center"}, {"post": "Draws the second triangle to the right and down from the center"}, {"post": "Sets the color of the original triangle to yellow"}, {"post": "Sets the color of the moved triangle to cyan"}, {"post": "Clears the window to the background color before anything is drawn"}, {"post": "Forces the drawing commands to be executed at the end of display()"}], "wide": true}, {"s": 5, "q": "P1 (Translation Demo). Complete the display() function to draw a yellow triangle on the left and a cyan triangle on the lower right. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["glClear(GL_COLOR_BUFFER_BIT);", "glPushMatrix();", "glPopMatrix();", "glTranslatef(-0.5,0.0,0.0);", "glTranslatef(0.5,-0.5,0.0);", "glTranslatef(0.5,0.5,0.0);", "glLoadIdentity();", "glFlush();"], "lp": "n", "k": ["glClear(GL_COLOR_BUFFER_BIT);", "glPushMatrix();", "glTranslatef(-0.5,0.0,0.0);", "glPopMatrix();", "glTranslatef(0.5,-0.5,0.0);", "glFlush();"], "tpl": "void display(){\n    {0}\n\n    //Original Triangle\n    glColor3f(1.0f, 1.0f, 0.0f);\n\n    //first translation\n    {1}\n        {2}\n        triangle();\n    {3}\n\n    //Moved Triangle\n    glColor3f(0.0f, 1.0f, 1.0f);\n\n    //Second translation\n    glPushMatrix();\n        {4}\n        triangle();\n    glPopMatrix();\n\n    {5}\n}", "wide": true}, {"s": 5, "q": "P2 (Color Array Demo). Copy and paste the appropriate code to be used for the following", "c": [], "code": "#include <iostream>\n#include <GL/glut.h>\nusing namespace std;\n\n// Triangle coordinates\nGLfloat vertices[] = {\n    -0.5f, -0.5f, 0.0f,\n     0.5f, -0.5f, 0.0f,\n     0.0f,  0.5f, 0.0f\n};\n\n// RGB color for each vertex\nGLfloat colors[] = {\n    1.0f, 0.0f, 0.0f, // Red\n    0.0f, 1.0f, 0.0f, // Green\n    0.0f, 0.0f, 1.0f  // Blue\n};\n\nvoid display() {\n    glClear(GL_COLOR_BUFFER_BIT);\n\n    glEnableClientState(GL_VERTEX_ARRAY);\n    glEnableClientState(GL_COLOR_ARRAY);\n\n    // Set vertex coordinates\n    glVertexPointer(3, GL_FLOAT, 0, vertices);\n\n    // Set vertex colors\n    glColorPointer(3, GL_FLOAT, 0, colors);\n\n    // Draw triangle\n    glDrawArrays(GL_TRIANGLES, 0, 3);\n\n    /*\n    glBegin(GL_TRIANGLES);\n        glArrayElement(0); // First vertex: Red\n        glArrayElement(1); // Second vertex: Green\n        glArrayElement(2); // Third vertex: Blue\n    glEnd();\n    */\n\n    glDisableClientState(GL_COLOR_ARRAY);\n    glDisableClientState(GL_VERTEX_ARRAY);\n\n    glFlush();\n}\n\nint main(int argc, char** argv) {\n    glutInit(&argc, argv);\n    glutInitWindowSize(800, 600);\n    glutCreateWindow(\"Color Array Demo\");\n\n    glutDisplayFunc(display);\n    glutMainLoop();\n\n    return 0;\n}", "list": ["glEnableClientState(GL_COLOR_ARRAY);", "glDrawArrays(GL_TRIANGLES, 0, 3);", "glDisableClientState(GL_VERTEX_ARRAY);", "glVertexPointer(3, GL_FLOAT, 0, vertices);", "glArrayElement(1);", "glEnableClientState(GL_VERTEX_ARRAY);", "glColorPointer(3, GL_FLOAT, 0, colors);", "glDisableClientState(GL_COLOR_ARRAY);"], "lp": "a", "k": ["glEnableClientState(GL_VERTEX_ARRAY);", "glEnableClientState(GL_COLOR_ARRAY);", "glVertexPointer(3, GL_FLOAT, 0, vertices);", "glColorPointer(3, GL_FLOAT, 0, colors);", "glDrawArrays(GL_TRIANGLES, 0, 3);", "glArrayElement(1);", "glDisableClientState(GL_COLOR_ARRAY);", "glDisableClientState(GL_VERTEX_ARRAY);"], "rows": [{"post": "Activates the vertex array so the triangle coordinates are used when drawing"}, {"post": "Activates the color array so each vertex gets its own color and OpenGL interpolates a smooth gradient"}, {"post": "Sets the vertex coordinates: 3 floats per vertex, stride 0 meaning the data is tightly packed"}, {"post": "Sets the per-vertex RGB colors"}, {"post": "Draws one triangle from three sequential vertices (the last argument is the vertex count)"}, {"post": "In the commented block, sends the second vertex (green) between glBegin() and glEnd()"}, {"post": "Turns the color array off at the end of display() so it does not affect later drawing"}, {"post": "Turns the vertex array off at the end of display() so it does not affect later drawing"}], "wide": true}, {"s": 5, "q": "P2 (Color Array Demo). Complete the display() function so the triangle is drawn using a vertex array and a color array. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["glEnableClientState(GL_VERTEX_ARRAY);", "glEnableClientState(GL_COLOR_ARRAY);", "glEnableClientState(GL_NORMAL_ARRAY);", "glColorPointer(3, GL_FLOAT, 0, colors);", "glColorPointer(3, GL_FLOAT, 0, vertices);", "glDrawArrays(GL_TRIANGLES, 0, 3);", "glDrawArrays(GL_QUADS, 0, 3);", "glDisableClientState(GL_COLOR_ARRAY);"], "lp": "n", "k": ["glEnableClientState(GL_VERTEX_ARRAY);", "glEnableClientState(GL_COLOR_ARRAY);", "glColorPointer(3, GL_FLOAT, 0, colors);", "glDrawArrays(GL_TRIANGLES, 0, 3);", "glDisableClientState(GL_COLOR_ARRAY);"], "tpl": "void display() {\n    glClear(GL_COLOR_BUFFER_BIT);\n\n    {0}\n    {1}\n\n    // Set vertex coordinates\n    glVertexPointer(3, GL_FLOAT, 0, vertices);\n\n    // Set vertex colors\n    {2}\n\n    // Draw triangle\n    {3}\n\n    {4}\n    glDisableClientState(GL_VERTEX_ARRAY);\n\n    glFlush();\n}", "wide": true}, {"s": 5, "q": "P3 (VBO Color Array Demo). Copy and paste the appropriate code to be used for the following", "c": [], "code": "#define GLEW_STATIC\n#include <GL/glew.h>\n#include <GL/glut.h>\n#include <iostream>\nusing namespace std;\n\nGLuint VBO;\n\n// Triangle coordinates\nGLfloat vertices[] = {\n    -0.5f, -0.5f, 0.0f,\n     0.5f, -0.5f, 0.0f,\n     0.0f,  0.5f, 0.0f\n};\n\n// RGB colors\nGLfloat colors[] = {\n    1.0f, 0.0f, 0.0f,\n    0.0f, 1.0f, 0.0f,\n    0.0f, 0.0f, 1.0f\n};\n\nvoid init() {\n    if (glewInit() != GLEW_OK) {\n        cout << \"GLEW initialization failed!\";\n        exit(1);\n    }\n\n    glGenBuffers(1, &VBO);\n    glBindBuffer(GL_ARRAY_BUFFER, VBO);\n\n    // Allocate space for vertices and colors\n    glBufferData(GL_ARRAY_BUFFER,\n                 sizeof(vertices) + sizeof(colors),\n                 NULL, GL_STATIC_DRAW);\n\n    // Upload vertex coordinates\n    glBufferSubData(GL_ARRAY_BUFFER,\n                    0, sizeof(vertices), vertices);\n\n    // Upload vertex colors\n    glBufferSubData(GL_ARRAY_BUFFER,\n                    sizeof(vertices),\n                    sizeof(colors), colors);\n\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n}\n\nvoid display() {\n    glClear(GL_COLOR_BUFFER_BIT);\n\n    glBindBuffer(GL_ARRAY_BUFFER, VBO);\n\n    glEnableClientState(GL_VERTEX_ARRAY);\n    glEnableClientState(GL_COLOR_ARRAY);\n\n    // Vertices begin at offset 0\n    glVertexPointer(3, GL_FLOAT, 0, (void*)0);\n\n    // Colors begin after the vertex data\n    glColorPointer(3, GL_FLOAT, 0,\n                   (void*)sizeof(vertices));\n\n    glDrawArrays(GL_TRIANGLES, 0, 3);\n\n    glDisableClientState(GL_COLOR_ARRAY);\n    glDisableClientState(GL_VERTEX_ARRAY);\n\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n    glFlush();\n}\n\nint main(int argc, char** argv) {\n    glutInit(&argc, argv);\n    glutInitWindowSize(800, 600);\n    glutCreateWindow(\"VBO Color Array Demo\");\n\n    init();\n\n    glutDisplayFunc(display);\n    glutMainLoop();\n\n    return 0;\n}", "list": ["glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);", "glBindBuffer(GL_ARRAY_BUFFER, 0);", "init();", "glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);", "glVertexPointer(3, GL_FLOAT, 0, (void*)0);", "glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), NULL, GL_STATIC_DRAW);", "glBindBuffer(GL_ARRAY_BUFFER, VBO);", "glColorPointer(3, GL_FLOAT, 0, (void*)sizeof(vertices));"], "lp": "a", "k": ["glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), NULL, GL_STATIC_DRAW);", "glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);", "glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);", "glBindBuffer(GL_ARRAY_BUFFER, VBO);", "glBindBuffer(GL_ARRAY_BUFFER, 0);", "glVertexPointer(3, GL_FLOAT, 0, (void*)0);", "glColorPointer(3, GL_FLOAT, 0, (void*)sizeof(vertices));", "init();"], "rows": [{"post": "Allocates 72 bytes (36 for vertices + 36 for colors) without filling them; NULL means the data is uploaded later"}, {"post": "Uploads the vertex coordinates at the start (offset 0) of the buffer"}, {"post": "Uploads the colors into the buffer right after the vertex data"}, {"post": "Called again in display() because init() unbound the buffer"}, {"post": "Unbinds the buffer so OpenGL switches back to normal pointer operation"}, {"post": "Tells OpenGL the vertices begin at offset 0 of the bound VBO"}, {"post": "Tells OpenGL the colors begin 36 bytes (9 floats x 4 bytes) into the VBO"}, {"post": "Called after glutCreateWindow() in main() because GLEW and the buffer functions need a valid OpenGL context"}], "wide": true}, {"s": 5, "q": "P3 (VBO Color Array Demo). Complete the init() function so the vertices and colors are stored in one VBO. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["glGenBuffers(1, &VBO);", "glBindBuffer(GL_ARRAY_BUFFER, VBO);", "glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);", "glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);", "glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(colors), colors);", "glDeleteBuffers(1, &VBO);", "glEnableClientState(GL_VERTEX_ARRAY);", "glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);"], "lp": "n", "k": ["glGenBuffers(1, &VBO);", "glBindBuffer(GL_ARRAY_BUFFER, VBO);", "glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);", "glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);"], "tpl": "void init() {\n    if (glewInit() != GLEW_OK) {\n        cout << \"GLEW initialization failed!\";\n        exit(1);\n    }\n\n    {0}\n    {1}\n\n    // Allocate space for vertices and colors\n    glBufferData(GL_ARRAY_BUFFER,\n                 sizeof(vertices) + sizeof(colors),\n                 NULL, GL_STATIC_DRAW);\n\n    // Upload vertex coordinates\n    {2}\n\n    // Upload vertex colors\n    {3}\n\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n}", "wide": true}, {"s": 5, "q": "P3 (VBO Color Array Demo). Complete the display() function so the vertices and colors are read from the VBO. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["glBindBuffer(GL_ARRAY_BUFFER, VBO);", "glBindBuffer(GL_ARRAY_BUFFER, 0);", "glVertexPointer(3, GL_FLOAT, 0, (void*)0);", "glVertexPointer(3, GL_FLOAT, 0, (void*)sizeof(colors));", "glColorPointer(3, GL_FLOAT, 0, (void*)sizeof(vertices));", "glColorPointer(3, GL_FLOAT, 0, (void*)0);", "glGenBuffers(1, &VBO);", "glBindBuffer(GL_ARRAY_BUFFER, 1);"], "lp": "n", "k": ["glBindBuffer(GL_ARRAY_BUFFER, VBO);", "glVertexPointer(3, GL_FLOAT, 0, (void*)0);", "glColorPointer(3, GL_FLOAT, 0, (void*)sizeof(vertices));", "glBindBuffer(GL_ARRAY_BUFFER, 0);"], "tpl": "void display() {\n    glClear(GL_COLOR_BUFFER_BIT);\n\n    {0}\n\n    glEnableClientState(GL_VERTEX_ARRAY);\n    glEnableClientState(GL_COLOR_ARRAY);\n\n    // Vertices begin at offset 0\n    {1}\n\n    // Colors begin after the vertex data\n    {2}\n\n    glDrawArrays(GL_TRIANGLES, 0, 3);\n\n    glDisableClientState(GL_COLOR_ARRAY);\n    glDisableClientState(GL_VERTEX_ARRAY);\n\n    {3}\n    glFlush();\n}", "wide": true}, {"s": 5, "q": "P4 (3D Cube Using VBO). Copy and paste the appropriate code to be used for the following (setup)", "c": [], "code": "#define GLEW_STATIC\n#include <iostream>\n#include <GL/glew.h>\n#include <GL/glut.h>\nusing namespace std;\n\nGLuint VBO;\n\n// Cube vertices: 6 faces, 4 vertices each\nGLfloat vertices[] = {\n    // FRONT\n    -1, -1,  1,\n     1, -1,  1,\n     1,  1,  1,\n    -1,  1,  1,\n\n    // BACK\n    -1, -1, -1,\n    -1,  1, -1,\n     1,  1, -1,\n     1, -1, -1,\n\n    // TOP\n    -1,  1, -1,\n    -1,  1,  1,\n     1,  1,  1,\n     1,  1, -1,\n\n    // BOTTOM\n    -1, -1, -1,\n     1, -1, -1,\n     1, -1,  1,\n    -1, -1,  1,\n\n    // RIGHT\n     1, -1, -1,\n     1,  1, -1,\n     1,  1,  1,\n     1, -1,  1,\n\n    // LEFT\n    -1, -1, -1,\n    -1, -1,  1,\n    -1,  1,  1,\n    -1,  1, -1\n};\n\nvoid init() {\n    // Initialize GLEW\n    if (glewInit() != GLEW_OK) {\n        cout << \"GLEW initialization failed!\";\n        exit(1);\n    }\n\n    glEnable(GL_DEPTH_TEST);\n\n    // Create VBO\n    glGenBuffers(1, &VBO);\n    glBindBuffer(GL_ARRAY_BUFFER, VBO);\n\n    // Upload cube vertices\n    glBufferData(GL_ARRAY_BUFFER,\n                 sizeof(vertices),\n                 vertices,\n                 GL_STATIC_DRAW);\n\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n\n    // Set perspective\n    glMatrixMode(GL_PROJECTION);\n    glLoadIdentity();\n    gluPerspective(45.0, 800.0 / 600.0, 1.0, 100.0);\n}\n\nvoid display() {\n    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);\n\n    glMatrixMode(GL_MODELVIEW);\n    glLoadIdentity();\n\n    // Move cube away from camera\n    glTranslatef(0.0f, 0.0f, -6.0f);\n\n    // Rotate cube\n    glRotatef(25.0f, 1.0f, 0.0f, 0.0f);\n    //glRotatef(35.0f, 0.0f, 1.0f, 0.0f);\n\n    // Bind VBO\n    glBindBuffer(GL_ARRAY_BUFFER, VBO);\n\n    // Enable vertex array\n    glEnableClientState(GL_VERTEX_ARRAY);\n    glVertexPointer(3, GL_FLOAT, 0, (void*)0);\n\n    // Draw each face with different color\n\n    glColor3f(1, 0, 0); // Red\n    glDrawArrays(GL_QUADS, 0, 4);\n\n    glColor3f(0, 1, 0); // Green\n    glDrawArrays(GL_QUADS, 4, 4);\n\n    glColor3f(0, 0, 1); // Blue\n    glDrawArrays(GL_QUADS, 8, 4);\n\n    glColor3f(1, 1, 0); // Yellow\n    glDrawArrays(GL_QUADS, 12, 4);\n\n    glColor3f(1, 0, 1); // Magenta\n    glDrawArrays(GL_QUADS, 16, 4);\n\n    glColor3f(0, 1, 1); // Cyan\n    glDrawArrays(GL_QUADS, 20, 4);\n\n    // Disable vertex array\n    glDisableClientState(GL_VERTEX_ARRAY);\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n\n    glFlush();\n}\n\nint main(int argc, char** argv) {\n    glutInit(&argc, argv);\n\n    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);\n    glutInitWindowSize(800, 600);\n    glutCreateWindow(\"3D Cube Using VBO\");\n\n    init();\n\n    glutDisplayFunc(display);\n    glutMainLoop();\n\n    return 0;\n}", "list": ["glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);", "glMatrixMode(GL_MODELVIEW);", "glEnableClientState(GL_VERTEX_ARRAY);", "glMatrixMode(GL_PROJECTION);", "glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);", "glEnable(GL_DEPTH_TEST);", "gluPerspective(45.0, 800.0 / 600.0, 1.0, 100.0);", "glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);"], "lp": "a", "k": ["glEnable(GL_DEPTH_TEST);", "glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);", "glMatrixMode(GL_PROJECTION);", "gluPerspective(45.0, 800.0 / 600.0, 1.0, 100.0);", "glMatrixMode(GL_MODELVIEW);", "glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);", "glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);", "glEnableClientState(GL_VERTEX_ARRAY);"], "rows": [{"post": "Makes OpenGL hide surfaces that are behind closer ones"}, {"post": "Requests a single-buffered RGB window with a depth buffer"}, {"post": "Selects the matrix that holds the perspective setup (used in init())"}, {"post": "Sets a 45 degree field of view, an 800:600 aspect ratio, and near/far planes at 1 and 100"}, {"post": "Selects the matrix that holds the translate/rotate of the cube (used in display())"}, {"post": "Uploads the cube vertices to the VBO: 72 floats x 4 bytes = 288 bytes"}, {"post": "Clears both the color and depth buffers on every frame because depth testing is used"}, {"post": "Activates the vertex array; the VBO stores only positions, so no color array is enabled"}], "wide": true}, {"s": 5, "q": "P4 (3D Cube Using VBO). Copy and paste the appropriate code to be used for the following (display transforms and drawing)", "c": [], "code": "#define GLEW_STATIC\n#include <iostream>\n#include <GL/glew.h>\n#include <GL/glut.h>\nusing namespace std;\n\nGLuint VBO;\n\n// Cube vertices: 6 faces, 4 vertices each\nGLfloat vertices[] = {\n    // FRONT\n    -1, -1,  1,\n     1, -1,  1,\n     1,  1,  1,\n    -1,  1,  1,\n\n    // BACK\n    -1, -1, -1,\n    -1,  1, -1,\n     1,  1, -1,\n     1, -1, -1,\n\n    // TOP\n    -1,  1, -1,\n    -1,  1,  1,\n     1,  1,  1,\n     1,  1, -1,\n\n    // BOTTOM\n    -1, -1, -1,\n     1, -1, -1,\n     1, -1,  1,\n    -1, -1,  1,\n\n    // RIGHT\n     1, -1, -1,\n     1,  1, -1,\n     1,  1,  1,\n     1, -1,  1,\n\n    // LEFT\n    -1, -1, -1,\n    -1, -1,  1,\n    -1,  1,  1,\n    -1,  1, -1\n};\n\nvoid init() {\n    // Initialize GLEW\n    if (glewInit() != GLEW_OK) {\n        cout << \"GLEW initialization failed!\";\n        exit(1);\n    }\n\n    glEnable(GL_DEPTH_TEST);\n\n    // Create VBO\n    glGenBuffers(1, &VBO);\n    glBindBuffer(GL_ARRAY_BUFFER, VBO);\n\n    // Upload cube vertices\n    glBufferData(GL_ARRAY_BUFFER,\n                 sizeof(vertices),\n                 vertices,\n                 GL_STATIC_DRAW);\n\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n\n    // Set perspective\n    glMatrixMode(GL_PROJECTION);\n    glLoadIdentity();\n    gluPerspective(45.0, 800.0 / 600.0, 1.0, 100.0);\n}\n\nvoid display() {\n    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);\n\n    glMatrixMode(GL_MODELVIEW);\n    glLoadIdentity();\n\n    // Move cube away from camera\n    glTranslatef(0.0f, 0.0f, -6.0f);\n\n    // Rotate cube\n    glRotatef(25.0f, 1.0f, 0.0f, 0.0f);\n    //glRotatef(35.0f, 0.0f, 1.0f, 0.0f);\n\n    // Bind VBO\n    glBindBuffer(GL_ARRAY_BUFFER, VBO);\n\n    // Enable vertex array\n    glEnableClientState(GL_VERTEX_ARRAY);\n    glVertexPointer(3, GL_FLOAT, 0, (void*)0);\n\n    // Draw each face with different color\n\n    glColor3f(1, 0, 0); // Red\n    glDrawArrays(GL_QUADS, 0, 4);\n\n    glColor3f(0, 1, 0); // Green\n    glDrawArrays(GL_QUADS, 4, 4);\n\n    glColor3f(0, 0, 1); // Blue\n    glDrawArrays(GL_QUADS, 8, 4);\n\n    glColor3f(1, 1, 0); // Yellow\n    glDrawArrays(GL_QUADS, 12, 4);\n\n    glColor3f(1, 0, 1); // Magenta\n    glDrawArrays(GL_QUADS, 16, 4);\n\n    glColor3f(0, 1, 1); // Cyan\n    glDrawArrays(GL_QUADS, 20, 4);\n\n    // Disable vertex array\n    glDisableClientState(GL_VERTEX_ARRAY);\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n\n    glFlush();\n}\n\nint main(int argc, char** argv) {\n    glutInit(&argc, argv);\n\n    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);\n    glutInitWindowSize(800, 600);\n    glutCreateWindow(\"3D Cube Using VBO\");\n\n    init();\n\n    glutDisplayFunc(display);\n    glutMainLoop();\n\n    return 0;\n}", "list": ["glTranslatef(0.0f, 0.0f, -6.0f);", "glDrawArrays(GL_QUADS, 12, 4);", "glLoadIdentity();", "glRotatef(35.0f, 0.0f, 1.0f, 0.0f);", "glColor3f();", "glRotatef(25.0f, 1.0f, 0.0f, 0.0f);", "glColor3f(0, 0, 1);"], "lp": "a", "k": ["glLoadIdentity();", "glTranslatef(0.0f, 0.0f, -6.0f);", "glRotatef(25.0f, 1.0f, 0.0f, 0.0f);", "glRotatef(35.0f, 0.0f, 1.0f, 0.0f);", "glDrawArrays(GL_QUADS, 12, 4);", "glColor3f(0, 0, 1);", "glColor3f();"], "rows": [{"post": "Resets the current matrix to the identity matrix before the cube is transformed"}, {"post": "Moves the cube away from the camera so it lies inside the viewing volume"}, {"post": "Rotates the cube 25 degrees around the X axis"}, {"post": "If the commented line is enabled, also turns the cube 35 degrees around the Y axis so a side face becomes visible"}, {"post": "Draws the BOTTOM face (faces are stored FRONT, BACK, TOP, BOTTOM, RIGHT, LEFT)"}, {"post": "Sets the color used by the TOP face (vertices 8 to 11), which is drawn in blue"}, {"post": "Called before each glDrawArrays() because the VBO only stores positions, so each face takes the current color"}], "wide": true}, {"s": 5, "q": "P4 (3D Cube Using VBO). Complete the init() function. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["glEnable(GL_DEPTH_TEST);", "glEnable(GL_COLOR_ARRAY);", "glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);", "glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), NULL, GL_STATIC_DRAW);", "glMatrixMode(GL_PROJECTION);", "glMatrixMode(GL_MODELVIEW);", "gluPerspective(45.0, 800.0 / 600.0, 1.0, 100.0);", "gluPerspective(800.0, 45.0, 1.0, 100.0);"], "lp": "n", "k": ["glEnable(GL_DEPTH_TEST);", "glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);", "glMatrixMode(GL_PROJECTION);", "gluPerspective(45.0, 800.0 / 600.0, 1.0, 100.0);"], "tpl": "void init() {\n    // Initialize GLEW\n    if (glewInit() != GLEW_OK) {\n        cout << \"GLEW initialization failed!\";\n        exit(1);\n    }\n\n    {0}\n\n    // Create VBO\n    glGenBuffers(1, &VBO);\n    glBindBuffer(GL_ARRAY_BUFFER, VBO);\n\n    // Upload cube vertices\n    {1}\n\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n\n    // Set perspective\n    {2}\n    glLoadIdentity();\n    {3}\n}", "wide": true}, {"s": 5, "q": "P4 (3D Cube Using VBO). Complete the display() function to draw the red FRONT face and the green BACK face of the cube. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);", "glClear(GL_COLOR_BUFFER_BIT);", "glTranslatef(0.0f, 0.0f, -6.0f);", "glTranslatef(0.0f, 0.0f, 6.0f);", "glRotatef(25.0f, 1.0f, 0.0f, 0.0f);", "glRotatef(25.0f, 0.0f, 1.0f, 0.0f);", "glDrawArrays(GL_QUADS, 0, 4);", "glDrawArrays(GL_QUADS, 4, 4);"], "lp": "n", "k": ["glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);", "glTranslatef(0.0f, 0.0f, -6.0f);", "glRotatef(25.0f, 1.0f, 0.0f, 0.0f);", "glDrawArrays(GL_QUADS, 0, 4);", "glDrawArrays(GL_QUADS, 4, 4);"], "tpl": "void display() {\n    {0}\n\n    glMatrixMode(GL_MODELVIEW);\n    glLoadIdentity();\n\n    // Move cube away from camera\n    {1}\n\n    // Rotate cube\n    {2}\n\n    glBindBuffer(GL_ARRAY_BUFFER, VBO);\n    glEnableClientState(GL_VERTEX_ARRAY);\n    glVertexPointer(3, GL_FLOAT, 0, (void*)0);\n\n    glColor3f(1, 0, 0); // Red\n    {3}\n\n    glColor3f(0, 1, 0); // Green\n    {4}\n\n    glDisableClientState(GL_VERTEX_ARRAY);\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n    glFlush();\n}", "wide": true}, {"s": 5, "q": "P4 (3D Cube Using VBO). Complete the main() function. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);", "glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);", "glutCreateWindow(\"3D Cube Using VBO\");", "init();", "glutDisplayFunc(display);", "glutMainLoop();", "glutPostRedisplay();", "glutKeyboardFunc(display);"], "lp": "n", "k": ["glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);", "glutCreateWindow(\"3D Cube Using VBO\");", "init();", "glutDisplayFunc(display);", "glutMainLoop();"], "tpl": "int main(int argc, char** argv) {\n    glutInit(&argc, argv);\n\n    {0}\n    glutInitWindowSize(800, 600);\n    {1}\n\n    {2}\n\n    {3}\n    {4}\n\n    return 0;\n}", "wide": true}, {"s": 5, "q": "Module 5 sample. Complete the triangle() function so it creates, uses, and frees a VBO. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["glGenBuffers(1, &VBOid);", "glBindBuffer(GL_ARRAY_BUFFER, VBOid);", "glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*9, trianglevertices, GL_STATIC_DRAW);", "glDisableClientState(GL_VERTEX_ARRAY);", "glDeleteBuffers(1, &VBOid);", "glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*3, trianglevertices, GL_STATIC_DRAW);", "glEnableClientState(GL_COLOR_ARRAY);", "glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);"], "lp": "n", "k": ["glGenBuffers(1, &VBOid);", "glBindBuffer(GL_ARRAY_BUFFER, VBOid);", "glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*9, trianglevertices, GL_STATIC_DRAW);", "glDisableClientState(GL_VERTEX_ARRAY);", "glDeleteBuffers(1, &VBOid);"], "tpl": "void triangle(){\n    //1. Initialize the triangle using an array\n    GLfloat trianglevertices[] = {\n         0.0f,  .75f, 0.0f,\n        -0.75f, 0.0f, 0.0f,\n         0.75f, 0.0f, 0.0f\n    };\n\n    //2. Generate a Vertex Buffer Object ID and bind it\n    GLuint VBOid;\n    {0}\n    {1}\n    {2}\n\n    //3. Activate and specify pointer to vertex array\n    glEnableClientState(GL_VERTEX_ARRAY);\n\n    //4. Draw the primitive object\n    glVertexPointer(3, GL_FLOAT, 0, 0);\n    glDrawArrays(GL_TRIANGLES,0,3);\n\n    //5. Disable client side capability for normal operation\n    {3}\n\n    // bind with 0, so, switch back to normal pointer operation\n    glBindBuffer(GL_ARRAY_BUFFER, 0);\n    {4}\n}", "wide": true}, {"s": 5, "q": "Module 5 sample. Complete modifyTriangle() so the triangle's vertices are changed directly inside the video card's memory. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);", "glMapBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);", "glUnmapBuffer(GL_ARRAY_BUFFER);", "glDeleteBuffers(1, &VBOid);", "glutPostRedisplay();", "glFlush();"], "lp": "n", "k": ["glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);", "glUnmapBuffer(GL_ARRAY_BUFFER);", "glutPostRedisplay();"], "tpl": "void modifyTriangle(int value){\n\n    triangleUpdate=true;\n\n    //Map the array from the server memory (video card) to the local variable\n    mappedVertices = (GLfloat *) {0}\n\n    mappedVertices[0]+=.01f;\n    mappedVertices[3]+=.01f;\n    mappedVertices[6]+=.01f;\n\n    {1}\n    {2}\n}", "wide": true}, {"s": 5, "q": "Module 6 sample. Complete the translate() function that applies the 4 x 4 translation matrix to one vertex of the mapped buffer. Copy and paste the appropriate code to the blanks below:", "c": [], "list": ["GLfloat w = 1.0f;", "GLfloat w = 0.0f;", "1.0f, 0.0f, 0.0f, x,", "0.0f, 1.0f, 0.0f, y,", "0.0f, 0.0f, 1.0f, z,", "0.0f, 0.0f, 0.0f, 1", "mapV[startindex] = tx;", "mapV[startindex+1] = ty;"], "lp": "n", "k": ["GLfloat w = 1.0f;", "1.0f, 0.0f, 0.0f, x,", "0.0f, 1.0f, 0.0f, y,", "0.0f, 0.0f, 1.0f, z,", "0.0f, 0.0f, 0.0f, 1", "mapV[startindex] = tx;"], "tpl": "void translate(float x, float y, float z, int startindex){\n\n    {0}\n    //Translation Matrix Template\n    GLfloat ta[] = {\n        {1}\n        {2}\n        {3}\n        {4}\n    };\n\n    GLfloat tx, ty, tz;\n    tx = (ta[0]*mapV[startindex]) + (ta[1]*mapV[startindex+1]) + (ta[2]*mapV[startindex+2]) + (ta[3]* w);\n    ty = (ta[4]*mapV[startindex]) + (ta[5]*mapV[startindex+1]) + (ta[6]*mapV[startindex+2]) + (ta[7]* w);\n    tz = (ta[8]*mapV[startindex]) + (ta[9]*mapV[startindex+1]) + (ta[10]*mapV[startindex+2]) + (ta[11]* w);\n\n    {5}\n    mapV[startindex+1] = ty;\n    mapV[startindex+2] = tz;\n}", "wide": true}];
+
+const KEYS = ["A","B","C","D","E","F","G","H","I"];
+const stage = document.getElementById("stage");
+let opts = {set:"all", shuffleQ:true, shuffleC:true};
+let showNav = false;
+let deck = [], at = 0;
+
+function pool(){
+  if(opts.set!=="all") return BANK.filter(q=>q.s===+opts.set);
+  return BANK.slice();
+}
+function shuffled(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function buildDeck(list){
+  const qs = opts.shuffleQ ? shuffled(list) : list.slice();
+  deck = qs.map(q=>({ref:q, order:(opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i)), picked:null, skipped:false, tempPicks:[], vals:[]}));
+  at=0;
+}
+
+const isFill = q => Array.isArray(q.k);
+const norm = x => String(x).replace(/\s+/g,"").replace(/\//g,"\\").toLowerCase();
+const blankOK = (q,v,i) => norm(v[i]||"")===norm(q.k[i]);
+const fillVals = it => it.ref.k.map((_,i)=>it.vals[i]||"");
+function blankInput(n,done){return `<input class="blank" data-i="${n}" placeholder="blank ${+n+1}" autocomplete="off" autocapitalize="off" spellcheck="false" ${done?"disabled":""}>`;}
+function fillHTML(it){
+  const q=it.ref, done=answered(it), lp=q.lp;
+  const lab=i=>lp==="a"?String.fromCharCode(97+i)+")":lp==="n"?(i+1)+".":"\u2022";
+  const bank=`<div class="bank ${q.wide?"col":""}">${q.list.map((x,i)=>`<button type="button" class="chip" data-v="${esc(x)}" ${done?"disabled":""}><span class="cl">${lab(i)}</span>${esc(x)}</button>`).join("")}</div>`;
+  const form = q.tpl
+    ? `<pre class="code">${q.tpl.split(/\{(\d+)\}/).map((p,i)=>i%2?blankInput(p,done):esc(p)).join("")}</pre>`
+    : q.rows.map((r,i)=>`<div class="brow ${q.wide?"wide":""}"><span class="n">${i+1}.</span>${r.pre?`<span>${esc(r.pre)}</span>`:""}${blankInput(i,done)}${r.post?`<span class="post">${esc(r.post)}</span>`:""}</div>`).join("");
+  return `${done?"":`<p class="filltip">Type each answer, or tap a choice to fill the selected blank. Nothing is checked until you press Submit.</p>`}${bank}${q.after?`<p class="after">${esc(q.after)}</p>`:""}${form}
+    ${done?"":`<div class="btnrow"><button class="btn sm" id="submitFill" type="button" disabled>Submit answers</button><span class="pending" id="fillcount">0 of ${q.k.length} filled</span></div>`}`;
+}
+function bindFill(it,done){
+  const q=it.ref, inputs=[...stage.querySelectorAll(".blank")];
+  if(done){revealFill(false);return;}
+  let active=inputs[0];
+  const refresh=()=>{
+    const n=fillVals(it).filter(v=>v.trim()).length;
+    stage.querySelector("#fillcount").textContent=n+" of "+q.k.length+" filled";
+    stage.querySelector("#submitFill").disabled = n!==q.k.length;
+  };
+  inputs.forEach((inp,i)=>{
+    inp.value=it.vals[i]||"";
+    inp.addEventListener("focus",()=>active=inp);
+    inp.addEventListener("input",()=>{it.vals[i]=inp.value;refresh();});
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault(); if(i<inputs.length-1) inputs[i+1].focus(); else submitFill();}});
+  });
+  stage.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{
+    const i=Math.max(0,inputs.indexOf(active));
+    inputs[i].value=c.dataset.v; it.vals[i]=c.dataset.v; refresh();
+    (inputs[i+1]||inputs[i]).focus();
+  }));
+  stage.querySelector("#submitFill").addEventListener("click",submitFill);
+  refresh();
+}
+function submitFill(){
+  const it=deck[at];
+  if(!it||answered(it)||fillVals(it).some(v=>!v.trim())) return;
+  it.picked=fillVals(it); it.skipped=false;
+  revealFill(true);
+}
+function revealFill(fresh){
+  const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
+  const good=q.k.filter((a,i)=>blankOK(q,it.picked,i)).length;
+  stage.querySelectorAll(".blank").forEach(inp=>{
+    const i=+inp.dataset.i, r=blankOK(q,it.picked,i);
+    inp.value=it.picked[i]; inp.disabled=true; inp.classList.add(r?"right":"wrong");
+  });
+  stage.querySelectorAll(".chip").forEach(c=>c.disabled=true);
+  ["#submitFill","#fillcount"].forEach(x=>{const e=stage.querySelector(x); if(e) e.remove();});
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b><p>All ${q.k.length} blanks are right.</p>` : `<b>Not quite.</b><p>${good} of ${q.k.length} blanks correct. Here are the ones you missed:</p>${q.k.map((a,i)=>blankOK(q,it.picked,i)?"":`<div class="fixrow"><span class="fn">blank ${i+1}</span><span class="bad">${esc(it.picked[i])}</span><span class="good">${esc(a)}</span></div>`).join("")}`;
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pendingIdx().length===0) ? "See your score" : "Next \u25B6";
+    n.focus();
+  }
+}
+function reviewItem(d){
+  const q=d.ref, ok=answered(d)&&isCorrectPick(q,d.picked);
+  let body;
+  if(isFill(q)){
+    body = !answered(d) ? `<p class="none">Left unanswered</p><p class="truth">Answers:<br>${correctLabel(q)}</p>`
+      : ok ? `<p class="ok">All ${q.k.length} blanks correct.</p>`
+      : q.k.map((a,i)=>blankOK(q,d.picked,i)?"":`<p class="yours">${i+1}. You typed: ${esc(d.picked[i]||"(blank)")}</p><p class="truth">Answer: ${esc(a)}</p>`).join("");
+  } else {
+    body = ok ? `<p class="ok">Correct: ${correctLabel(q)}</p>` : (answered(d)?`<p class="yours">You chose: ${pickedLabel(d)}</p>`:`<p class="none">Left unanswered</p>`);
+    if(!ok) body += `<p class="truth">Answer: ${correctLabel(q)}</p>`;
+  }
+  return `<div class="miss ${ok?"hit":(answered(d)?"":"unans")}"><p>${qCompact(q.q)}</p>${body}</div>`;
+}
+const isMulti = q => Array.isArray(q.a);
+const isRightIdx = (q,i) => isMulti(q) ? q.a.includes(i) : i===q.a;
+function sameSet(a,b){
+  if(a.length!==b.length) return false;
+  const sa=[...a].sort((x,y)=>x-y), sb=[...b].sort((x,y)=>x-y);
+  return sa.every((v,i)=>v===sb[i]);
+}
+const isCorrectPick = (q,picked) => {
+  if(picked===null) return false;
+  if(isFill(q)) return q.k.every((a,i)=>blankOK(q,picked,i));
+  return isMulti(q) ? sameSet(picked,q.a) : isRightIdx(q,picked);
+};
+function correctLabel(q){
+  if(isFill(q)) return q.k.map((a,i)=>(i+1)+". "+esc(a)).join("<br>");
+  if(!isMulti(q)) return esc(q.c[q.a]);
+  return q.a.map(i=>esc(q.c[i])).join(" &middot; ");
+}
+function pickedLabel(d){
+  if(!answered(d)) return "";
+  if(isMulti(d.ref)) return d.picked.map(i=>esc(d.ref.c[i])).join(" &middot; ");
+  return esc(d.ref.c[d.picked]);
+}
+const answered = it => it.picked !== null;
+const stateOf = it => answered(it) ? (isCorrectPick(it.ref,it.picked)?"ok":"no") : (it.skipped?"sk":"");
+const pendingIdx = () => deck.map((it,i)=>i).filter(i=>!answered(deck[i]));
+function nextPending(from){
+  for(let k=1;k<=deck.length;k++){const i=(from+k)%deck.length; if(!answered(deck[i])) return i;}
+  return -1;
+}
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  const cnt=k=>BANK.filter(q=>q.s===k).length;
+  stage.innerHTML = `
+    <div class="field">
+      <p class="lede">Which set do you want to drill?</p>
+      <p class="hint">Every question from the Modules 5 &amp; 6 reviewer.</p>
+      <div class="segs">
+        <button class="seg" type="button" data-set="all" aria-pressed="false">Full reviewer<span class="n">${BANK.length} questions</span></button>
+        ${Object.keys(SETS).map(Number).map(k=>`<button class="seg" type="button" data-set="${k}" aria-pressed="false">${SETS[k]}<span class="n">${cnt(k)} question${cnt(k)>1?"s":""}</span></button>`).join("")}
+      </div>
+    </div>
+    <div class="field">
+      <p class="lede">Shuffling</p>
+      <label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}>
+        <span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+      <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}>
+        <span>Shuffle the choices<small>Stops you from remembering "the third one".</small></span></label>
+    </div>
+    <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+  const segs=[...stage.querySelectorAll(".seg")];
+  const paint=()=>segs.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===opts.set)));
+  segs.forEach(b=>b.addEventListener("click",()=>{opts.set=b.dataset.set;paint();}));
+  paint();
+  stage.querySelector("#sq").addEventListener("change",e=>opts.shuffleQ=e.target.checked);
+  stage.querySelector("#sc").addEventListener("change",e=>opts.shuffleC=e.target.checked);
+  stage.querySelector("#go").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+}
+
+/* ---------- question ---------- */
+function renderQuestion(){
+  const it=deck[at], q=it.ref, done=answered(it);
+  const right=deck.filter(d=>stateOf(d)==="ok").length;
+  const pend=pendingIdx().length;
+
+  const meter=deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("");
+  const jumps=deck.map((d,i)=>
+    `<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}"
+      aria-label="Go to question ${i+1}">${i+1}</button>`).join("");
+
+  stage.innerHTML = `
+    <div class="meter">${meter}</div>
+    <div class="qhead">
+      <span>Question ${at+1} / ${deck.length}</span>
+      <span>${SETS[q.s]} &middot; ${right} correct</span>
+    </div>
+    <div class="navtog"><button class="btn quiet sm" id="navtoggle" type="button" aria-expanded="${showNav}" aria-controls="grid">${showNav?"Hide":"Show"} number navigation</button></div>
+    <div class="grid" id="grid" ${showNav?"":"hidden"}>
+      ${jumps}
+      <div class="legend">
+        <s><b style="background:var(--right)"></b>correct</s>
+        <s><b style="background:var(--wrong)"></b>wrong</s>
+        <s><b style="background:var(--skip)"></b>skipped</s>
+        <s><b style="background:var(--rule)"></b>not seen</s>
+      </div>
+    </div>
+    <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:``}</h2>
+    ${q.code?`<div class="refcode"><p class="lab">Reference code</p><pre>${esc(q.code)}</pre></div>`:""}
+    ${isFill(q)?fillHTML(it):`<div class="choices">
+      ${it.order.map((orig,pos)=>{
+        const picked = !done && isMulti(q) && it.tempPicks.includes(orig);
+        return `
+        <button class="choice${picked?" picked":""}" type="button" data-orig="${orig}" ${done?"disabled":""} ${isMulti(q)?`aria-pressed="${picked}"`:``}>
+          <span class="key">${KEYS[pos]}</span>
+          <span class="txt">${esc(q.c[orig])}</span>
+        </button>`;}).join("")}
+    </div>`}
+    ${(!done && isMulti(q))?`
+    <div class="btnrow">
+      <button class="btn sm" id="submitMulti" ${it.tempPicks.length!==q.a.length?"disabled":""}>Submit answer</button>
+      <span class="pending">${it.tempPicks.length} of ${q.a.length} selected</span>
+    </div>`:``}
+    <div class="verdict" id="verdict"></div>
+    <div class="nav">
+      <button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>
+      ${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}
+      <span class="spacer"></span>
+      <button class="btn sm" id="next">Next &#9654;</button>
+      <button class="btn ghost sm" id="finish">Finish &amp; score</button>
+      ${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:``}
+    </div>`;
+
+  stage.querySelector("#navtoggle").addEventListener("click",()=>{showNav=!showNav;renderQuestion();});
+  stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();}));
+  stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();}});
+  const sk=stage.querySelector("#skip");
+  if(sk) sk.addEventListener("click",()=>{deck[at].skipped=true;goNext();});
+  stage.querySelector("#next").addEventListener("click",goNext);
+  stage.querySelector("#finish").addEventListener("click",renderScore);
+
+  if(isFill(q)) bindFill(it,done);
+  else if(done) reveal(false);
+  else {
+    stage.querySelectorAll(".choice").forEach(b=>{
+      const orig=parseInt(b.dataset.orig,10);
+      b.addEventListener("click",()=> isMulti(q) ? toggleChoice(orig) : answer(orig));
+    });
+    const sm=stage.querySelector("#submitMulti");
+    if(sm) sm.addEventListener("click",submitMulti);
+  }
+}
+
+function toggleChoice(orig){
+  const it=deck[at], q=it.ref;
+  const i=it.tempPicks.indexOf(orig);
+  if(i>-1) it.tempPicks.splice(i,1);
+  else if(it.tempPicks.length<q.a.length) it.tempPicks.push(orig);
+  renderQuestion();
+}
+
+function submitMulti(){
+  const it=deck[at], q=it.ref;
+  if(it.tempPicks.length!==q.a.length) return;
+  it.picked=it.tempPicks.slice();
+  it.skipped=false;
+  reveal(true);
+}
+
+function goNext(){
+  if(at < deck.length-1){ at++; renderQuestion(); return; }
+  const np = nextPending(at);
+  if(np > -1){ at = np; renderQuestion(); }
+  else renderScore();
+}
+
+function reveal(fresh){
+  const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
+  stage.querySelectorAll(".choice").forEach(b=>{
+    const o=+b.dataset.orig; b.disabled=true;
+    const wasPicked = isMulti(q) ? it.picked.includes(o) : o===it.picked;
+    if(isRightIdx(q,o)){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`);}
+    else if(wasPicked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`);}
+    else b.classList.add("dim");
+  });
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b>` : `<b>Not quite.</b><p>The answer is ${correctLabel(q)}.</p>`;
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const pend=pendingIdx().length;
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pend===0) ? "See your score" : "Next \u25B6";
+    n.focus();
+  }
+}
+
+function answer(orig){
+  const it=deck[at];
+  if(answered(it)) return;
+  it.picked=orig; it.skipped=false;
+  reveal(true);
+}
+
+/* ---------- score ---------- */
+function renderScore(){
+  const done=deck.filter(answered);
+  const right=done.filter(d=>isCorrectPick(d.ref,d.picked)).length;
+  const misses=done.filter(d=>!isCorrectPick(d.ref,d.picked));
+  const unans=deck.filter(d=>!answered(d));
+  const pct=deck.length?Math.round(right/deck.length*100):0;
+  const line = unans.length ? `Scored out of all ${deck.length} questions &mdash; ${unans.length} left unanswered count as missed.`
+    : pct===100 ? "Clean run. Shuffle it and see if it holds."
+    : pct>=80 ? "Solid. Run the missed ones until they're automatic."
+    : pct>=60 ? "Getting there. The retry below drills only what you missed."
+    : "Worth another pass. Retry the misses first, then the full set.";
+  const fd=done.filter(d=>isFill(d.ref)), fT=fd.reduce((n,d)=>n+d.ref.k.length,0), fO=fd.reduce((n,d)=>n+d.ref.k.filter((a,i)=>blankOK(d.ref,d.picked,i)).length,0);
+  const redoList=[...misses.map(d=>d.ref), ...unans.map(d=>d.ref)];
+
+  stage.innerHTML = `
+    <p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p>
+    <p class="scoreline">${line}${fT?` Fill-in blanks: ${fO}/${fT} correct.`:""}</p>
+    <div class="btnrow">
+      <button class="btn" id="again">Repeat this set</button>
+      ${unans.length?`<button class="btn ghost" id="back">Go back and answer ${unans.length}</button>`:``}
+      ${redoList.length?`<button class="btn ghost" id="redo">Drill the ${redoList.length} missed</button>`:``}
+      <button class="btn quiet" id="home">Change settings</button>
+    </div>
+    <div class="review">
+      <h2>All ${deck.length} questions &mdash; ${right} correct, ${redoList.length} to review</h2>
+      ${[...misses,...unans,...done.filter(d=>isCorrectPick(d.ref,d.picked))].map(reviewItem).join("")}
+    </div>`;
+
+  stage.querySelector("#again").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+  stage.querySelector("#home").addEventListener("click",renderSetup);
+  const bk=stage.querySelector("#back");
+  if(bk) bk.addEventListener("click",()=>{const p=pendingIdx();at=p[0];renderQuestion();});
+  const rd=stage.querySelector("#redo");
+  if(rd) rd.addEventListener("click",()=>{buildDeck(redoList);renderQuestion();});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* keyboard */
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  if(e.target&&(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA")) return;
+  const btns=[...document.querySelectorAll(".choice")];
+  if(!btns.length) return;
+  const it=deck[at];
+  if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click();}return;}
+  if(e.key==="Enter"){const sm=document.getElementById("submitMulti");if(sm&&!sm.disabled){e.preventDefault();sm.click();return;}}
+  if(e.key==="ArrowRight"||e.key==="Enter"){const n=document.getElementById("next");if(n){e.preventDefault();n.click();}return;}
+  if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click();}return;}
+  if(answered(it)) return;
+  let i=-1;
+  if(/^[1-9]$/.test(e.key)) i=+e.key-1;
+  else {const k=KEYS.indexOf(e.key.toUpperCase()); if(k>-1) i=k;}
+  if(i>-1&&btns[i]){e.preventDefault();btns[i].click();}
+});
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+
+function formatQtext(text){
+  const parts = String(text).split("```");
+  let html = "";
+  parts.forEach((part,i)=>{
+    if(i % 2 === 1){
+      html += `<pre class="code">${esc(part.trim())}</pre>`;
+    } else {
+      const paras = part.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+      html += paras.map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
+    }
+  });
+  return html;
+}
+
+function qCompact(text){
+  const stripped = String(text).replace(/```([\s\S]*?)```/g, (m,c)=>" "+c.trim().replace(/\n+/g," ")+" ");
+  return esc(stripped.replace(/\s*\n\s*/g," ").replace(/\s{2,}/g," ").trim());
+}
+
+renderSetup();
+</script>
+<script src="script.js"></script>
+</body>
+</html>
