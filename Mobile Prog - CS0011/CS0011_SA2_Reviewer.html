@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Android Layouts &amp; Intents Quiz</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--text:#1d2433;--muted:#667085;--line:#d9dde7;--accent:#3d6df2;--ok:#1f9d55;--okbg:#e4f6ec;--bad:#d64545;--badbg:#fdeaea;--skip:#e8a317;--skipbg:#fff4d6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151c;--card:#1b2030;--text:#eceff6;--muted:#9aa3b5;--line:#2f3650;--accent:#7b9bff;--ok:#4cc582;--okbg:#14342443;--bad:#ff7777;--badbg:#3d1c1f;--skip:#f0b43c;--skipbg:#3a2f12;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12151c;--card:#1b2030;--text:#eceff6;--muted:#9aa3b5;--line:#2f3650;--accent:#7b9bff;--ok:#4cc582;--okbg:#14342443;--bad:#ff7777;--badbg:#3d1c1f;--skip:#f0b43c;--skipbg:#3a2f12;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.3rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.dash{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px}
+.dash button{height:40px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--text);font-weight:600;cursor:pointer;font-size:.9rem}
+.dash button.skip{background:var(--skipbg);border-color:var(--skip)}
+.dash button.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.dash button.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.dash button.cur{outline:3px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.8rem;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:2px solid var(--line)}
+.qnum{font-size:.85rem;color:var(--muted);margin-bottom:6px}
+.q{font-size:1.1rem;font-weight:600;margin:0 0 14px}
+.opt{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:8px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.fb{margin-top:12px;padding:12px 14px;border-radius:10px;font-size:.95rem}
+.fb.ok{background:var(--okbg);color:var(--ok)}
+.fb.bad{background:var(--badbg);color:var(--bad)}
+.fb b{color:var(--text)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{padding:10px 16px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-weight:600;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:disabled{opacity:.4;cursor:default}
+.sp{flex:1}
+input[type=text]{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font:inherit}
+.score{font-size:2.4rem;font-weight:700;margin:4px 0}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar div{height:100%;background:var(--accent);transition:width .3s}
+code{font-family:ui-monospace,Menlo,Consolas,monospace}
+</style>
+</head>
+<body>
+<main>
+  <h1>Android Layouts &amp; Intents Quiz</h1>
+  <div class="sub" id="status"></div>
+  <div class="bar"><div id="prog"></div></div>
+  <div class="card">
+    <div class="dash" id="dash"></div>
+    <div class="legend">
+      <span><i style="border-color:var(--accent)"></i>Current</span>
+      <span><i style="background:var(--ok);border-color:var(--ok)"></i>Correct</span>
+      <span><i style="background:var(--bad);border-color:var(--bad)"></i>Wrong</span>
+      <span><i style="background:var(--skipbg);border-color:var(--skip)"></i>Skipped</span>
+      <span><i></i>Not answered</span>
+    </div>
+  </div>
+  <div class="card" id="stage"></div>
+  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('https://raw.githubusercontent.com/akiiresu/reviewers-compilation/refs/heads/main/Mobile%20Prog%20-%20CS0011/CS0022_SA2_Reviewer.html','CS0011_SA2_Reviewer.html')">download it here.</a></p>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+</main>
+<script>
+var BANK=[
+{q:"What is a layout in Android?",o:["A background image for an Activity","A class for managing events","A resource file for app strings","A container that defines the structure of a user interface"],a:3},
+{q:"It is a ViewGroup which is used to specify the position of child View instances relative to each other or relative to the parent.",o:["Linear Layout","Frame Layout","Relative Layout","Web View"],a:2},
+{q:"In Android, layouts are typically defined in JSON file format.",o:["True","False"],a:1},
+{q:"We can not instantiate UI elements during runtime.",o:["True","False"],a:1},
+{q:"Linear layout is an example of ______________.",o:["View","Layout Attributes","ViewGroup","Controls"],a:2},
+{q:"An individual UI component generally referred to as a “widget”.",o:["ViewGroup","View","Layout","Resource"],a:1},
+{q:"TextView is an example of ________.",o:["ViewGroup","Resource ID","Event","View"],a:3},
+{q:"The onClickListener is called when the user either clicks or touches or focuses upon any widget like button, text, image etc.",o:["True","False"],a:0},
+{q:"You can create your layout in Android using HTML.",o:["True","False"],a:1},
+{q:"View is something that the user can see and interact with.",o:["True","False"],a:0},
+{q:"A unique resource name for the element, which you can use to obtain a reference to the View or ViewGroup from your application.",o:["Layout Attributes","Controls","ViewGroup","Resource ID"],a:3},
+{q:"The onClickListener is an event handler.",o:["True","False"],a:0},
+{q:"Implicit intents do not name a specific component, but instead declare a general action to perform, which allows a component from another app to handle it.",o:["True","False"],a:0},
+{q:"Explicit intents specify which application will satisfy the intent, by supplying either the target app’s package name or a fully-qualified component class name.",o:["True","False"],a:0},
+{q:"Intent can be use to launch an activity.",o:["True","False"],a:0},
+{q:"The target component which receives the intent can use the putExtras() method to get the extra data sent by the source component.",o:["True","False"],a:1},
+{q:"What are the main types of Intents?",o:["Internal and External","Explicit and Implicit","Static and Dynamic","Direct and Indirect"],a:1},
+{q:"What is the purpose of getIntent() in an Activity?",o:["To return the Intent that started the Activity","To send a result back to the caller","To create a new Intent","To destroy the current Intent"],a:0},
+{q:"How do you start a new Activity using an Intent?",o:["startContent(intent)","startActivity(intent)","startBroadcast(intent)","startService(intent)"],a:1},
+{q:"We can use the Intent.getExtras() in the target activity/class to get the attached bundle and extract the data stored in it.",o:["True","False"],a:0},
+{q:"How do you retrieve a value passed through an Intent?",o:["getData()","getValue()","getIntent().getExtras().getString(\"key\")","getBundle().getValue()"],a:2},
+{q:"Give the method that is used to pass data to another Activity.",text:true,answer:"putExtra() or putExtras()"},
+{q:"Bundle is a mapping from String keys to various parcelable values.",o:["True","False"],a:0},
+{q:"Implicit intents are often used to activate components in other applications.",o:["True","False"],a:0}
+];
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+var Q=[],cur=0,done=false;
+function start(){
+  Q=shuffle(BANK).map(function(b){
+    if(b.text)return {q:b.q,text:true,answer:b.answer,res:null,given:null,skipped:false};
+    var correct=b.o[b.a];
+    return {q:b.q,o:shuffle(b.o),correct:correct,res:null,given:null,skipped:false};
+  });
+  cur=0;done=false;render();
+}
+function answered(){return Q.filter(function(x){return x.res!==null}).length}
+function render(){
+  var n=Q.length,ans=answered(),right=Q.filter(function(x){return x.res===true}).length;
+  document.getElementById("status").textContent=done?"Quiz complete":"Question "+(cur+1)+" of "+n+" · "+ans+" answered · "+(n-ans)+" remaining";
+  document.getElementById("prog").style.width=(ans/n*100)+"%";
+  var d="";
+  Q.forEach(function(x,i){
+    var c=x.res===true?"ok":x.res===false?"bad":x.skipped?"skip":"";
+    if(i===cur&&!done)c+=" cur";
+    d+='<button class="'+c+'" onclick="go('+i+')" aria-label="Question '+(i+1)+'">'+(i+1)+'</button>';
+  });
+  document.getElementById("dash").innerHTML=d;
+  var st=document.getElementById("stage");
+  if(done){
+    var pct=Math.round(right/n*100);
+    st.innerHTML='<div class="qnum">Final score</div><div class="score">'+right+' / '+n+' ('+pct+'%)</div><p>'+(pct>=90?"Excellent work!":pct>=70?"Good job — review the red ones to improve.":"Keep practicing — tap any number above to review.")+'</p><div class="row"><button class="btn" onclick="review()">Review answers</button><button class="btn primary" onclick="start()">Retake (reshuffled)</button></div>';
+    return;
+  }
+  var x=Q[cur],h='<div class="qnum">Question '+(cur+1)+'</div><p class="q">'+esc(x.q)+'</p>';
+  var locked=x.res!==null;
+  if(x.text){
+    h+='<input type="text" id="ans" placeholder="Type your answer" autocomplete="off" '+(locked?'disabled value="'+esc(x.given||"")+'"':'')+' onkeydown="if(event.key===\'Enter\')submitText()">';
+    if(!locked)h+='<div class="row"><button class="btn primary" onclick="submitText()">Submit answer</button></div>';
+  }else{
+    x.o.forEach(function(t,i){
+      var c="opt";
+      if(locked){if(t===x.correct)c+=" right";else if(t===x.given)c+=" wrong"}
+      h+='<button class="'+c+'" '+(locked?"disabled":"")+' onclick="pick('+i+')">'+esc(t)+'</button>';
+    });
+  }
+  if(locked){
+    var correct=x.text?x.answer:x.correct;
+    h+=x.res?'<div class="fb ok">✓ Correct! The answer is <b>'+esc(correct)+'</b>.</div>':'<div class="fb bad">✗ Not quite. The correct answer is <b>'+esc(correct)+'</b>.</div>';
+  }else if(x.skipped){
+    h+='<div class="fb" style="background:var(--skipbg);color:var(--skip)">You skipped this one earlier. Answer it now or skip again.</div>';
+  }
+  var all=ans===n;
+  h+='<div class="row"><button class="btn" onclick="go(cur-1)" '+(cur===0?"disabled":"")+'>← Previous</button>'
+    +(locked?"":'<button class="btn" onclick="skip()">Skip</button>')
+    +'<span class="sp"></span>'
+    +(all?'<button class="btn primary" onclick="finish()">Finish quiz</button>':'<button class="btn" onclick="go(cur+1)" '+(cur===n-1?"disabled":"")+'>Next →</button>')
+    +'</div>';
+  st.innerHTML=h;
+}
+function go(i){if(i<0||i>=Q.length)return;cur=i;done=false;render();window.scrollTo({top:0,behavior:"smooth"})}
+function pick(i){var x=Q[cur];if(x.res!==null)return;x.given=x.o[i];x.res=(x.given===x.correct);x.skipped=false;render()}
+function submitText(){
+  var x=Q[cur];if(x.res!==null)return;
+  var v=document.getElementById("ans").value.trim();
+  if(!v)return;
+  x.given=v;x.res=/putextra/i.test(v);x.skipped=false;render();
+}
+function skip(){
+  Q[cur].skipped=true;
+  var n=Q.length,next=-1;
+  for(var k=1;k<=n;k++){var j=(cur+k)%n;if(Q[j].res===null){next=j;break}}
+  if(next===-1)next=Math.min(cur+1,n-1);
+  cur=next;render();
+}
+function finish(){done=true;render();window.scrollTo({top:0,behavior:"smooth"})}
+function review(){done=false;cur=0;render()}
+start();
+</script>
+<script src="script.js"></script>
+</body>
+</html>
