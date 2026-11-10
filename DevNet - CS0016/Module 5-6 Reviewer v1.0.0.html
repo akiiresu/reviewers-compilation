@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS0016 Summative Assessment 3 (Modules 5 &amp; 6) Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9edf1;--surface:#fff;--surface-sunk:#f3f6f9;--ink:#19222e;--ink-soft:#5a6875;--rule:#d3dae1;--accent:#1d5b8f;--right:#136b45;--right-bg:#e2f3ea;--wrong:#a32a1f;--wrong-bg:#fbe8e5;--skip:#8a6a17;--skip-bg:#fbf1da;--shadow:0 1px 0 rgba(25,34,46,.06),0 10px 24px -18px rgba(25,34,46,.45)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151a21;--surface:#1d242d;--surface-sunk:#232b35;--ink:#e6ebf0;--ink-soft:#9aa7b4;--rule:#313b47;--accent:#6fb0e6;--right:#5cc994;--right-bg:#17352a;--wrong:#f09489;--wrong-bg:#3a1f1c;--skip:#e0bd6a;--skip-bg:#332a15;--shadow:0 1px 0 rgba(0,0,0,.3),0 10px 24px -18px rgba(0,0,0,.8)}}
+:root[data-theme="dark"]{--bg:#151a21;--surface:#1d242d;--surface-sunk:#232b35;--ink:#e6ebf0;--ink-soft:#9aa7b4;--rule:#313b47;--accent:#6fb0e6;--right:#5cc994;--right-bg:#17352a;--wrong:#f09489;--wrong-bg:#3a1f1c;--skip:#e0bd6a;--skip-bg:#332a15;--shadow:0 1px 0 rgba(0,0,0,.3),0 10px 24px -18px rgba(0,0,0,.8)}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+.field{margin-bottom:1.5rem}.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}.switch span{font-size:.9rem}.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}.btn.ghost{background:transparent;color:var(--accent)}.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}.btn:disabled{opacity:.4;cursor:default}.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}.meter i.ok{background:var(--right)}.meter i.no{background:var(--wrong)}.meter i.sk{background:var(--skip)}.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;margin-top:.2rem}.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}.qtext p{margin:0 0 .6rem}.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}.choice.picked .key{color:var(--accent)}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}.choice.wrong .key{color:var(--wrong)}.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.verdict{margin-top:1rem;font-size:.9rem;display:none}.verdict.show{display:block}.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}.verdict.hit b{color:var(--right)}.verdict.miss b{color:var(--wrong)}.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;border-top:1px solid var(--rule);padding-top:1rem}.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace}
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}.miss.unans{border-color:var(--skip)}.miss p{margin:0;font-size:.92rem}.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}.miss .truth{color:var(--right);font-size:.85rem}.miss.hit{border-color:var(--right)}.miss .ok{color:var(--right);font-size:.85rem;margin-top:.25rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{padding-left:max(clamp(12px,4vw,24px),env(safe-area-inset-left,0px));padding-right:max(clamp(12px,4vw,24px),env(safe-area-inset-right,0px))}
+.grid{position:relative}
+.choice{min-height:2.75rem;overflow-wrap:anywhere;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn,.jump{touch-action:manipulation}
+@media (pointer:coarse){.btn{min-height:2.6rem}.jump{min-height:2.2rem}}
+@media (max-width:480px){.grid{grid-template-columns:repeat(auto-fill,minmax(2rem,1fr));gap:.25rem;padding:.6rem}.jump{font-size:.75rem;padding:.35rem 0}.nav .btn{flex:1 1 auto}.legend{gap:.5rem}.qhead{flex-wrap:wrap;gap:.2rem 1rem}}
+@media (orientation:landscape) and (max-height:520px){body{padding-top:12px;padding-bottom:40px}.wrap{max-width:860px}.masthead{margin-bottom:.7rem}.panel{padding:14px 18px}.meter{margin-bottom:.7rem}.qhead{margin-bottom:.7rem}.grid{max-height:5.4rem;overflow-y:auto;overscroll-behavior:contain;padding:.5rem;margin-bottom:.8rem}.qtext{font-size:1rem;margin-bottom:.8rem}.choice{padding:.5rem .7rem}.nav{margin-top:1rem;padding-top:.8rem}.score b{font-size:2.4rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead"><span class="code">CS0016</span><h1>Summative Assessment 3</h1><p>Modules 5 &amp; 6 reviewer</p></header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">50 questions, all multiple choice.</p>
+  <p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('raw github link','CS0016_M5-6_Reviewer.html')">download it here.</a></p>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+</div>
+<script>
+const BANK=[{"s":1,"q":"Which HTTP response code means ‘Not Found’?","c":["400","404","200","201"],"a":1},{"s":1,"q":"RESTCONF resources are identified by?","c":["URI","Schema ID","IP Address","Port Number"],"a":0},{"s":1,"q":"Which YANG keyword defines a new module?","c":["module","prefix","import","namespace"],"a":0},{"s":1,"q":"Which transport protocol does NETCONF typically run over?","c":["HTTPS","HTTP","SSH","FTP"],"a":2},{"s":1,"q":"Which YANG keyword is used to include another module?","c":["prefix","load","import","use"],"a":2},{"s":1,"q":"What does YANG stand for?","c":["Yet Another Network Group","YAML And Network Grammar","Yet Another Next Generation","Your API Network Guide"],"a":2},{"s":1,"q":"Which YANG node holds a single data element?","c":["container","list","key","leaf"],"a":3},{"s":1,"q":"Which encoding format is mandatory in NETCONF messages?","c":["JSON","XML","YAML","CSV"],"a":1},{"s":1,"q":"Which HTTP response code means ‘Bad Request’?","c":["403","401","500","400"],"a":3},{"s":1,"q":"Which HTTP response code indicates no content returned?","c":["500","200","204","201"],"a":2},{"s":1,"q":"Which RESTCONF data encoding format is human-friendly?","c":["CSV","Binary","JSON","XML"],"a":2},{"s":1,"q":"RESTCONF is defined in which RFC?","c":["RFC 6241","RFC 8040","RFC 6242","RFC 4741"],"a":1},{"s":1,"q":"What does NETCONF stand for?","c":["Network Connectivity Format","Network Configuration Protocol","Network Control Framework","Network Central Function"],"a":1},{"s":1,"q":"Which HTTP response code means ‘Forbidden’?","c":["400","401","500","403"],"a":3},{"s":1,"q":"Which Python module parses XML to dictionary format?","c":["ncclient","requests","yangson","xmltodict"],"a":3},{"s":1,"q":"Which NETCONF operation retrieves configuration and state data?","c":["get","edit-config","lock","copy-config"],"a":0},{"s":1,"q":"Which YANG type is used for true/false values?","c":["decimal64","int","string","boolean"],"a":3},{"s":1,"q":"Which RESTCONF feature supports event notifications?","c":["data","event-stream","schema","operations"],"a":1},{"s":1,"q":"Which data modeling language is most associated with NETCONF?","c":["YANG","YAML","JSON","XML"],"a":0},{"s":1,"q":"Which NETCONF operation is used to change configuration data?","c":["get-config","get","unlock","edit-config"],"a":3},{"s":1,"q":"Which HTTP response code indicates successful creation in RESTCONF?","c":["201","200","400","404"],"a":0},{"s":1,"q":"Which HTTP method modifies an existing RESTCONF resource?","c":["GET","HEAD","POST","PUT"],"a":3},{"s":1,"q":"Which YANG construct defines mandatory fields?","c":["type","must","list","namespace"],"a":1},{"s":1,"q":"Which of the following operations is NOT a NETCONF base operation?","c":["get","run-script","delete-config","edit-config"],"a":1},{"s":1,"q":"In NETCONF, what does the  element represent?","c":["A remote procedure call message","A REST API request","A Python function","A device schema"],"a":0},{"s":1,"q":"Which command starts a Docker container in detached mode?","c":["docker commit","docker exec -it","docker run -d","docker pull"],"a":2},{"s":1,"q":"What prevents CSRF attacks by validating a hidden token?","c":["DNS server","CSRFToken","Hash salting","Jump box"],"a":1},{"s":1,"q":"Which deployment strategy uses two environments, one for current users and one for new code?","c":["Bare metal","Rolling upgrade","Blue-Green deployment","Canary pipeline"],"a":2},{"s":1,"q":"What command does Jenkins use in a build step to execute shell scripts?","c":["Execute shell","Build pipeline","docker run","Hypervisor start"],"a":0},{"s":1,"q":"What is the main purpose of saving a Docker image to a registry?","c":["To encrypt code","To share images for deployment or reuse","To delete containers","To monitor logs"],"a":1},{"s":1,"q":"What is a “jump box”?","c":["A Docker registry","A password manager","A secure machine through which logins must pass first","A firewall tool"],"a":2},{"s":1,"q":"Which tool detects SQL injection flaws by analyzing source code?","c":["Hypervisor","DNS","Docker Hub","SAST tools"],"a":3},{"s":1,"q":"Which command builds a Docker image from a Dockerfile?","c":["docker pull","docker build","docker exec","docker run"],"a":1},{"s":1,"q":"Which Dockerfile command copies files into the image?","c":["RUN","CMD","WORKDIR","COPY"],"a":3},{"s":1,"q":"Which deployment model gives direct access to specialized hardware?","c":["Bare Metal","Containers","Serverless Computing","Virtual Machines"],"a":0},{"s":1,"q":"Which password storage method cannot be reversed?","c":["Plaintext","Hashed password","Encrypted text","Docker commit"],"a":1},{"s":1,"q":"What does Continuous Integration (CI) involve?","c":["Deploying to production automatically","Using only Docker","Merging developer changes frequently into a main branch","Encrypting source code"],"a":2},{"s":1,"q":"Which device spreads requests across multiple servers?","c":["Reverse proxy","DNS server","Firewall","Load balancer"],"a":3},{"s":1,"q":"Which structure is commonly used by large organizations for code quality?","c":["Development, testing, staging, production tiers","Single production environment","Continuous Delivery only","Serverless only"],"a":0},{"s":1,"q":"Which cloud model is managed completely by an organization itself?","c":["Hybrid Cloud","Edge Cloud","Private Cloud","Public Cloud"],"a":2},{"s":1,"q":"What is Continuous Deployment?","c":["Automatically deploying every version marked production-ready","Always writing new features","Using only staging environments","Building Docker images locally"],"a":0},{"s":1,"q":"What does the FROM command in a Dockerfile specify?","c":["Base image to install","Registry URL","Port number","Container name"],"a":0},{"s":1,"q":"What software manages virtual machines?","c":["Hypervisor","Jenkins","Kernel","Docker"],"a":0},{"s":1,"q":"Which load balancing method sends requests to the least busy server?","c":["Least connections","Persistent session","IP hash","Round robin"],"a":0},{"s":1,"q":"What problem can occur when multiple customers share public cloud resources?","c":["Hash collision","Noisy neighbor","Rainbow attack","Salt mismatch"],"a":1},{"s":1,"q":"What does the EXPOSE command in a Dockerfile do?","c":["Informs which port should be published","Logs into container","Runs the container","Uploads image to registry"],"a":0},{"s":1,"q":"Which type of cloud brings computing resources closer to IoT devices?","c":["Hybrid Cloud","Public Cloud","Edge Cloud","Private Cloud"],"a":2},{"s":1,"q":"What type of infrastructure is physically located inside the building?","c":["Serverless","Edge Cloud","On-Premises","Public Cloud"],"a":2},{"s":1,"q":"Which benefit is NOT associated with CI/CD?","c":["Shorter Mean Time To Resolution (MTTR)","Automated deployment","Improved quality","Manual testing only"],"a":3},{"s":1,"q":"Which load balancing method sends requests in order?","c":["Least connections","IP hash","Persistent session","Round robin"],"a":3}];
+
+const SETS={1:"SA3"};
+const SUB={1:"Summative Assessment 3"};
+const KEYS=["A","B","C","D","E","F","G","H","I"];
+const stage=document.getElementById("stage");
+let opts={set:"all",shuffleQ:true,shuffleC:true},deck=[],at=0;
+const pool=()=>opts.set==="all"?BANK.slice():BANK.filter(q=>q.s===+opts.set);
+function shuffled(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function buildDeck(list){
+  const qs=opts.shuffleQ?shuffled(list):list.slice();
+  deck=qs.map(q=>({ref:q,order:opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i),
+    picked:null,skipped:false,tempPicks:[]}));at=0}
+const isMulti=q=>Array.isArray(q.a);
+const isRightIdx=(q,i)=>isMulti(q)?q.a.includes(i):i===q.a;
+const sameSet=(a,b)=>a.length===b.length&&[...a].sort().every((v,i)=>v===[...b].sort()[i]);
+const isCorrectPick=(q,p)=>p===null?false:isMulti(q)?sameSet(p,q.a):isRightIdx(q,p);
+const answered=it=>it.picked!==null;
+const stateOf=it=>answered(it)?(isCorrectPick(it.ref,it.picked)?"ok":"no"):(it.skipped?"sk":"");
+const pendingIdx=()=>deck.map((_,i)=>i).filter(i=>!answered(deck[i]));
+function nextPending(f){for(let k=1;k<=deck.length;k++){const i=(f+k)%deck.length;if(!answered(deck[i]))return i}return -1}
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function formatQtext(t){return String(t).split("```").map((p,i)=>i%2?`<pre class="code">${esc(p.trim())}</pre>`:p.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<p>${esc(x).replace(/\n/g,"<br>")}</p>`).join("")).join("")}
+const qCompact=t=>esc(String(t).replace(/```([\s\S]*?)```/g,(m,c)=>" "+c.trim().replace(/\n+/g," ")+" ").replace(/\s+/g," ").trim());
+function correctLabel(q){
+  return isMulti(q)?q.a.map(i=>esc(q.c[i])).join(" &middot; "):esc(q.c[q.a])}
+const pickedLabel=d=>isMulti(d.ref)?d.picked.map(i=>esc(d.ref.c[i])).join(" &middot; "):esc(d.ref.c[d.picked]);
+
+function renderSetup(){
+  stage.innerHTML=`<div class="field"><p class="lede">Summative Assessment 3 &middot; Modules 5 &amp; 6</p><p class="hint">All ${BANK.length} multiple-choice questions, each one once.</p></div>
+  <div class="field"><p class="lede">Shuffling</p>
+  <label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}><span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+  <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}><span>Shuffle the choices<small>Stops you from remembering "the third one".</small></span></label></div>
+  <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+  stage.querySelector("#sq").addEventListener("change",e=>opts.shuffleQ=e.target.checked);
+  stage.querySelector("#sc").addEventListener("change",e=>opts.shuffleC=e.target.checked);
+  stage.querySelector("#go").addEventListener("click",()=>{buildDeck(pool());renderQuestion()});
+}
+
+function afterAnswer(){
+  const sk=stage.querySelector("#skip");if(sk)sk.remove();
+  const n=stage.querySelector("#next");n.textContent=(at===deck.length-1&&pendingIdx().length===0)?"See your score":"Next \u25B6";
+  n.focus();
+}
+
+function renderQuestion(){
+  const it=deck[at],q=it.ref,done=answered(it);
+  const right=deck.filter(d=>stateOf(d)==="ok").length,pend=pendingIdx().length;
+  const meter=deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("");
+  const jumps=deck.map((d,i)=>`<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}" aria-label="Go to question ${i+1}">${i+1}</button>`).join("");
+  stage.innerHTML=`<div class="meter">${meter}</div>
+  <div class="qhead"><span>Question ${at+1} / ${deck.length}</span><span>${right} correct &middot; ${deck.filter(answered).length} answered</span></div>
+  <div class="grid" id="grid">${jumps}<div class="legend"><s><b style="background:var(--right)"></b>correct</s><s><b style="background:var(--wrong)"></b>wrong</s><s><b style="background:var(--skip)"></b>skipped</s><s><b style="background:var(--rule)"></b>not seen</s></div></div>
+  <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:""}</h2>
+${q.img ? `<div class="qimg" style="margin: 0 0 1.2rem; text-align: center;"><img src="${esc(q.img)}" alt="Exhibit" style="max-width: 100%; border-radius: 5px; border: 1px solid var(--rule);"></div>` : ""}
+  <div class="choices">${it.order.map((orig,pos)=>{const pk=!done&&isMulti(q)&&it.tempPicks.includes(orig);
+    return `<button class="choice${pk?" picked":""}" type="button" data-orig="${orig}" ${done?"disabled":""} ${isMulti(q)?`aria-pressed="${pk}"`:""}><span class="key">${KEYS[pos]}</span><span class="txt">${esc(q.c[orig])}</span></button>`}).join("")}</div>
+  ${(!done&&isMulti(q))?`<div class="btnrow"><button class="btn sm" id="submitMulti" ${it.tempPicks.length!==q.a.length?"disabled":""}>Submit answer</button><span class="pending">${it.tempPicks.length} of ${q.a.length} selected</span></div>`:""}
+  <div class="verdict" id="verdict"></div>
+  <div class="nav"><button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}<span class="spacer"></span><button class="btn sm" id="next">Next &#9654;</button><button class="btn ghost sm" id="finish">Finish &amp; score</button>${pend?`<span class="pending" style="width:100%">${pend} question${pend>1?"s":""} still unanswered</span>`:""}</div>`;
+  const g=stage.querySelector("#grid"),nw=g.querySelector(".jump.now");
+  if(nw&&g.scrollHeight>g.clientHeight+2)g.scrollTop=nw.offsetTop-(g.clientHeight-nw.offsetHeight)/2;
+  stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();toTop()}));
+  stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();toTop()}});
+  const sk=stage.querySelector("#skip");if(sk)sk.addEventListener("click",()=>{deck[at].skipped=true;goNext()});
+  stage.querySelector("#next").addEventListener("click",goNext);
+  stage.querySelector("#finish").addEventListener("click",renderScore);
+  if(done)reveal(false);
+  else{stage.querySelectorAll(".choice").forEach(b=>{const o=+b.dataset.orig;b.addEventListener("click",()=>isMulti(q)?toggleChoice(o):answer(o))});
+    const sm=stage.querySelector("#submitMulti");if(sm)sm.addEventListener("click",submitMulti)}
+}
+function toggleChoice(o){const it=deck[at],q=it.ref,i=it.tempPicks.indexOf(o);if(i>-1)it.tempPicks.splice(i,1);else if(it.tempPicks.length<q.a.length)it.tempPicks.push(o);renderQuestion()}
+function submitMulti(){const it=deck[at],q=it.ref;if(it.tempPicks.length!==q.a.length)return;it.picked=it.tempPicks.slice();it.skipped=false;reveal(true)}
+function toTop(){if(stage.getBoundingClientRect().top<0)stage.scrollIntoView({block:"start"})}
+function goNext(){if(at<deck.length-1){at++;renderQuestion();toTop();return}const np=nextPending(at);if(np>-1){at=np;renderQuestion();toTop()}else renderScore()}
+function reveal(fresh){
+  const it=deck[at],q=it.ref,ok=isCorrectPick(q,it.picked);
+  stage.querySelectorAll(".choice").forEach(b=>{const o=+b.dataset.orig;b.disabled=true;
+    const was=isMulti(q)?it.picked.includes(o):o===it.picked;
+    if(isRightIdx(q,o)){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`)}
+    else if(was){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`)}
+    else b.classList.add("dim")});
+  const v=stage.querySelector("#verdict");v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML=ok?`<b>Correct.</b>`:`<b>Not quite.</b><p>The answer is ${correctLabel(q)}.</p>`;
+  if(fresh)afterAnswer();
+}
+function answer(o){const it=deck[at];if(answered(it))return;it.picked=o;it.skipped=false;reveal(true)}
+
+function reviewItem(d){
+  const q=d.ref,ok=answered(d)&&isCorrectPick(q,d.picked);
+  let body=ok?`<p class="ok">Correct: ${correctLabel(q)}</p>`:(answered(d)?`<p class="yours">You chose: ${pickedLabel(d)}</p>`:`<p class="none">Left unanswered</p>`);
+  if(!ok)body+=`<p class="truth">Answer: ${correctLabel(q)}</p>`;
+  return `<div class="miss ${ok?"hit":(answered(d)?"":"unans")}"><p>${qCompact(q.q)}</p>${body}</div>`;
+}
+function renderScore(){
+  const done=deck.filter(answered),right=done.filter(d=>isCorrectPick(d.ref,d.picked)).length;
+  const misses=done.filter(d=>!isCorrectPick(d.ref,d.picked)),unans=deck.filter(d=>!answered(d));
+  const pct=deck.length?Math.round(right/deck.length*100):0;
+  const line=unans.length?`Scored out of all ${deck.length} questions \u2014 ${unans.length} left unanswered count as missed.`:pct===100?"Clean run. Shuffle it and see if it holds.":pct>=80?"Solid. Run the missed ones until they're automatic.":pct>=60?"Getting there. The retry below drills only what you missed.":"Worth another pass. Retry the misses first, then the full set.";
+  const redo=[...misses.map(d=>d.ref),...unans.map(d=>d.ref)];
+  stage.innerHTML=`<p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p>
+  <p class="scoreline">${line}</p>
+  <div class="btnrow"><button class="btn" id="again">Repeat this set</button>${unans.length?`<button class="btn ghost" id="back">Go back and answer ${unans.length}</button>`:""}${redo.length?`<button class="btn ghost" id="redo">Drill the ${redo.length} missed</button>`:""}<button class="btn quiet" id="home">Change settings</button></div>
+  <div class="review"><h2>All ${deck.length} questions \u2014 ${right} correct, ${redo.length} to review</h2>${[...misses,...unans,...done.filter(d=>isCorrectPick(d.ref,d.picked))].map(reviewItem).join("")}</div>`;
+  stage.querySelector("#again").addEventListener("click",()=>{buildDeck(deck.map(d=>d.ref));renderQuestion()});
+  stage.querySelector("#home").addEventListener("click",renderSetup);
+  const bk=stage.querySelector("#back");if(bk)bk.addEventListener("click",()=>{at=pendingIdx()[0];renderQuestion()});
+  const rd=stage.querySelector("#redo");if(rd)rd.addEventListener("click",()=>{buildDeck(redo);renderQuestion()});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.target&&["INPUT","TEXTAREA","SELECT"].includes(e.target.tagName))return;
+  if(!deck.length||!document.getElementById("next"))return;
+  const it=deck[at],btns=[...document.querySelectorAll(".choice")];
+  if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click()}return}
+  if(e.key==="Enter"){const sm=document.getElementById("submitMulti");if(sm&&!sm.disabled){e.preventDefault();sm.click();return}}
+  if(e.key==="ArrowRight"||e.key==="Enter"){const n=document.getElementById("next");if(n){e.preventDefault();n.click()}return}
+  if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click()}return}
+  if(answered(it)||!btns.length)return;
+  let i=/^[1-9]$/.test(e.key)?+e.key-1:KEYS.indexOf(e.key.toUpperCase());
+  if(i>-1&&btns[i]){e.preventDefault();btns[i].click()}
+});
+renderSetup();
+
+</script>
+<script src="script.js"></script>
+</body>
+</html>
