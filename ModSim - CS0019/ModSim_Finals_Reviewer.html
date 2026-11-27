@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Final Exam Modeling &amp; Simulation Reviewer (CS0019)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-sunk:#f3f6f9;
+  --ink:#19222e; --ink-soft:#5a6875; --rule:#d3dae1;
+  --accent:#1d5b8f; --right:#136b45; --right-bg:#e2f3ea;
+  --wrong:#a32a1f; --wrong-bg:#fbe8e5; --skip:#8a6a17; --skip-bg:#fbf1da;
+  --shadow:0 1px 0 rgba(25,34,46,.06), 0 10px 24px -18px rgba(25,34,46,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+    --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+    --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+    --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --surface:#1d242d; --surface-sunk:#232b35;
+  --ink:#e6ebf0; --ink-soft:#9aa7b4; --rule:#313b47;
+  --accent:#6fb0e6; --right:#5cc994; --right-bg:#17352a;
+  --wrong:#f09489; --wrong-bg:#3a1f1c; --skip:#e0bd6a; --skip-bg:#332a15;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px;
+}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);
+  border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+
+/* setup */
+.field{margin-bottom:1.5rem}
+.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}
+.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);
+  border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;
+  transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}
+.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}
+.switch span{font-size:.9rem}
+.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;
+  padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+
+/* nav */
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}
+.meter i.ok{background:var(--right)}
+.meter i.no{background:var(--wrong)}
+.meter i.sk{background:var(--skip)}
+.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;
+  padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  max-height:11.5rem;overflow-y:auto}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}
+.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}
+.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;margin-top:.2rem}
+.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}
+.qtext p{margin:0 0 .6rem}
+.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;
+  font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;
+  font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);
+  border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;
+  color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;
+  padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);
+  flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice.picked .key{color:var(--accent)}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.choice.wrong .key{color:var(--wrong)}
+.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible,.qhead button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.verdict{margin-top:1rem;font-size:.9rem;display:none}
+.verdict.show{display:block}
+.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}
+.verdict.hit b{color:var(--right)}
+.verdict.miss b{color:var(--wrong)}
+.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.flagnote{margin-top:.8rem;font-size:.8rem;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:.6rem}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;
+  border-top:1px solid var(--rule);padding-top:1rem}
+.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace;width:100%}
+
+/* score */
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}
+.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}
+.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}
+.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}
+.miss.unans{border-color:var(--skip)}
+.miss p{margin:0;font-size:.92rem}
+.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}
+.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}
+.miss .truth{color:var(--right);font-size:.85rem}
+.miss.hit{border-color:var(--right)}.miss .ok{color:var(--right);font-size:.85rem;margin-top:.25rem}
+.allgood{color:var(--right);font-size:.92rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+.filltip{margin:0 0 .7rem;font-size:.78rem;color:var(--ink-soft)}
+.bank{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem;padding:.7rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.bank.col{flex-direction:column;gap:.3rem}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;text-align:left;cursor:pointer;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:.3rem .5rem;transition:border-color .12s}
+.chip:hover:not(:disabled){border-color:var(--accent)}.chip:disabled{cursor:default;opacity:.6}
+.chip .cl{color:var(--ink-soft);margin-right:.25rem}
+.after{margin:0 0 .8rem;font-size:.92rem}
+.brow{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.5rem 0;font-size:.92rem}
+.brow .n{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--ink-soft);min-width:1.4rem}
+.brow .post{flex:1 1 14rem}
+.blank{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:.4rem .5rem;width:min(100%,17rem)}
+pre.code .blank{width:min(100%,28rem);margin:.15rem 0}
+.blank:focus{outline:2px solid var(--accent);outline-offset:1px}
+.blank.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}
+.blank.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.fixrow{display:grid;grid-template-columns:4.5rem 1fr;gap:.1rem .6rem;margin-top:.55rem;padding-left:.6rem;border-left:2px solid var(--wrong);font-family:"IBM Plex Mono",monospace;font-size:.78rem;word-break:break-word}
+.fixrow .fn{grid-row:span 2;color:var(--ink-soft)}
+.fixrow .bad{color:var(--wrong);text-decoration:line-through}
+.fixrow .good{color:var(--right);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <span class="code">FINALS</span>
+    <h1>Modeling &amp; Simulation (CS0019)</h1>
+    <p>Full 130-item reviewer</p>
+  </header>
+  <main id="stage" class="panel"></main>
+  <p class="foot">130 questions from the CS0019 Final Examination Reviewer, grouped into 9 topics.</p>
+<p class="foot">If you'd like to study this material offline, <a href="#" onclick="downloadFile('raw github link','CS0019_Finals_Reviewer.html')">download it here.</a></p>
+</div>
+  <button id="back-btn" onclick="window.location.href='../index.html'">Back</button>
+<script>
+const SETS = {"1": "Foundations of M&S", "2": "MATLAB Arrays & Functions", "3": "Queuing Systems & DES", "4": "MATLAB Programming", "5": "Data Files: save & load", "6": "2D and 3D Plotting", "7": "Monte Carlo Simulation", "8": "Simulink Block Modeling", "9": "Visualization & VV&A"};
+const BANK = [{"s": 1, "q": "Which of the following best defines a 'model' in Modeling and Simulation?", "c": ["A simplified representation of a real system", "The execution of code over time to observe system output", "An exact physical duplicate of a real-world system", "The graphical animation of simulation statistics"], "a": 0}, {"s": 1, "q": "Which of the following best defines a 'simulation'?", "c": ["Building the mathematical equations that govern a system", "The execution of a model over time to study how the system behaves", "Presenting simulation results in 2D or 3D charts", "Simplifying a complex system into basic algebraic formulas"], "a": 1}, {"s": 1, "q": "Which of the four precepts of Modeling & Simulation involves building the logical or mathematical representation of the system?", "c": ["Modeling", "Simulation", "Visualization", "Analysis"], "a": 0}, {"s": 1, "q": "Which of the four precepts of Modeling & Simulation involves running (executing) the model to generate behavior and output?", "c": ["Modeling", "Simulation", "Visualization", "Analysis"], "a": 1}, {"s": 1, "q": "Which of the four precepts of Modeling & Simulation involves presenting the output (such as graphs and animations) so people can understand it?", "c": ["Modeling", "Simulation", "Visualization", "Analysis"], "a": 2}, {"s": 1, "q": "Which of the four precepts of Modeling & Simulation involves interpreting the output to draw conclusions and support decisions?", "c": ["Modeling", "Simulation", "Visualization", "Analysis"], "a": 3}, {"s": 1, "q": "Which supporting discipline generates random variates for model inputs and analyzes stochastic (random) output?", "c": ["Probability and Statistics", "Operations Research", "Computer Science", "Human Factors"], "a": 0}, {"s": 1, "q": "Which supporting discipline turns large volumes of simulation output into decision-making and optimization techniques?", "c": ["Operations Research", "Probability and Statistics", "Computer Science", "Human Factors"], "a": 0}, {"s": 1, "q": "Which supporting discipline implements the model in software and includes computer graphics and animation?", "c": ["Computer Science", "Operations Research", "Probability and Statistics", "Human Factors"], "a": 0}, {"s": 1, "q": "Which supporting discipline studies how people interact with systems and simulations?", "c": ["Human Factors", "Operations Research", "Computer Science", "Probability and Statistics"], "a": 0}, {"s": 1, "q": "The level of detail (granularity) represented in a model\u2014such as modeling each car individually versus modeling traffic per lane\u2014is called:", "c": ["Resolution", "Aggregation", "Fidelity", "Accuracy"], "a": 0}, {"s": 1, "q": "Grouping many individual entities or values into one combined representation\u2014such as treating individual students as 'year-level' groups or modeling an entire battalion as a single unit\u2014is called:", "c": ["Aggregation", "Resolution", "Fidelity", "Accuracy"], "a": 0}, {"s": 1, "q": "How closely a model, as a whole, reproduces the real system (for example, a flight trainer that feels like the real cockpit) is called:", "c": ["Fidelity", "Accuracy", "Resolution", "Aggregation"], "a": 0}, {"s": 1, "q": "How close a specific output value is to the true or measured value (such as a predicted temperature of 52\u00b0C compared to a measured 50\u00b0C) is called:", "c": ["Accuracy", "Fidelity", "Resolution", "Aggregation"], "a": 0}, {"s": 1, "q": "How should you determine whether a system is discrete or continuous?", "c": ["By how its state changes, not by whether the clock is continuous", "By whether simulation time advances in integer steps or decimal steps", "By whether the model uses random numbers or fixed inputs", "By whether the system involves physical objects or abstract entities"], "a": 0}, {"s": 1, "q": "Match each system or simulation classification to its defining characteristic using the answer pool:", "list": ["Discrete", "Continuous", "Static", "Dynamic", "Deterministic", "Stochastic", "Live", "Virtual", "Constructive"], "rows": [{"pre": "State changes only at distinct event instants (e.g., patients in a clinic):", "post": ""}, {"pre": "State changes smoothly over time, usually via differential equations:", "post": ""}, {"pre": "Time plays no role in the simulation:", "post": ""}, {"pre": "No randomness; the same input always gives the same output:", "post": ""}, {"pre": "Real people operating simulated equipment (e.g., a flight simulator):", "post": ""}, {"pre": "Simulated people operating in simulated systems (e.g., a computer war game):", "post": ""}], "k": ["Discrete", "Continuous", "Static", "Deterministic", "Virtual", "Constructive"]}, {"s": 1, "q": "When a problem is simple enough to be solved exactly with algebra or calculus (such as a single formula), what method should be tried first?", "c": ["The analytical method", "Monte Carlo simulation", "Discrete-event simulation", "Constructive simulation"], "a": 0}, {"s": 2, "q": "In MATLAB, what characters separate columns and rows when defining a matrix literal like `A = [1 2 3; 4 5 6]`?", "c": ["Spaces (or commas) separate columns; semicolons separate rows", "Semicolons separate columns; spaces (or commas) separate rows", "Colons separate columns; commas separate rows", "Commas separate rows; spaces separate matrices"], "a": 0}, {"s": 2, "q": "What is the resulting vector and number of elements produced by the MATLAB colon expression `2:3:12`?", "c": ["[2 5 8 11] with 4 elements", "[2 5 8 11 14] with 5 elements", "[2 3 12] with 3 elements", "[3 6 9 12] with 4 elements"], "a": 0}, {"s": 2, "q": "Which formula gives the number of elements generated by the MATLAB colon operator `a:step:b` (when `b >= a` and `step > 0`)?", "c": ["floor((b - a) / step) + 1", "ceil((b - a) / step)", "(b - a) / step - 1", "round((b + a) / step) + 1"], "a": 0}, {"s": 2, "q": "What does the MATLAB function `reshape(A, r, c)` do?", "c": ["Changes the dimensions to r rows by c columns while keeping the same elements taken column by column", "Transposes rows into columns and fills extra spaces with zeros", "Changes the dimensions to r rows by c columns by reading elements row by row", "Sorts all elements of A in ascending order into an r-by-c matrix"], "a": 0}, {"s": 2, "q": "Given `B = [1 5 2; 7 3 0]`, match each MATLAB size function call to its return value:", "list": ["[2 3]", "2", "3", "6", "[3 2]"], "rows": [{"pre": "size(B) returns:", "post": ""}, {"pre": "size(B, 1) returns:", "post": ""}, {"pre": "length(B) returns:", "post": ""}, {"pre": "numel(B) returns:", "post": ""}, {"pre": "size(B') returns:", "post": ""}], "k": ["[2 3]", "2", "3", "6", "[3 2]"]}, {"s": 2, "q": "What does the MATLAB `length(B)` function return for any matrix `B`?", "c": ["The largest dimension of B (equivalent to max(size(B)))", "The total number of elements in B", "Always the number of columns in B", "Always the number of rows in B"], "a": 0}, {"s": 2, "q": "In MATLAB, what is the key difference between `*`, `/`, `^` and `.*`, `./`, `.^`?", "c": ["Without a dot they follow linear-algebra matrix rules; with a dot they apply element-wise (position by position)", "Without a dot they apply to integers only; with a dot they apply to decimal numbers", "Without a dot they work column by column; with a dot they work row by row", "Without a dot they return logical arrays; with a dot they return numeric arrays"], "a": 0}, {"s": 2, "q": "Predict the output of `P * Q` and `P .* Q` given:\n```matlab\nP = [1 0; 2 1];\nQ = [3 1; 1 2];\n```", "c": ["P * Q = [3 1; 7 4] and P .* Q = [3 0; 2 2]", "P * Q = [3 0; 2 2] and P .* Q = [3 1; 7 4]", "P * Q = [3 1; 6 2] and P .* Q = [4 1; 3 3]", "P * Q = [3 2; 1 4] and P .* Q = [3 0; 2 2]"], "a": 0}, {"s": 2, "q": "What is the output of `A .* A'` when `A = [2 4; 6 8]`? (Remember to compute the transpose first!)", "c": ["[4 24; 24 64]", "[4 16; 36 64]", "[20 40; 40 80]", "[4 12; 12 64]"], "a": 0}, {"s": 2, "q": "For a 2D matrix `M`, how do MATLAB functions like `sum(M)`, `min(M)`, `max(M)`, `mean(M)`, and `prod(M)` operate by default?", "c": ["Column by column, returning a row vector", "Row by row, returning a column vector", "Across all elements at once, returning a single scalar", "Along the main diagonal only"], "a": 0}, {"s": 2, "q": "Given `M = [3 9; 5 1; 4 6]`, what do `sum(M)`, `sum(M, 2)`, and `max(M(:))` return respectively?", "c": ["[12 16], [12; 6; 10], and 9", "[12; 6; 10], [12 16], and [5 9]", "28, [12 16], and 9", "[12 16], [12 6 10], and [9; 5; 6]"], "a": 0}, {"s": 2, "q": "In MATLAB, what does `M(:)` do when passed into a function like `max(M(:))`?", "c": ["Reshapes all elements of M into a single column list so the function operates across every element", "Extracts only the first column of M", "Transposes M into a row vector", "Replaces all elements of M with colons"], "a": 0}, {"s": 2, "q": "What is the resulting vector `v` after executing the following MATLAB statements?\n```matlab\nv = 3:3:15;\nv([1 5]) = [];\n```", "c": ["[6 9 12]", "[3 9 12]", "[6 9 15]", "[3 6 9 12 15]"], "a": 0}, {"s": 2, "q": "In MATLAB indexing, what does `v(end)` refer to?", "c": ["The last element of vector v", "The index immediately after the vector ends (causes an error)", "The total length of vector v", "An empty array []"], "a": 0}, {"s": 2, "q": "In MATLAB, how does `mod(x, m)` handle negative dividends like `mod(-7, 3)`?", "c": ["The result takes the sign of the divisor m, so mod(-7, 3) = 2", "The result takes the sign of the dividend x, so mod(-7, 3) = -1", "It always returns 0 for negative numbers", "It throws a negative-input domain error"], "a": 0}, {"s": 2, "q": "Given `x = [-4 -1 6 7]`, what do `mod(x, 3)` and `x >= 0` evaluate to?", "c": ["mod(x, 3) = [2 2 0 1] and x >= 0 = [0 0 1 1]", "mod(x, 3) = [-1 -1 0 1] and x >= 0 = [0 0 1 1]", "mod(x, 3) = [2 2 0 1] and x >= 0 = [6 7]", "mod(x, 3) = [1 1 0 2] and x >= 0 = [0 0 0 1]"], "a": 0}, {"s": 2, "q": "What does `mod(n, 2)` evaluate to for integers in MATLAB?", "c": ["0 for even integers and 1 for odd integers", "1 for even integers and 0 for odd integers", "0 for positive integers and -1 for negative integers", "True for divisible by 2 and False otherwise"], "a": 0}, {"s": 2, "q": "Which MATLAB relational operator tests for 'not equal to'?", "c": ["~=", "!=", "<>", "=/="], "a": 0}, {"s": 2, "q": "If `Total = 10;` is defined in MATLAB, what happens when you reference `total`?", "c": ["MATLAB treats Total and total as two completely different variables because it is case-sensitive", "MATLAB automatically accesses Total because variable names are case-insensitive", "MATLAB converts total to lowercase and overwrites Total", "MATLAB returns 10 with a style warning"], "a": 0}, {"s": 2, "q": "Fill in the blanks to complete the MATLAB array commands using the answer pool:", "list": ["reshape(A, 3, 2)", "v([1 3]) = []", "sum(M, 2)", "Q.^2", "rem(-7, 3)"], "rows": [{"pre": "Compute row totals of matrix M as a column vector:", "post": ""}, {"pre": "Square every individual element of matrix Q:", "post": ""}, {"pre": "Delete the 1st and 3rd elements from vector v:", "post": ""}, {"pre": "Change a 2x3 matrix A into a 3x2 matrix column by column:", "post": ""}, {"pre": "Returns -1 (keeps the sign of the dividend -7):", "post": ""}], "k": ["sum(M, 2)", "Q.^2", "v([1 3]) = []", "reshape(A, 3, 2)", "rem(-7, 3)"]}, {"s": 3, "q": "In a queuing system, what is the 'Entity'?", "c": ["The object that moves through the system (e.g., customer, job, patient)", "The teller, machine, or nurse that provides service", "The waiting line formed when a server is busy", "The duration between two consecutive arrivals"], "a": 0}, {"s": 3, "q": "In a queuing system, what is the 'Resource / Server'?", "c": ["The component that provides the service (e.g., teller, machine, nurse)", "The customer or patient moving through the system", "The rule deciding which customer is served next", "The clock time when a customer leaves the system"], "a": 0}, {"s": 3, "q": "What is the difference between Inter-Arrival Time (IAT) and Arrival Time (AT) in a single-server simulation table?", "c": ["IAT is the time gap between consecutive arrivals; AT is the accumulated clock time when the customer arrives", "IAT is the clock time of arrival; AT is the time spent waiting in line", "IAT is the time spent with the server; AT is the total time in the system", "IAT and AT are identical for every customer after Customer 1"], "a": 0}, {"s": 3, "q": "A shopper arrives at a grocery store, sees a long checkout line, and walks out without joining it. Which customer behavior is this?", "c": ["Balking", "Reneging", "Jockeying", "Preemption"], "a": 0}, {"s": 3, "q": "A caller joins a customer-support hold queue, waits for five minutes, and hangs up before being served. Which customer behavior is this?", "c": ["Reneging", "Balking", "Jockeying", "Idling"], "a": 0}, {"s": 3, "q": "A driver in a multi-lane tollbooth switches from one queue to an adjacent shorter queue to wait less. Which customer behavior is this?", "c": ["Jockeying", "Balking", "Reneging", "FIFO"], "a": 0}, {"s": 3, "q": "Match each queue discipline to the rule for who is served next:", "list": ["FIFO / FCFS", "LIFO", "SIRO", "Priority"], "rows": [{"pre": "The earliest arrival is served first (first come, first served):", "post": ""}, {"pre": "The most recent arrival is served first (last in, first out):", "post": ""}, {"pre": "A randomly chosen customer is served next (service in random order):", "post": ""}, {"pre": "Customers are served by rank, such as shortest processing time first:", "post": ""}], "k": ["FIFO / FCFS", "LIFO", "SIRO", "Priority"]}, {"s": 3, "q": "In a single-server simulation table, which formula computes Time Service Begins (TSb) for a customer?", "c": ["MAX(AT, previous TSe)", "MIN(AT, previous TSe)", "AT + ST", "previous AT + IAT"], "a": 0}, {"s": 3, "q": "Why can Waiting Time in Queue (WT) and Server Idle Time (IdT) NEVER both be positive for the same customer in a single-server table?", "c": ["Because either the customer arrived early and waited for the server (WT > 0), or the server finished early and waited for the customer (IdT > 0)", "Because WT is always equal to zero in discrete-event simulations", "Because IdT is subtracted from WT whenever a customer arrives", "Because servers are never allowed to be idle after Customer 1"], "a": 0}, {"s": 3, "q": "Match each single-server simulation table quantity to its correct formula:", "list": ["previous AT + IAT", "MAX(AT, previous TSe)", "TSb - AT", "TSb + ST", "TSe - AT", "TSb - previous TSe"], "rows": [{"pre": "Arrival Time (AT) =", "post": ""}, {"pre": "Time Service Begins (TSb) =", "post": ""}, {"pre": "Waiting Time in Queue (WT) =", "post": ""}, {"pre": "Time Service Ends (TSe) =", "post": ""}, {"pre": "Time in System (TSp) =", "post": ""}, {"pre": "Server Idle Time (IdT) =", "post": ""}], "k": ["previous AT + IAT", "MAX(AT, previous TSe)", "TSb - AT", "TSb + ST", "TSe - AT", "TSb - previous TSe"]}, {"s": 3, "q": "In a single-server simulation, Customer 4 has AT = 9.75 and TSe = 16.25. If Customer 5 arrives with IAT = 3.00 and ST = 2.00, what are Customer 5's AT, TSb, WT, TSe, TSp, and IdT?", "c": ["AT = 12.75, TSb = 16.25, WT = 3.50, TSe = 18.25, TSp = 5.50, IdT = 0.00", "AT = 12.75, TSb = 12.75, WT = 0.00, TSe = 14.75, TSp = 2.00, IdT = 3.50", "AT = 19.25, TSb = 19.25, WT = 0.00, TSe = 21.25, TSp = 2.00, IdT = 3.00", "AT = 12.75, TSb = 16.25, WT = 0.00, TSe = 18.25, TSp = 2.00, IdT = 3.50"], "a": 0}, {"s": 3, "q": "In a single-server simulation, Customer 2 finishes service at TSe = 7.75. Customer 3 arrives at AT = 8.50 with ST = 2.75. What are Customer 3's WT and IdT?", "c": ["WT = 0.00 and IdT = 0.75", "WT = 0.75 and IdT = 0.00", "WT = 0.75 and IdT = 0.75", "WT = 2.75 and IdT = 0.00"], "a": 0}, {"s": 3, "q": "In a 4-customer simulation where waiting times (WT) are [0.00, 2.50, 0.00, 1.50], what is the average waiting time and the probability that a customer waits?", "c": ["Average WT = 1.00; probability a customer waits = 0.50 (2/4)", "Average WT = 2.00; probability a customer waits = 0.50 (2/4)", "Average WT = 1.00; probability a customer waits = 0.25 (1/4)", "Average WT = 4.00; probability a customer waits = 1.00 (4/4)"], "a": 0}, {"s": 3, "q": "At the start of a single-server simulation (before Customer 1 arrives at AT = 0.00), what value is assumed for 'previous TSe'?", "c": ["0, because the server starts free and the clock is at 0", "Infinity, because no previous customer exists", "Equal to Customer 1's service time (ST)", "Undefined until Customer 2 arrives"], "a": 0}, {"s": 3, "q": "Which formula summarizes the 'probability a customer waits' from a completed simulation table of n customers?", "c": ["(number of customers with WT > 0) / n", "sum(WT) / n", "sum(IdT) / sum(TSe)", "(number of customers with TSp > ST) / sum(ST)"], "a": 0}, {"s": 4, "q": "How do a MATLAB script's workspace and a MATLAB function's workspace differ?", "c": ["A script uses and modifies variables in the main (base) workspace; a function has its own private local workspace", "A script has a private local workspace; a function modifies variables directly in the base workspace", "Neither scripts nor functions can store variables in memory", "Scripts return output arguments explicitly, whereas functions cannot return anything"], "a": 0}, {"s": 4, "q": "Consider the following MATLAB function saved as `rectArea.m`:\n```matlab\nfunction area = rectArea(L, W)\n    p = L * W;\n    area = p;\nend\n```\nAfter running `a = rectArea(2, 5);` in the Command Window, what happens if you type `p` in the Command Window?", "c": ["An error occurs because p is local to the function and disappears after the call", "MATLAB prints p = 10", "MATLAB prints p = 0", "MATLAB prints a = 10"], "a": 0}, {"s": 4, "q": "What is the difference between `x = input('Enter: ')` and `s = input('Enter: ', 's')` in MATLAB?", "c": ["The first evaluates the typed entry as a numeric value; the second stores the entry as text (a character array)", "The first stores text; the second evaluates numeric expressions", "The first displays the prompt without waiting; the second pauses execution", "The first accepts scalars only; the second accepts matrices only"], "a": 0}, {"s": 4, "q": "How does `disp(X)` differ from typing `X` without a semicolon in MATLAB?", "c": ["disp(X) shows only the value of X, whereas typing X without a semicolon shows both the variable name and value (X = ...)", "disp(X) prints to a file, whereas X prints to the screen", "disp(X) formats decimals automatically, whereas X rounds to integers", "There is no difference in output formatting"], "a": 0}, {"s": 4, "q": "Match each MATLAB `fprintf` format specifier or escape sequence to what it outputs:", "list": ["%d", "%f", "%.2f", "%e", "%s", "\\n"], "rows": [{"pre": "Integer value:", "post": ""}, {"pre": "Fixed-point number (6 decimal places by default):", "post": ""}, {"pre": "Fixed-point number rounded to 2 decimal places:", "post": ""}, {"pre": "Exponential (scientific) notation:", "post": ""}, {"pre": "Text / character string:", "post": ""}, {"pre": "New line character:", "post": ""}], "k": ["%d", "%f", "%.2f", "%e", "%s", "\\n"]}, {"s": 4, "q": "What happens in MATLAB if you pass a non-integer value (such as `4.5`) to the `%d` format specifier in `fprintf`?", "c": ["MATLAB prints the value in exponential form instead of truncating it", "MATLAB rounds it to the nearest integer", "MATLAB throws a format mismatch error and halts", "MATLAB prints NaN"], "a": 0}, {"s": 4, "q": "What does the following MATLAB code print?\n```matlab\nfprintf('P=%d Q=%.1f\\n', 4*3, 9/2)\n```", "c": ["P=12 Q=4.5", "P=12 Q=4.500000", "P=12.0 Q=4", "P=4*3 Q=9/2"], "a": 0}, {"s": 4, "q": "What do the following two MATLAB `fprintf` statements output?\n```matlab\nfprintf('%d-%d\\n', 3, 4);\nfprintf('%.2f\\n', 7/4);\n```", "c": ["3-4 on the first line, followed by 1.75 on the second line", "3-41.75 all on a single line", "3-4 on the first line, followed by 1.750000 on the second line", "3 - 4 on the first line, followed by 2 on the second line"], "a": 0}, {"s": 4, "q": "How does MATLAB evaluate an `if / elseif / else` chain?", "c": ["Conditions are checked top to bottom, and ONLY the first true branch runs", "All true branches in the chain are executed in sequence", "Conditions are checked bottom to top, and the last true branch runs", "The branch with the highest numerical value runs"], "a": 0}, {"s": 4, "q": "Trace the following MATLAB selection code when `t = 15`. Which letter is assigned to `grade`?\n```matlab\nif t >= 20\n    grade = 'A';\nelseif t > 15\n    grade = 'B';\nelseif t >= 10\n    grade = 'C';\nelse\n    grade = 'D';\nend\n```", "c": ["'C'", "'B'", "'A'", "'D'"], "a": 0}, {"s": 4, "q": "In MATLAB logical expressions, what is the difference between `&&` and `||`?", "c": ["&& means logical AND (both conditions must be true); || means logical OR (at least one condition must be true)", "&& means logical OR; || means logical AND", "&& compares matrices element-wise; || compares strings only", "&& means bitwise XOR; || means logical NOT"], "a": 0}, {"s": 4, "q": "How does a `switch` statement behave in MATLAB when a `case` matches?", "c": ["It runs only the first matching case (there is no fall-through), and runs 'otherwise' if no case matches", "It falls through and runs all subsequent cases unless a break statement is written", "It requires constant literals only and cannot evaluate expressions in case labels", "It throws an error if no case matches and 'otherwise' is omitted"], "a": 0}, {"s": 4, "q": "Trace the following `switch` statement. What is the value of `x`?\n```matlab\ncode = 'B';\nswitch code\n    case 'A'\n        x = 10;\n    case 'C'\n        x = 30;\n    otherwise\n        x = 0;\nend\n```", "c": ["0", "10", "30", "An error occurs because 'B' is missing"], "a": 0}, {"s": 4, "q": "How many times does the body of the loop `for r = 10:-2.5:0` execute?", "c": ["5 times (for r = 10, 7.5, 5, 2.5, 0)", "4 times (for r = 10, 7.5, 5, 2.5)", "6 times", "0 times because the step is negative"], "a": 0}, {"s": 4, "q": "Trace the following MATLAB `for` loop line by line. What is the final value of `s` after the loop finishes?\n```matlab\ns = 0;\nfor k = 1:4\n    if mod(k, 2) == 1\n        s = s + k;\n    else\n        s = s - 1;\n    end\nend\n```", "c": ["2", "4", "10", "0"], "a": 0}, {"s": 4, "q": "Trace the following MATLAB `while` loop. What are the values of `n` and `c` when the loop terminates?\n```matlab\nn = 100;\nc = 0;\nwhile n > 10\n    n = n / 2;\n    c = c + 1;\nend\n```", "c": ["n = 6.25 and c = 4", "n = 12.5 and c = 3", "n = 3.125 and c = 5", "n = 10 and c = 4"], "a": 0}, {"s": 4, "q": "When does a MATLAB `while condition` loop test its condition?", "c": ["Before every pass, stopping the first time the condition is false", "At the end of every pass, guaranteeing at least one execution", "Only once before the loop starts", "Only when a break statement is encountered"], "a": 0}, {"s": 4, "q": "Complete the MATLAB function and loop syntax by filling in the blanks from the answer pool:", "list": ["function area = rectArea(L, W)", "input('Enter: ', 's')", "mod(k, 2) == 1", "otherwise", "while n > 10"], "tpl": "{0}\n    name = {1};\n    n = 100;\n    {4}\n        n = n / 2;\n    end\n    for k = 1:4\n        if {2}\n            area = L * W;\n        end\n    end\nend", "k": ["function area = rectArea(L, W)", "input('Enter: ', 's')", "while n > 10", "mod(k, 2) == 1"]}, {"s": 5, "q": "What does the MATLAB command `save('file.dat', 'A', '-ascii')` do?", "c": ["Writes the numeric values of A as plain text in rows and columns without storing the variable name", "Saves A in a compressed binary .mat format along with its variable name", "Appends A to the end of file.dat if the file already exists", "Loads ASCII data from file.dat into variable A"], "a": 0}, {"s": 5, "q": "If `out.dat` already exists, what happens when you run `save('out.dat', 'N', '-ascii')` after previously saving matrix `M` to it?", "c": ["save overwrites out.dat from the beginning, so out.dat contains only N", "save automatically appends N below M", "MATLAB throws an error because out.dat already exists", "out.dat merges M and N column-wise"], "a": 0}, {"s": 5, "q": "Which option must be passed to MATLAB's `save` command to add data to an existing ASCII file instead of overwriting it?", "c": ["'-append'", "'-extend'", "'-add'", "'-merge'"], "a": 0}, {"s": 5, "q": "Which MATLAB function also writes a matrix as a delimited ASCII file, similar to `save(..., '-ascii')`?", "c": ["dlmwrite('file.dat', A)", "fopen('file.dat', A)", "load('file.dat', A)", "fprintf('file.dat', A)"], "a": 0}, {"s": 5, "q": "When you execute `load temps.dat` in MATLAB, what is the name of the workspace variable created?", "c": ["temps (the file name without the extension)", "ans", "temps_dat", "data"], "a": 0}, {"s": 5, "q": "Suppose `data.dat` contains two lines: `1 2 3` and `4 5 6`. After running `load data.dat`, what is the variable called and what is its size?", "c": ["A variable named data of size 2x3", "A variable named ans of size 3x2", "A variable named data of size 1x6", "Two variables named line1 and line2"], "a": 0}, {"s": 5, "q": "A text file contains three lines: `1 2`, `3`, and `4 5`. Can MATLAB's `load` command read this file as a matrix?", "c": ["No, because load requires a rectangular file where every line has the exact same number of values", "Yes, MATLAB automatically pads missing values with zeros", "Yes, MATLAB automatically pads missing values with NaN", "Yes, it loads it as a 1x5 row vector"], "a": 0}, {"s": 5, "q": "What is the typical simulation data-file workflow in MATLAB?", "c": ["Run the simulation -> save the results -> load them later -> plot or analyze", "Load the results -> run the simulation -> overwrite the input -> delete the file", "Plot the graphs -> save the figure as ASCII -> load into Simulink", "Compile the ASCII file -> execute save -> discard workspace"], "a": 0}, {"s": 5, "q": "Why is the variable name NOT stored inside the file when using `save('file.dat', 'A', '-ascii')`?", "c": ["Because -ascii writes only plain-text numeric values arranged in rows and columns", "Because MATLAB encrypts variable names in ASCII mode", "Because only scalar variables keep their names in ASCII files", "Because variable names are saved in a separate header file automatically"], "a": 0}, {"s": 5, "q": "Fill in the blanks for the MATLAB file I/O workflow using the answer pool:", "list": ["save('results.dat', 'M', '-ascii')", "'-append'", "load results.dat", "dlmwrite('results.dat', M)", "rectangular"], "rows": [{"pre": "Write matrix M as plain text in rows and columns:", "post": ""}, {"pre": "Option required to add data without overwriting:", "post": ""}, {"pre": "Read numbers into a matrix named results:", "post": ""}, {"pre": "Shape requirement for every line read by load:", "post": ""}], "k": ["save('results.dat', 'M', '-ascii')", "'-append'", "load results.dat", "rectangular"]}, {"s": 6, "q": "What does `plot(y)` do when called with a single vector `y` in MATLAB?", "c": ["Plots the elements of y against their index positions 1, 2, 3, ... on the x-axis", "Plots y on the horizontal axis against zeros on the vertical axis", "Produces a 3D surface plot of y", "Throws an error because both x and y arguments are mandatory"], "a": 0}, {"s": 6, "q": "What does `plot(x, y1, x, y2)` draw in MATLAB?", "c": ["Two separate curves\u2014(x, y1) and (x, y2)\u2014on the same set of axes", "A 3D curve using x, y1, and y2 as coordinates", "Two separate figure windows", "A single curve summing y1 and y2"], "a": 0}, {"s": 6, "q": "Which MATLAB command keeps the current plot active so that subsequent plot commands are drawn on top of it instead of replacing it?", "c": ["hold on", "hold off", "grid on", "axis equal"], "a": 0}, {"s": 6, "q": "How does MATLAB's `legend('a', 'b')` assign labels to curves?", "c": ["In the exact order the curves were plotted", "Alphabetically by variable name", "From highest maximum y-value to lowest", "From right to left along the x-axis"], "a": 0}, {"s": 6, "q": "What is the difference between `axis equal` and `axis square` in MATLAB?", "c": ["axis equal uses the same scale factor on both axes; axis square makes the plot box square", "axis equal makes the plot box square; axis square uses the same scale factor on both axes", "axis equal hides axis ticks; axis square displays grid lines", "axis equal applies only to 2D plots; axis square applies only to 3D plots"], "a": 0}, {"s": 6, "q": "Given `x = 1:3; y = [2 4 1]; z = [5 5 5];`, how many points appear when running `plot3(x, y, z, 'o')`?", "c": ["3 points, one per index: (1,2,5), (2,4,5), and (3,1,5)", "9 points (all combinations of x, y, and z)", "27 points (a 3x3x3 grid)", "1 point at the centroid"], "a": 0}, {"s": 6, "q": "Match each MATLAB plotting function to the chart it creates:", "list": ["plot(x, y)", "plot3(x, y, z)", "bar(x, y)", "bar3(y, z)", "zlabel('Height')"], "rows": [{"pre": "2D line/marker plot:", "post": ""}, {"pre": "3D line/point plot:", "post": ""}, {"pre": "2D bar chart:", "post": ""}, {"pre": "3D bar chart:", "post": ""}, {"pre": "Labels the third axis in a 3D plot:", "post": ""}], "k": ["plot(x, y)", "plot3(x, y, z)", "bar(x, y)", "bar3(y, z)", "zlabel('Height')"]}, {"s": 6, "q": "What does the MATLAB line specification string `'m:'` draw?", "c": ["A magenta dotted line", "A magenta dashed line", "Magenta markers only without a line", "A maroon solid line"], "a": 0}, {"s": 6, "q": "What does the MATLAB line specification string `'bs'` draw?", "c": ["Blue square markers only (no connecting line is drawn)", "A blue solid line", "Black stars joined by a solid line", "A blue dashed line with squares"], "a": 0}, {"s": 6, "q": "What does the MATLAB line specification string `'g*-'` draw?", "c": ["Green asterisk (star) markers joined by a solid line", "A green dash-dot line without markers", "Green squares joined by a dashed line", "A gray dotted line with plus signs"], "a": 0}, {"s": 6, "q": "In MATLAB line specification strings, what happens if you specify only a marker code (such as `'o'` or `'d'`) without a line style?", "c": ["Only the markers are drawn; no line is drawn connecting them", "MATLAB connects the markers with a solid line by default", "MATLAB connects the markers with a dashed line by default", "MATLAB produces a syntax error"], "a": 0}, {"s": 6, "q": "Match each MATLAB color code character to its color:", "list": ["c", "m", "y", "k", "w", "b"], "rows": [{"pre": "Cyan:", "post": ""}, {"pre": "Magenta:", "post": ""}, {"pre": "Yellow:", "post": ""}, {"pre": "Black:", "post": ""}, {"pre": "White:", "post": ""}], "k": ["c", "m", "y", "k", "w"]}, {"s": 6, "q": "Match each MATLAB marker or line-style code to its visual appearance:", "list": ["^", "d", "s", "-.", "--", ":"], "rows": [{"pre": "Triangle marker:", "post": ""}, {"pre": "Diamond marker:", "post": ""}, {"pre": "Square marker:", "post": ""}, {"pre": "Dash-dot line style:", "post": ""}, {"pre": "Dashed line style:", "post": ""}, {"pre": "Dotted line style:", "post": ""}], "k": ["^", "d", "s", "-.", "--", ":"]}, {"s": 6, "q": "Complete the MATLAB plotting script using the answer pool:", "list": ["hold on", "grid on", "axis equal", "legend('Model', 'Data')", "xlabel('Time (s)')"], "tpl": "plot(t, y_model, 'r--');\n{0};\nplot(t, y_data, 'bo');\n{4};\n{3};\n{1};\n{2};", "k": ["hold on", "xlabel('Time (s)')", "legend('Model', 'Data')", "grid on", "axis equal"]}, {"s": 7, "q": "How is a Monte Carlo simulation classified in terms of time and randomness?", "c": ["Static and stochastic (time is not involved, but randomness is)", "Dynamic and deterministic (evolves over time with no randomness)", "Continuous and deterministic (governed by differential equations)", "Live and continuous (real people operating real equipment)"], "a": 0}, {"s": 7, "q": "How does the estimation error of a Monte Carlo simulation behave as the number of random samples N grows?", "c": ["The error shrinks roughly in proportion to 1 / sqrt(N)", "The error shrinks linearly in proportion to 1 / N", "The error drops to zero once N reaches 1,000", "The error increases as N grows due to rounding"], "a": 0}, {"s": 7, "q": "In the Monte Carlo estimation of pi using N random points uniformly scattered in the unit square (0 <= x, y <= 1), what condition determines if a point falls inside the quarter circle?", "c": ["x^2 + y^2 <= 1", "x + y <= 1", "x^2 - y^2 <= 1", "sqrt(x) + sqrt(y) <= 1"], "a": 0}, {"s": 7, "q": "Why is pi estimated as `4 * (points inside the quarter circle) / (total points in the square)`?", "c": ["Because the quarter circle has area pi/4 and the unit square has area 1, so the ratio of areas is pi/4", "Because there are 4 quadrants in a Cartesian plane and each square has area 4", "Because rand(N,1) generates numbers between 0 and 4", "Because 4 samples are taken per iteration"], "a": 0}, {"s": 7, "q": "In a Monte Carlo simulation, 1,560 out of 2,000 random points in the unit square fall inside the quarter circle. What is the resulting estimate of pi?", "c": ["3.12", "0.78", "3.14", "1.56"], "a": 0}, {"s": 7, "q": "Does a Monte Carlo simulation run yield an exact analytical answer, and what improves its accuracy?", "c": ["No, it gives an approximate answer that varies from run to run; increasing the number of samples N improves it", "Yes, it gives an exact answer every time; reducing N speeds it up with no loss of accuracy", "No, it is approximate; using deterministic inputs makes it exact", "Yes, provided N is an even integer"], "a": 0}, {"s": 7, "q": "Which of the following is a key ADVANTAGE of Monte Carlo simulation?", "c": ["It provides approximate solutions to difficult problems with no practical exact solution, handles uncertainty naturally, and is simple to program", "It always produces an exact closed-form algebraic expression", "It requires very few samples and negligible computing time for extreme precision", "It eliminates all variance across independent simulation runs"], "a": 0}, {"s": 7, "q": "Which of the following is a key LIMITATION of Monte Carlo simulation?", "c": ["Results are approximate and vary from run to run, and accurate answers may require many samples and substantial computing time", "It cannot handle random variables or probability distributions", "It works only for systems described by linear differential equations", "It cannot be implemented in MATLAB"], "a": 0}, {"s": 7, "q": "In the MATLAB script for estimating pi:\n```matlab\nN = 10000;\nx = rand(N, 1); y = rand(N, 1);\ninside = sum(x.^2 + y.^2 <= 1);\npiEst = 4 * inside / N;\n```\nWhat does the expression `x.^2 + y.^2 <= 1` return before `sum(...)` is applied?", "c": ["An N-by-1 logical vector of 1s (inside) and 0s (outside)", "A single scalar count of points inside the circle", "The Euclidean distance of each point from the origin", "An N-by-2 matrix of coordinates"], "a": 0}, {"s": 7, "q": "Fill in the blanks to complete the MATLAB Monte Carlo pi estimation script using the answer pool:", "list": ["rand(N, 1)", "x.^2 + y.^2 <= 1", "4 * inside / N", "sum", "1 / sqrt(N)"], "tpl": "N = 10000;\nx = {0};\ny = {0};\ninside = {3}({1});\npiEst = {2};", "k": ["rand(N, 1)", "rand(N, 1)", "sum", "x.^2 + y.^2 <= 1", "4 * inside / N"]}, {"s": 8, "q": "In Simulink, what is the difference between a `Gain` block and a `Product` block?", "c": ["Gain multiplies one input signal by a fixed factor k; Product multiplies (or divides) two or more input signals together", "Gain adds two signals together; Product subtracts them", "Gain works only in discrete time; Product works only in continuous time", "Gain performs matrix multiplication; Product performs transpose"], "a": 0}, {"s": 8, "q": "In Simulink, what is the difference between a `Display` sink block and a `Scope` sink block?", "c": ["Display shows the numerical value of a signal; Scope shows the signal waveform versus simulation time", "Display shows a 2D waveform over time; Scope prints a static number", "Display is a Source block; Scope is a Math block", "Display works only for matrices; Scope works only for logical signals"], "a": 0}, {"s": 8, "q": "Match each Simulink block to its function:", "list": ["Constant", "Step", "Integrator (1/s)", "Unit Delay (1/z)", "Relational Operator", "Logical Operator"], "rows": [{"pre": "Outputs a fixed value:", "post": ""}, {"pre": "Outputs a signal that changes value at a specified time:", "post": ""}, {"pre": "Continuous-time integration (turns dy/dt into y):", "post": ""}, {"pre": "Outputs the input from one sample earlier (x[k] -> x[k-1]):", "post": ""}, {"pre": "Compares inputs (>, <, ==, ...) and outputs logical 1 or 0:", "post": ""}, {"pre": "Combines logical signals using AND, OR, or NOT:", "post": ""}], "k": ["Constant", "Step", "Integrator (1/s)", "Unit Delay (1/z)", "Relational Operator", "Logical Operator"]}, {"s": 8, "q": "Following Pattern 1 (Order of Operations from innermost outward), which chain of blocks models `z = 3(p + q)`?", "c": ["Inputs p and q -> Sum (+ +) -> Gain (k = 3) -> Display (shows z)", "Inputs p and q -> Gain (k = 3) -> Sum (+ +) -> Display (shows z)", "Inputs p and q -> Product -> Constant (3) -> Scope", "Inputs p and q -> Integrator (1/s) -> Gain (k = 3) -> Display"], "a": 0}, {"s": 8, "q": "Which Simulink blocks model the 3rd-order continuous differential equation `d^3y / dt^3 = u(t)` when the desired output is `y`?", "c": ["Three continuous Integrator (1/s) blocks connected in series", "Three Unit Delay (1/z) blocks connected in series", "One Gain block with k = 3 followed by one Integrator (1/s)", "Three Discrete-Time Integrator blocks in parallel"], "a": 0}, {"s": 8, "q": "Why are continuous `Integrator (1/s)`, `Discrete-Time Integrator`, and `Unit Delay (1/z)` NOT interchangeable in Simulink?", "c": ["Integrator (1/s) integrates continuous-time derivatives (d/dt), Discrete-Time Integrator accumulates discrete steps, and Unit Delay shifts a discrete signal by one sample (x[k-1])", "Because Unit Delay is a Sink block while Integrator is a Source block", "Because Integrator (1/s) only accepts integer inputs", "Because Discrete-Time Integrator performs matrix inversion"], "a": 0}, {"s": 8, "q": "In the discrete feedback equation `y[k] = x[k] + 0.8 * y[k-1]`, how is the feedback path from `y[k]` back into the `Sum` block constructed?", "c": ["y[k] passes through a Unit Delay (1/z) to produce y[k-1], then through a Gain (k = 0.8), and into the Sum (+ +) block", "y[k] passes through a Gain (k = 0.8), then an Integrator (1/s), and into a Product block", "x[k] passes through a Unit Delay (1/z) and is subtracted from y[k]", "y[k] goes directly into a Scope and then into a Constant block"], "a": 0}, {"s": 8, "q": "An alarm system in Simulink must output `1` when `pressure < 5` OR when `pressure > 50`. How should this condition be modeled?", "c": ["Two Relational Operator blocks (< 5 and > 50) combined with a Logical Operator set to OR", "Two Relational Operator blocks (< 5 and > 50) combined with a Logical Operator set to AND", "One Sum block (+ -) feeding into a Gain block", "One Unit Delay block feeding into a Display block"], "a": 0}, {"s": 8, "q": "In Simulink, when does a Logical Operator configured as `OR` output `0`?", "c": ["Only when ALL of its inputs are 0", "Whenever at least one input is 0", "Only when all of its inputs are 1", "Whenever the inputs are unequal"], "a": 0}, {"s": 8, "q": "Given matrix `A` of size `4x2` and matrix `B` of size `4x3`, is the matrix product `A^T * B` defined, and if so, what is its size?", "c": ["Yes; A^T is 2x4 and B is 4x3, so A^T * B has size 2x3", "No; inner dimensions do not agree", "Yes; its size is 4x4", "Yes; its size is 3x2"], "a": 0}, {"s": 8, "q": "How do you model the matrix expression `5 * A^T * B` in Simulink?", "c": ["Pass A through a Transpose block first, multiply A^T and B in a Matrix Multiply block (in that order), and scale with a Gain block (k = 5)", "Use a Product block with B first and A second, then apply Transpose", "Use a Sum block to add 5, A, and B", "Use a Display block to transpose A and multiply by B"], "a": 0}, {"s": 8, "q": "Why does block order matter in Simulink's `Matrix Multiply` block?", "c": ["Because matrix multiplication is not commutative (AB != BA) and inner dimensions must match", "Because the top port is always transposed automatically", "Because the second port is always divided instead of multiplied", "Because only square matrices are allowed on the first port"], "a": 0}, {"s": 8, "q": "Which Simulink sink block should you choose if a problem asks you to 'watch y(t) change over the simulation time'?", "c": ["Scope", "Display", "Constant", "Unit Delay"], "a": 0}, {"s": 8, "q": "Complete the Simulink modeling rules by filling in the blanks from the answer pool:", "list": ["innermost", "Integrator (1/s)", "Unit Delay (1/z)", "Transpose", "Gain"], "rows": [{"pre": "Read equations from the ___ operation outward when chaining blocks:", "post": ""}, {"pre": "Each continuous derivative d/dt is removed by one ___ block:", "post": ""}, {"pre": "A discrete term with [k-1] requires a ___ block:", "post": ""}, {"pre": "In 5 * A^T * B, apply the ___ block to A before Matrix Multiply:", "post": ""}, {"pre": "A scalar factor like 5 can be applied anywhere in the chain using a ___ block:", "post": ""}], "k": ["innermost", "Integrator (1/s)", "Unit Delay (1/z)", "Transpose", "Gain"]}, {"s": 9, "q": "What is the key question answered by 'Verification'?", "c": ["Did we build the model right?", "Did we build the right model?", "Should this model be used for this purpose?", "Can people understand the output?"], "a": 0}, {"s": 9, "q": "What is the key question answered by 'Validation'?", "c": ["Did we build the right model?", "Did we build the model right?", "Should this model be used for this purpose?", "Can people understand the output?"], "a": 0}, {"s": 9, "q": "What is the key question answered by 'Accreditation'?", "c": ["Should this model be used for this purpose?", "Did we build the model right?", "Did we build the right model?", "Can people understand the output?"], "a": 0}, {"s": 9, "q": "What is the key question answered by 'Visualization'?", "c": ["Can people understand the output?", "Did we build the model right?", "Did we build the right model?", "Should this model be used for this purpose?"], "a": 0}, {"s": 9, "q": "A programmer inspects the simulation code and discovers that it calculates travel time in minutes even though the design specification requires hours. Which activity is this?", "c": ["Verification", "Validation", "Accreditation", "Visualization"], "a": 0}, {"s": 9, "q": "A traffic simulation's predicted queue lengths are compared against actual camera counts recorded at a real intersection. Which activity is this?", "c": ["Validation", "Verification", "Accreditation", "Visualization"], "a": 0}, {"s": 9, "q": "When real-world data are unavailable, subject-matter experts observe a simulation's behavior to judge whether it looks realistic. What is this called, and which VV&A category does it belong to?", "c": ["Face validation, which is a form of Validation", "Code walkthrough, which is a form of Verification", "Official certification, which is a form of Accreditation", "3D rendering, which is purely Visualization"], "a": 0}, {"s": 9, "q": "A city transport office reviews the V&V evidence and formally certifies a traffic model as acceptable for its urban planning decisions. Which activity is this?", "c": ["Accreditation", "Verification", "Validation", "Visualization"], "a": 0}, {"s": 9, "q": "Does the accrediting authority need to personally run the verification and validation tests during Accreditation?", "c": ["No; Accreditation is an official decision by a responsible authority based on the V&V evidence", "Yes; the accreditor must rewrite and re-run every unit test personally", "Yes; Accreditation is only valid if performed by the original programmer", "No; Accreditation happens before the conceptual model is written"], "a": 0}, {"s": 9, "q": "An evacuation model's output is rendered as a 3D animation so managers can clearly see where crowding occurs. Does this establish that the model is valid?", "c": ["No; this is Visualization, which helps people understand output but does not by itself prove the model is correct", "Yes; any realistic 3D animation automatically validates the simulation", "Yes; 3D animation constitutes formal Accreditation", "No; 3D animation is a form of code Verification"], "a": 0}, {"s": 9, "q": "What is the correct sequence of stages in the M&S development and VV&A lifecycle?", "c": ["Conceptual model -> (verification) -> executable model -> (validation against the real system) -> (accreditation) -> approved for use", "Executable model -> (accreditation) -> conceptual model -> (verification) -> (validation)", "Conceptual model -> (validation) -> (accreditation) -> executable model -> (verification)", "Approved for use -> (visualization) -> (verification) -> conceptual model"], "a": 0}, {"s": 9, "q": "Match each comparison or action to the corresponding VV&A / Visualization activity:", "list": ["Verification", "Validation", "Accreditation", "Visualization"], "rows": [{"pre": "Comparing code against its own design specification (debugging):", "post": ""}, {"pre": "Comparing model outputs against real-world measurements:", "post": ""}, {"pre": "Official approval by an authority for a specific intended use:", "post": ""}, {"pre": "Turning large or time-varying results into graphs or 3D animations:", "post": ""}], "k": ["Verification", "Validation", "Accreditation", "Visualization"]}];
+
+const KEYS = ["A","B","C","D","E","F","G","H","I"];
+const stage = document.getElementById("stage");
+let opts = {set:"all", shuffleQ:true, shuffleC:true};
+let deck = [], at = 0;
+
+function pool(){
+  if(opts.set!=="all") return BANK.filter(q=>q.s===+opts.set);
+  return BANK.slice();
+}
+function shuffled(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function buildDeck(list){
+  const qs = opts.shuffleQ ? shuffled(list) : list.slice();
+  deck = qs.map(q=>({ref:q, order:(isFill(q)?[]:(opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i))), picked:null, skipped:false, tempPicks:[], vals:[]}));
+  at=0;
+}
+
+const isFill = q => Array.isArray(q.k);
+const norm = x => String(x).replace(/\s+/g,"").replace(/\//g,"\\").toLowerCase();
+const blankOK = (q,v,i) => norm(v[i]||"")===norm(q.k[i]);
+const fillVals = it => it.ref.k.map((_,i)=>it.vals[i]||"");
+function blankInput(n,done){return `<input class="blank" data-i="${n}" placeholder="blank ${+n+1}" autocomplete="off" autocapitalize="off" spellcheck="false" ${done?"disabled":""}>`;}
+function fillHTML(it){
+  const q=it.ref, done=answered(it), lp=q.lp;
+  const lab=i=>lp==="a"?String.fromCharCode(97+i)+")":lp==="n"?(i+1)+".":"\u2022";
+  const bank=`<div class="bank ${q.wide?"col":""}">${q.list.map((x,i)=>`<button type="button" class="chip" data-v="${esc(x)}" ${done?"disabled":""}><span class="cl">${lab(i)}</span>${esc(x)}</button>`).join("")}</div>`;
+  const form = q.tpl
+    ? `<pre class="code">${q.tpl.split(/\{(\d+)\}/).map((p,i)=>i%2?blankInput(p,done):esc(p)).join("")}</pre>`
+    : q.rows.map((r,i)=>`<div class="brow"><span class="n">${i+1}.</span>${r.pre?`<span>${esc(r.pre)}</span>`:""}${blankInput(i,done)}${r.post?`<span class="post">${esc(r.post)}</span>`:""}</div>`).join("");
+  return `${done?"":`<p class="filltip">Type each answer, or tap a choice to fill the selected blank. Nothing is checked until you press Submit.</p>`}${bank}${q.after?`<p class="after">${esc(q.after)}</p>`:""}${form}
+    ${done?"":`<div class="btnrow"><button class="btn sm" id="submitFill" type="button" disabled>Submit answers</button><span class="pending" id="fillcount">0 of ${q.k.length} filled</span></div>`}`;
+}
+function bindFill(it,done){
+  const q=it.ref, inputs=[...stage.querySelectorAll(".blank")];
+  if(done){revealFill(false);return;}
+  let active=inputs[0];
+  const refresh=()=>{
+    const n=fillVals(it).filter(v=>v.trim()).length;
+    stage.querySelector("#fillcount").textContent=n+" of "+q.k.length+" filled";
+    stage.querySelector("#submitFill").disabled = n!==q.k.length;
+  };
+  inputs.forEach((inp,i)=>{
+    inp.value=it.vals[i]||"";
+    inp.addEventListener("focus",()=>active=inp);
+    inp.addEventListener("input",()=>{it.vals[i]=inp.value;refresh();});
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault(); if(i<inputs.length-1) inputs[i+1].focus(); else submitFill();}});
+  });
+  stage.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{
+    const i=Math.max(0,inputs.indexOf(active));
+    inputs[i].value=c.dataset.v; it.vals[i]=c.dataset.v; refresh();
+    (inputs[i+1]||inputs[i]).focus();
+  }));
+  stage.querySelector("#submitFill").addEventListener("click",submitFill);
+  refresh();
+}
+function submitFill(){
+  const it=deck[at];
+  if(!it||answered(it)||fillVals(it).some(v=>!v.trim())) return;
+  it.picked=fillVals(it); it.skipped=false;
+  revealFill(true);
+}
+function revealFill(fresh){
+  const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
+  const good=q.k.filter((a,i)=>blankOK(q,it.picked,i)).length;
+  stage.querySelectorAll(".blank").forEach(inp=>{
+    const i=+inp.dataset.i, r=blankOK(q,it.picked,i);
+    inp.value=it.picked[i]; inp.disabled=true; inp.classList.add(r?"right":"wrong");
+  });
+  stage.querySelectorAll(".chip").forEach(c=>c.disabled=true);
+  ["#submitFill","#fillcount"].forEach(x=>{const e=stage.querySelector(x); if(e) e.remove();});
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b><p>All ${q.k.length} blanks are right.</p>` : `<b>Not quite.</b><p>${good} of ${q.k.length} blanks correct. Here are the ones you missed:</p>${q.k.map((a,i)=>blankOK(q,it.picked,i)?"":`<div class="fixrow"><span class="fn">blank ${i+1}</span><span class="bad">${esc(it.picked[i])}</span><span class="good">${esc(a)}</span></div>`).join("")}`;
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pendingIdx().length===0) ? "See your score" : "Next \u25B6";
+    n.focus();
+  }
+}
+function reviewItem(d){
+  const q=d.ref, ok=answered(d)&&isCorrectPick(q,d.picked);
+  let body;
+  if(isFill(q)){
+    body = !answered(d) ? `<p class="none">Left unanswered</p><p class="truth">Answers:<br>${correctLabel(q)}</p>`
+      : ok ? `<p class="ok">All ${q.k.length} blanks correct.</p>`
+      : q.k.map((a,i)=>blankOK(q,d.picked,i)?"":`<p class="yours">${i+1}. You typed: ${esc(d.picked[i]||"(blank)")}</p><p class="truth">Answer: ${esc(a)}</p>`).join("");
+  } else {
+    body = ok ? `<p class="ok">Correct: ${correctLabel(q)}</p>` : (answered(d)?`<p class="yours">You chose: ${pickedLabel(d)}</p>`:`<p class="none">Left unanswered</p>`);
+    if(!ok) body += `<p class="truth">Answer: ${correctLabel(q)}</p>`;
+  }
+  return `<div class="miss ${ok?"hit":(answered(d)?"":"unans")}"><p>${qCompact(q.q)}</p>${body}</div>`;
+}
+const isMulti = q => Array.isArray(q.a);
+const isRightIdx = (q,i) => isMulti(q) ? q.a.includes(i) : i===q.a;
+function sameSet(a,b){
+  if(a.length!==b.length) return false;
+  const sa=[...a].sort((x,y)=>x-y), sb=[...b].sort((x,y)=>x-y);
+  return sa.every((v,i)=>v===sb[i]);
+}
+const isCorrectPick = (q,picked) => {
+  if(picked===null) return false;
+  if(isFill(q)) return q.k.every((a,i)=>blankOK(q,picked,i));
+  return isMulti(q) ? sameSet(picked,q.a) : isRightIdx(q,picked);
+};
+function correctLabel(q){
+  if(isFill(q)) return q.k.map((a,i)=>(i+1)+". "+esc(a)).join("<br>");
+  if(!isMulti(q)) return esc(q.c[q.a]);
+  return q.a.map(i=>esc(q.c[i])).join(" &middot; ");
+}
+function pickedLabel(d){
+  if(!answered(d)) return "";
+  if(isMulti(d.ref)) return d.picked.map(i=>esc(d.ref.c[i])).join(" &middot; ");
+  return esc(d.ref.c[d.picked]);
+}
+const answered = it => it.picked !== null;
+const stateOf = it => answered(it) ? (isCorrectPick(it.ref,it.picked)?"ok":"no") : (it.skipped?"sk":"");
+const pendingIdx = () => deck.map((it,i)=>i).filter(i=>!answered(deck[i]));
+function nextPending(from){
+  for(let k=1;k<=deck.length;k++){const i=(from+k)%deck.length; if(!answered(deck[i])) return i;}
+  return -1;
+}
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  const cnt=k=>BANK.filter(q=>q.s===k).length;
+  stage.innerHTML = `
+    <div class="field">
+      <p class="lede">Which set do you want to drill?</p>
+      <p class="hint">Every concept from the CS0019 Final Examination Reviewer, grouped by topic.</p>
+      <div class="segs">
+        <button class="seg" type="button" data-set="all" aria-pressed="false">Full reviewer<span class="n">${BANK.length} questions</span></button>
+        ${Object.keys(SETS).map(Number).map(k=>`<button class="seg" type="button" data-set="${k}" aria-pressed="false">${SETS[k]}<span class="n">${cnt(k)} question${cnt(k)>1?"s":""}</span></button>`).join("")}
+      </div>
+    </div>
+    <div class="field">
+      <p class="lede">Shuffling</p>
+      <label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}>
+        <span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+      <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}>
+        <span>Shuffle the choices<small>Stops you from remembering "the third one".</small></span></label>
+    </div>
+    <div class="btnrow"><button class="btn" id="go">Start reviewing</button></div>`;
+  const segs=[...stage.querySelectorAll(".seg")];
+  const paint=()=>segs.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===opts.set)));
+  segs.forEach(b=>b.addEventListener("click",()=>{opts.set=b.dataset.set;paint();}));
+  paint();
+  stage.querySelector("#sq").addEventListener("change",e=>opts.shuffleQ=e.target.checked);
+  stage.querySelector("#sc").addEventListener("change",e=>opts.shuffleC=e.target.checked);
+  stage.querySelector("#go").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+}
+
+/* ---------- question ---------- */
+function renderQuestion(){
+  const it=deck[at], q=it.ref, done=answered(it);
+  const right=deck.filter(d=>stateOf(d)==="ok").length;
+  const pend=pendingIdx().length;
+
+  const meter=deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("");
+  const jumps=deck.map((d,i)=>
+    `<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}"
+      aria-label="Go to question ${i+1}">${i+1}</button>`).join("");
+
+  stage.innerHTML = `
+    <div class="meter">${meter}</div>
+    <div class="qhead">
+      <span>Question ${at+1} / ${deck.length}</span>
+      <span>${SETS[q.s]} &middot; ${right} correct</span>
+    </div>
+    <div class="grid" id="grid">
+      ${jumps}
+      <div class="legend">
+        <s><b style="background:var(--right)"></b>correct</s>
+        <s><b style="background:var(--wrong)"></b>wrong</s>
+        <s><b style="background:var(--skip)"></b>skipped</s>
+        <s><b style="background:var(--rule)"></b>not seen</s>
+      </div>
+    </div>
+    <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:``}</h2>
+    ${isFill(q)?fillHTML(it):`<div class="choices">
+      ${it.order.map((orig,pos)=>{
+        const picked = !done && isMulti(q) && it.tempPicks.includes(orig);
+        return `
+        <button class="choice${picked?" picked":""}" type="button" data-orig="${orig}" ${done?"disabled":""} ${isMulti(q)?`aria-pressed="${picked}"`:``}>
+          <span class="key">${KEYS[pos]}</span>
+          <span class="txt">${esc(q.c[orig])}</span>
+        </button>`;}).join("")}
+    </div>`}
+    ${(!done && isMulti(q))?`
+    <div class="btnrow">
+      <button class="btn sm" id="submitMulti" ${it.tempPicks.length!==q.a.length?"disabled":""}>Submit answer</button>
+      <span class="pending">${it.tempPicks.length} of ${q.a.length} selected</span>
+    </div>`:``}
+    <div class="verdict" id="verdict"></div>
+    <div class="nav">
+      <button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>
+      ${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}
+      <span class="spacer"></span>
+      <button class="btn sm" id="next">Next &#9654;</button>
+      <button class="btn ghost sm" id="finish">Finish &amp; score</button>
+      ${pend?`<span class="pending">${pend} question${pend>1?"s":""} still unanswered</span>`:``}
+    </div>`;
+
+  const gridEl = stage.querySelector("#grid");
+  const nowJump = gridEl.querySelector(".jump.now");
+  if(nowJump) nowJump.scrollIntoView({block:"nearest"});
+
+  stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();}));
+  stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();}});
+  const sk=stage.querySelector("#skip");
+  if(sk) sk.addEventListener("click",()=>{deck[at].skipped=true;goNext();});
+  stage.querySelector("#next").addEventListener("click",goNext);
+  stage.querySelector("#finish").addEventListener("click",renderScore);
+
+  if(isFill(q)) bindFill(it,done);
+  else if(done) reveal(false);
+  else {
+    stage.querySelectorAll(".choice").forEach(b=>{
+      const orig=parseInt(b.dataset.orig,10);
+      b.addEventListener("click",()=> isMulti(q) ? toggleChoice(orig) : answer(orig));
+    });
+    const sm=stage.querySelector("#submitMulti");
+    if(sm) sm.addEventListener("click",submitMulti);
+  }
+}
+
+function toggleChoice(orig){
+  const it=deck[at], q=it.ref;
+  const i=it.tempPicks.indexOf(orig);
+  if(i>-1) it.tempPicks.splice(i,1);
+  else if(it.tempPicks.length<q.a.length) it.tempPicks.push(orig);
+  renderQuestion();
+}
+
+function submitMulti(){
+  const it=deck[at], q=it.ref;
+  if(it.tempPicks.length!==q.a.length) return;
+  it.picked=it.tempPicks.slice();
+  it.skipped=false;
+  reveal(true);
+}
+
+function goNext(){
+  if(at < deck.length-1){ at++; renderQuestion(); return; }
+  const np = nextPending(at);
+  if(np > -1){ at = np; renderQuestion(); }
+  else renderScore();
+}
+
+function reveal(fresh){
+  const it=deck[at], q=it.ref, ok=isCorrectPick(q,it.picked);
+  stage.querySelectorAll(".choice").forEach(b=>{
+    const o=+b.dataset.orig; b.disabled=true;
+    const wasPicked = isMulti(q) ? it.picked.includes(o) : o===it.picked;
+    if(isRightIdx(q,o)){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`);}
+    else if(wasPicked){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`);}
+    else b.classList.add("dim");
+  });
+  const v=stage.querySelector("#verdict");
+  v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML = ok ? `<b>Correct.</b>` : `<b>Not quite.</b><p>The answer is ${correctLabel(q)}.</p>`;
+  if(fresh){
+    const sk=stage.querySelector("#skip"); if(sk) sk.remove();
+    const pend=pendingIdx().length;
+    const n=stage.querySelector("#next");
+    n.textContent = (at===deck.length-1 && pend===0) ? "See your score" : "Next \u25B6";
+    n.focus();
+  }
+}
+
+function answer(orig){
+  const it=deck[at];
+  if(answered(it)) return;
+  it.picked=orig; it.skipped=false;
+  reveal(true);
+}
+
+/* ---------- score ---------- */
+function renderScore(){
+  const done=deck.filter(answered);
+  const right=done.filter(d=>isCorrectPick(d.ref,d.picked)).length;
+  const misses=done.filter(d=>!isCorrectPick(d.ref,d.picked));
+  const unans=deck.filter(d=>!answered(d));
+  const pct=deck.length?Math.round(right/deck.length*100):0;
+  const line = unans.length ? `Scored out of all ${deck.length} questions &mdash; ${unans.length} left unanswered count as missed.`
+    : pct===100 ? "Clean run. Shuffle it and see if it holds."
+    : pct>=80 ? "Solid. Run the missed ones until they're automatic."
+    : pct>=60 ? "Getting there. The retry below drills only what you missed."
+    : "Worth another pass. Retry the misses first, then the full set.";
+  const fd=done.filter(d=>isFill(d.ref)), fT=fd.reduce((n,d)=>n+d.ref.k.length,0), fO=fd.reduce((n,d)=>n+d.ref.k.filter((a,i)=>blankOK(d.ref,d.picked,i)).length,0);
+  const redoList=[...misses.map(d=>d.ref), ...unans.map(d=>d.ref)];
+
+  stage.innerHTML = `
+    <p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p>
+    <p class="scoreline">${line}${fT?` Fill-in blanks: ${fO}/${fT} correct.`:""}</p>
+    <div class="btnrow">
+      <button class="btn" id="again">Repeat this set</button>
+      ${unans.length?`<button class="btn ghost" id="back">Go back and answer ${unans.length}</button>`:``}
+      ${redoList.length?`<button class="btn ghost" id="redo">Drill the ${redoList.length} missed</button>`:``}
+      <button class="btn quiet" id="home">Change settings</button>
+    </div>
+    <div class="review">
+      <h2>All ${deck.length} questions &mdash; ${right} correct, ${redoList.length} to review</h2>
+      ${[...misses,...unans,...done.filter(d=>isCorrectPick(d.ref,d.picked))].map(reviewItem).join("")}
+    </div>`;
+
+  stage.querySelector("#again").addEventListener("click",()=>{buildDeck(pool());renderQuestion();});
+  stage.querySelector("#home").addEventListener("click",renderSetup);
+  const bk=stage.querySelector("#back");
+  if(bk) bk.addEventListener("click",()=>{const p=pendingIdx();at=p[0];renderQuestion();});
+  const rd=stage.querySelector("#redo");
+  if(rd) rd.addEventListener("click",()=>{buildDeck(redoList);renderQuestion();});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* keyboard */
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  if(e.target&&(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA")) return;
+  const btns=[...document.querySelectorAll(".choice")];
+  if(!btns.length) return;
+  const it=deck[at];
+  if(e.key==="ArrowLeft"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click();}return;}
+  if(e.key==="Enter"){const sm=document.getElementById("submitMulti");if(sm&&!sm.disabled){e.preventDefault();sm.click();return;}}
+  if(e.key==="ArrowRight"||e.key==="Enter"){const n=document.getElementById("next");if(n){e.preventDefault();n.click();}return;}
+  if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click();}return;}
+  if(answered(it)) return;
+  let i=-1;
+  if(/^[1-9]$/.test(e.key)) i=+e.key-1;
+  else {const k=KEYS.indexOf(e.key.toUpperCase()); if(k>-1) i=k;}
+  if(i>-1&&btns[i]){e.preventDefault();btns[i].click();}
+});
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+
+function formatQtext(text){
+  const parts = String(text).split("```");
+  let html = "";
+  parts.forEach((part,i)=>{
+    if(i % 2 === 1){
+      const cleaned = part.replace(/^matlab\s*\n/i, "").trim();
+      html += `<pre class="code">${esc(cleaned)}</pre>`;
+    } else {
+      const paras = part.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+      html += paras.map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
+    }
+  });
+  return html;
+}
+
+function qCompact(text){
+  const stripped = String(text).replace(/```([\s\S]*?)```/g, (m,c)=>" "+c.replace(/^matlab\s*\n/i, "").trim().replace(/\n+/g," ")+" ");
+  return esc(stripped.replace(/\s*\n\s*/g," ").replace(/\s{2,}/g," ").trim());
+}
+
+renderSetup();
+</script>
+<script src="script.js"></script>
+</body>
+</html>

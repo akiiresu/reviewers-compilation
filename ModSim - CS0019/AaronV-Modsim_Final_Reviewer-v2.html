@@ -1,0 +1,2922 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Modeling and Simulation Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9edf1;--surface:#fff;--surface-sunk:#f3f6f9;--ink:#19222e;--ink-soft:#5a6875;--rule:#d3dae1;--accent:#1d5b8f;--right:#136b45;--right-bg:#e2f3ea;--wrong:#a32a1f;--wrong-bg:#fbe8e5;--skip:#8a6a17;--skip-bg:#fbf1da;--shadow:0 1px 0 rgba(25,34,46,.06),0 10px 24px -18px rgba(25,34,46,.45)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151a21;--surface:#1d242d;--surface-sunk:#232b35;--ink:#e6ebf0;--ink-soft:#9aa7b4;--rule:#313b47;--accent:#6fb0e6;--right:#5cc994;--right-bg:#17352a;--wrong:#f09489;--wrong-bg:#3a1f1c;--skip:#e0bd6a;--skip-bg:#332a15;--shadow:0 1px 0 rgba(0,0,0,.3),0 10px 24px -18px rgba(0,0,0,.8)}}
+:root[data-theme="dark"]{--bg:#151a21;--surface:#1d242d;--surface-sunk:#232b35;--ink:#e6ebf0;--ink-soft:#9aa7b4;--rule:#313b47;--accent:#6fb0e6;--right:#5cc994;--right-bg:#17352a;--wrong:#f09489;--wrong-bg:#3a1f1c;--skip:#e0bd6a;--skip-bg:#332a15;--shadow:0 1px 0 rgba(0,0,0,.3),0 10px 24px -18px rgba(0,0,0,.8)}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;padding:clamp(16px,4vw,44px) clamp(12px,4vw,24px) 72px}
+.wrap{max-width:660px;margin:0 auto}
+.masthead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.masthead .code{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);border:1px solid var(--rule);border-radius:3px;padding:.15rem .4rem;background:var(--surface)}
+.masthead h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+.masthead p{margin:0;color:var(--ink-soft);font-size:.85rem}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;box-shadow:var(--shadow);padding:clamp(18px,4vw,28px)}
+.field{margin-bottom:1.5rem}.field>.lede{font-size:.9rem;font-weight:600;margin:0 0 .15rem}.field>.hint{font-size:.82rem;color:var(--ink-soft);margin:0 0 .7rem}
+.segs{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg{flex:1 1 150px;text-align:left;cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;padding:.6rem .7rem;color:var(--ink);font:inherit;font-size:.88rem;transition:border-color .15s,background .15s}
+.seg .n{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-soft);margin-top:.15rem}
+.seg[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}.seg[aria-pressed="true"] .n{color:var(--accent)}
+.switch{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem 0;cursor:pointer}.switch input{margin:.25rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:none}.switch span{font-size:.9rem}.switch small{display:block;color:var(--ink-soft);font-size:.8rem}
+.btn{font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;border-radius:5px;padding:.65rem 1.15rem;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.08)}.btn.ghost{background:transparent;color:var(--accent)}.btn.quiet{background:transparent;color:var(--ink-soft);border-color:var(--rule)}.btn:disabled{opacity:.4;cursor:default}.btn.sm{font-size:.85rem;padding:.5rem .8rem}
+.btnrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+.meter{display:flex;gap:3px;margin-bottom:1.1rem}.meter i{flex:1;height:4px;border-radius:2px;background:var(--rule)}.meter i.ok{background:var(--right)}.meter i.no{background:var(--wrong)}.meter i.sk{background:var(--skip)}.meter i.now{background:var(--accent);height:6px;margin-top:-1px}
+.qhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.4rem,1fr));gap:.3rem;padding:.8rem;margin-bottom:1.1rem;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px}
+.jump{font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:500;cursor:pointer;border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink-soft);padding:.4rem 0;transition:.12s}
+.jump:hover{border-color:var(--accent);color:var(--accent)}.jump.ok{background:var(--right-bg);border-color:var(--right);color:var(--right)}.jump.no{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}.jump.sk{background:var(--skip-bg);border-color:var(--skip);color:var(--skip)}.jump.now{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.74rem;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;margin-top:.2rem}.legend s{text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}.legend b{width:.55rem;height:.55rem;border-radius:2px;display:inline-block}
+.qtext{font-size:1.06rem;font-weight:500;margin:0 0 1.1rem;line-height:1.45}.qtext p{margin:0 0 .6rem}.qtext p:last-child{margin-bottom:0}
+.qtext pre.code{background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;padding:.7rem .8rem;margin:.3rem 0 .8rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;line-height:1.5;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.multinote{display:inline-block;margin-left:.5rem;font-family:"IBM Plex Mono",monospace;font-size:.7rem;font-weight:600;color:var(--accent);background:var(--surface-sunk);border:1px solid var(--rule);border-radius:3px;padding:.1rem .4rem;vertical-align:middle}
+.choices{display:flex;flex-direction:column;gap:.45rem}
+.choice{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.95rem;color:var(--ink);cursor:pointer;background:var(--surface-sunk);border:1px solid var(--rule);border-radius:5px;padding:.7rem .8rem;transition:border-color .12s,background .12s}
+.choice:hover:not(:disabled){border-color:var(--accent)}.choice:disabled{cursor:default}
+.choice .key{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600;color:var(--ink-soft);flex:none;width:1.2rem;padding-top:.1rem}
+.choice .mark{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;flex:none;padding-top:.1rem}
+.choice.picked{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}.choice.picked .key{color:var(--accent)}
+.choice.right{background:var(--right-bg);border-color:var(--right);color:var(--right)}.choice.right .key{color:var(--right)}
+.choice.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}.choice.wrong .key{color:var(--wrong)}.choice.dim{opacity:.5}
+.btn:focus-visible,.seg:focus-visible,.choice:focus-visible,.jump:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.verdict{margin-top:1rem;font-size:.9rem;display:none}.verdict.show{display:block}.verdict b{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.02em}.verdict.hit b{color:var(--right)}.verdict.miss b{color:var(--wrong)}.verdict p{margin:.2rem 0 0;color:var(--ink-soft)}
+.nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1.3rem;border-top:1px solid var(--rule);padding-top:1rem}.nav .spacer{flex:1}
+.pending{font-size:.78rem;color:var(--skip);font-family:"IBM Plex Mono",monospace}
+.score{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .3rem}.score b{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:600;line-height:1;letter-spacing:-.03em}.score span{color:var(--ink-soft);font-size:.9rem}
+.scoreline{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.4rem}
+.review{border-top:1px solid var(--rule);margin-top:1.4rem;padding-top:1rem}.review h2{font-size:.85rem;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-soft);margin:0 0 .8rem}
+.miss{border-left:2px solid var(--wrong);padding:.1rem 0 .1rem .7rem;margin-bottom:1rem}.miss.unans{border-color:var(--skip)}.miss p{margin:0;font-size:.92rem}.miss .yours{color:var(--wrong);font-size:.85rem;margin-top:.25rem}.miss .none{color:var(--skip);font-size:.85rem;margin-top:.25rem}.miss .truth{color:var(--right);font-size:.85rem}.miss.hit{border-color:var(--right)}.miss .ok{color:var(--right);font-size:.85rem;margin-top:.25rem}
+.foot{margin-top:1.2rem;font-size:.78rem;color:var(--ink-soft);text-align:center}.foot a{color:var(--accent)}#back-btn{display:block;margin:1.5rem auto 0;padding:10px 18px;border:none;border-radius:10px;background-color:rgb(213,22,22);color:white;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}#back-btn:hover{filter:brightness(1.08)}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{padding-left:max(clamp(12px,4vw,24px),env(safe-area-inset-left,0px));padding-right:max(clamp(12px,4vw,24px),env(safe-area-inset-right,0px))}
+.grid{position:relative}
+.choice{min-height:2.75rem;overflow-wrap:anywhere;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn,.jump{touch-action:manipulation}
+@media (pointer:coarse){.btn{min-height:2.6rem}.jump{min-height:2.2rem}}
+@media (max-width:480px){.grid{grid-template-columns:repeat(auto-fill,minmax(2rem,1fr));gap:.25rem;padding:.6rem}.jump{font-size:.75rem;padding:.35rem 0}.nav .btn{flex:1 1 auto}.legend{gap:.5rem}.qhead{flex-wrap:wrap;gap:.2rem 1rem}}
+@media (orientation:landscape) and (max-height:520px){body{padding-top:12px;padding-bottom:40px}.wrap{max-width:860px}.masthead{margin-bottom:.7rem}.panel{padding:14px 18px}.meter{margin-bottom:.7rem}.qhead{margin-bottom:.7rem}.grid{max-height:5.4rem;overflow-y:auto;overscroll-behavior:contain;padding:.5rem;margin-bottom:.8rem}.qtext{font-size:1rem;margin-bottom:.8rem}.choice{padding:.5rem .7rem}.nav{margin-top:1rem;padding-top:.8rem}.score b{font-size:2.4rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.head-spacer{flex:1}.header-btn{font:inherit;font-size:.78rem;color:var(--accent);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:.3rem .5rem;cursor:pointer}.header-btn:hover{border-color:var(--accent)}.header-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.shortcut-help{max-width:660px;margin:-.6rem auto 1rem;padding:.7rem .9rem;border:1px solid var(--rule);border-radius:5px;background:var(--surface);font-size:.78rem;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:.35rem 1rem}.shortcut-help[hidden]{display:none}.shortcut-help strong{color:var(--ink);width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead"><span class="code" id="subject-code"></span><h1 id="subject-title"></h1><p id="subject-subtitle"></p><span class="head-spacer"></span><button class="header-btn" id="help-toggle" type="button" aria-expanded="false" aria-controls="shortcut-help" title="Keyboard shortcuts (?)">Shortcuts ?</button><button class="header-btn" id="theme-toggle" type="button" aria-label="Switch to dark mode">Dark mode</button></header>
+  <div class="shortcut-help" id="shortcut-help" hidden><strong>Keyboard shortcuts</strong><span>A–I or 1–9: choose an answer</span><span>← / P: previous</span><span>→ / N / Enter: next</span><span>S: skip</span><span>F: finish and score</span><span>?: show or hide shortcuts</span><span>D: toggle dark mode</span></div>
+  <main id="stage" class="panel"></main>
+  <p class="foot" id="question-count"></p>
+  <p class="foot">If you'd like to study this material offline, <a href="raw github link" id="AaronV-CS0019_Finals_Reviewer.html">download it here.</a></p>
+  <button id="back-btn" type="button" onclick="window.location.href='../index.html'">Back</button>
+</div>
+<script>
+// Add validated questions here. See REVIEWER_TEMPLATE.md for the format.
+const BANK=[
+  {
+    "q": "A simple model solvable exactly by algebra should first use:",
+    "c": [
+      "Constructive simulation",
+      "Real-time simulation",
+      "Analytical methods",
+      "Agent-based modeling"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "Queue length changes only at arrivals and departures. The system is primarily:",
+    "c": [
+      "Discrete",
+      "Static",
+      "Continuous",
+      "Deterministic"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "What does reshape change while preserving the same elements?",
+    "c": [
+      "Dimensions",
+      "Variable name",
+      "Data type",
+      "Numerical values"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "Which discipline converts large simulation outputs into useful decision techniques?",
+    "c": [
+      "Human factors",
+      "Visualization only",
+      "Project scheduling only",
+      "Operations research"
+    ],
+    "a": 3,
+    "s": 1
+  },
+  {
+    "q": "Testing a hazardous reactor condition is best done by:",
+    "c": [
+      "Ignoring the condition",
+      "Removing all assumptions",
+      "Direct experimentation only",
+      "Simulating a model"
+    ],
+    "a": 3,
+    "s": 1
+  },
+  {
+    "q": "A model clock jumping from one arrival or departure to the next is:",
+    "c": [
+      "Analytical",
+      "Continuous",
+      "Discrete-event",
+      "Live"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "Exploring a design space to gain insight into an incompletely understood situation is primarily:",
+    "c": [
+      "Experimentation application",
+      "Training application",
+      "Formatting",
+      "Acquisition disposal"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "Which approach is useful when a real system cannot be engaged and available observations drive the model?",
+    "c": [
+      "Data-based modeling",
+      "Physical modeling only",
+      "Live simulation",
+      "Analytical deduction only"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "Running completed simulation code on a computer occurs in the:",
+    "c": [
+      "Execute phase",
+      "Analyze phase",
+      "Code phase",
+      "Model phase"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "For a matrix, sum(A) operates by default on each:",
+    "c": [
+      "Individual page",
+      "Row",
+      "Column",
+      "Diagonal"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "Grouping households into income brackets applies:",
+    "c": [
+      "Accuracy",
+      "Fidelity",
+      "Resolution",
+      "Aggregation"
+    ],
+    "a": 3,
+    "s": 1
+  },
+  {
+    "q": "A fluid level changes continuously but is recorded every five minutes. This is:",
+    "c": [
+      "Closed",
+      "Discrete-event",
+      "Sampled-data",
+      "Static"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "Which supporting field is used to generate random variates and analyze stochastic output?",
+    "c": [
+      "File management",
+      "Human factors",
+      "Computer animation",
+      "Probability and statistics"
+    ],
+    "a": 3,
+    "s": 1
+  },
+  {
+    "q": "MATLAB stores numeric values as which class by default?",
+    "c": [
+      "double",
+      "logical",
+      "single",
+      "int32"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "A vertical vector with five elements has dimensions:",
+    "c": [
+      "5 x 5",
+      "1 x 5",
+      "5 x 1",
+      "1 x 1"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "A simulator accurately reproduces aircraft response but omits cabin decor. It can still have:",
+    "c": [
+      "High relevant fidelity",
+      "No resolution",
+      "Only high scale",
+      "No validity"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "Which MATLAB command removes all workspace variables?",
+    "c": [
+      "clear",
+      "demo",
+      "help",
+      "format"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "Representing each building instead of each district increases:",
+    "c": [
+      "Resolution",
+      "Domain",
+      "Scale only",
+      "Determinism"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "Which is the best valid MATLAB variable name?",
+    "c": [
+      "for",
+      "partNumber",
+      "2speed",
+      "mean"
+    ],
+    "a": 1,
+    "s": 1
+  },
+  {
+    "q": "In A(2,3), the number 3 identifies the:",
+    "c": [
+      "Column",
+      "Variable name",
+      "Array class",
+      "Row"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "A commander inputs decisions carried out by simulated personnel in simulated systems uses:",
+    "c": [
+      "Virtual",
+      "Live",
+      "Continuous",
+      "Constructive"
+    ],
+    "a": 3,
+    "s": 1
+  },
+  {
+    "q": "Combining many smaller objects and actions into larger representations is:",
+    "c": [
+      "Virtual simulation",
+      "Real-time simulation",
+      "Aggregate modeling",
+      "Finite element modeling"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "A subway concept that has not yet been built is what type of system?",
+    "c": [
+      "Closed",
+      "Notional",
+      "Physical",
+      "Sampled-data"
+    ],
+    "a": 1,
+    "s": 1
+  },
+  {
+    "q": "Which method derives equations from basic physical principles?",
+    "c": [
+      "Agent-based modeling",
+      "Physics-based modeling",
+      "Data-based modeling",
+      "Aggregate modeling"
+    ],
+    "a": 1,
+    "s": 1
+  },
+  {
+    "q": "In MATLAB, which command lists variables with sizes and classes?",
+    "c": [
+      "who",
+      "lookfor",
+      "whos",
+      "clear"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "A temperature model based on differential equations is:",
+    "c": [
+      "Constructive simulation",
+      "Continuous simulation",
+      "Static simulation",
+      "Discrete-event simulation"
+    ],
+    "a": 1,
+    "s": 1
+  },
+  {
+    "q": "Which operator transposes a MATLAB row vector?",
+    "c": [
+      "Semicolon",
+      "Colon",
+      "Comma",
+      "Apostrophe"
+    ],
+    "a": 3,
+    "s": 1
+  },
+  {
+    "q": "Which operator performs element-by-element multiplication?",
+    "c": [
+      "*",
+      "^",
+      " .*",
+      "./"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "Omitting suppliers that affect arrivals most directly indicates a poor:",
+    "c": [
+      "Output format",
+      "System boundary",
+      "Animation",
+      "Variable name"
+    ],
+    "a": 1,
+    "s": 1
+  },
+  {
+    "q": "Dividing an aircraft wing into small elements for stress analysis is:",
+    "c": [
+      "Finite element modeling",
+      "Agent-based modeling",
+      "Monte Carlo only",
+      "Aggregate modeling"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "A regulation imposed outside a delivery system is a(n) activity:",
+    "c": [
+      "Static",
+      "Endogenous",
+      "Closed",
+      "Exogenous"
+    ],
+    "a": 3,
+    "s": 1
+  },
+  {
+    "q": "A system with customer arrivals from outside its boundary is:",
+    "c": [
+      "Open",
+      "Closed",
+      "Notional",
+      "Static"
+    ],
+    "a": 0,
+    "s": 1
+  },
+  {
+    "q": "Which best represents system state at one point in time?",
+    "c": [
+      "Attributes only",
+      "Historical reports only",
+      "Entities only",
+      "Current entities, attributes, and activities"
+    ],
+    "a": 3,
+    "s": 1
+  },
+  {
+    "q": "Which four precepts form the foundation of M&S?",
+    "c": [
+      "Planning, coding, testing, deployment",
+      "Design, control, use, measurement",
+      "Systems, entities, attributes, activities",
+      "Modeling, simulation, visualization, analysis"
+    ],
+    "a": 3,
+    "s": 1
+  },
+  {
+    "q": "Which approach is useful when a real system cannot be engaged and available observations drive the model?",
+    "c": [
+      "Physical modeling only",
+      "Live simulation",
+      "Data-based modeling",
+      "Analytical deduction only"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "Identical inputs always producing one unique output describes:",
+    "c": [
+      "Exogenous activity",
+      "Sampled-data",
+      "Deterministic simulation",
+      "Stochastic simulation"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "In “Machine A has speed 30 units/hour,” speed is a(n):",
+    "c": [
+      "Environment",
+      "Attribute",
+      "Activity",
+      "Entity"
+    ],
+    "a": 1,
+    "s": 1
+  },
+  {
+    "q": "Combining agent, continuous, and stochastic approaches is:",
+    "c": [
+      "Live simulation",
+      "Analytical modeling",
+      "Hybrid modeling",
+      "Block building"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "Why use simulation for a complex airport with queues and breakdowns?",
+    "c": [
+      "It guarantees exact general solutions",
+      "It removes uncertainty",
+      "Realistic analytical evaluation is impractical",
+      "It needs no data"
+    ],
+    "a": 2,
+    "s": 1
+  },
+  {
+    "q": "Which role of statistics is most directly needed before a stochastic DES run can begin?",
+    "c": [
+      "Representing randomness and generating random-variate streams",
+      "Eliminating variability from input data",
+      "Replacing every event with a continuous equation",
+      "Guaranteeing that one run gives the true mean"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "Let A={1,2,3} and B={3,4}. What is A intersection B?",
+    "c": [
+      "{1,2}",
+      "{1,2,3,4}",
+      "{3}",
+      "{}"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "What is a limitation of an empirical distribution based on a finite sample?",
+    "c": [
+      "It always produces negative times",
+      "It requires differential equations",
+      "It cannot reproduce any observed value",
+      "It may not generate rare outliers missing from the sample"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "Which queue discipline serves the earliest arrival first?",
+    "c": [
+      "STP",
+      "SIRO",
+      "LIFO",
+      "FCFS"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "In a checkout DES, which occurrence is an event?",
+    "c": [
+      "The color of the simulation interface",
+      "A customer arriving at the queue",
+      "The permanent definition of the model",
+      "The passage of time with no state change"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "In a single-server queue, a customer arrives at time 6 and the previous service ends at time 9. When does service begin?",
+    "c": [
+      "7",
+      "15",
+      "9",
+      "6"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "Only the minimum, most likely, and maximum repair times are known. Which distribution is the best initial model?",
+    "c": [
+      "Triangular",
+      "Exponential",
+      "Normal",
+      "Uniform"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "Which subprogram advances the clock to the next scheduled event?",
+    "c": [
+      "Library subprogram",
+      "Timing subprogram",
+      "Initialization subprogram",
+      "Report generator"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "Two disjoint events have probabilities 0.35 and 0.25. What is the probability of their union?",
+    "c": [
+      "0.875",
+      "0.60",
+      "0.10",
+      "0.35"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "A rule maps each experimental outcome to a real number. In probability, this rule defines a:",
+    "c": [
+      "Simulation clock",
+      "Random variable",
+      "Sigma algebra",
+      "Queue discipline"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "Let A={1,2,3} and B={3,4}. What is A union B?",
+    "c": [
+      "{3}",
+      "{1,2,3,3,4}",
+      "{1,2,3,4}",
+      "{1,2,4}"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "Which description best defines discrete-event simulation?",
+    "c": [
+      "State variables change continuously at every instant",
+      "Only physical prototypes are permitted",
+      "The system has no randomness or time",
+      "State variables change instantaneously at separated event times"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "In a linear congruential generator, what is Z0?",
+    "c": [
+      "The seed",
+      "The probability density",
+      "The modulus",
+      "The cycle length"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "If every element of A is also an element of B, which statement is true?",
+    "c": [
+      "A minus B equals A",
+      "A and B must be disjoint",
+      "B is the empty set",
+      "A is a subset of B"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "A customer joins a line but leaves before service. This behavior is:",
+    "c": [
+      "FIFO",
+      "Balking",
+      "Reneging",
+      "Jockeying"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "What are the two basic steps in generating a random variate?",
+    "c": [
+      "Estimate a mean, then set variance to zero",
+      "Create a queue, then add a server",
+      "Choose an event, then delete it",
+      "Generate a random number, then transform it"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "With universal set U={1,2,3,4,5} and A={1,3,5}, what is the complement of A?",
+    "c": [
+      "{2,4}",
+      "{}",
+      "{1,3,5}",
+      "{1,2,3,4,5}"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "If the average arrival rate is 5 customers per hour, what is the mean exponential interarrival time?",
+    "c": [
+      "25 hours",
+      "1 hour",
+      "0.2 hour",
+      "5 hours"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "A sample space has four outcomes. How many events are in its full sigma algebra?",
+    "c": [
+      "16",
+      "8",
+      "32",
+      "4"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "Which situation most strongly supports using a normal distribution?",
+    "c": [
+      "Only minimum, mode, and maximum are known",
+      "Variability around an average caused by many small effects",
+      "Equally likely values over a finite interval",
+      "Time until the next memoryless arrival only"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "Why is next-event time advance generally more efficient than fixed-increment advance?",
+    "c": [
+      "It skips periods with no events",
+      "It forces events to interval boundaries",
+      "It prevents state updates",
+      "It examines every small idle interval"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "A customer switches from one line to another to reduce waiting. This is:",
+    "c": [
+      "Balking",
+      "Reneging",
+      "Faffing",
+      "Jockeying"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "Which tool is specifically mentioned for estimating the mean performance from simulation output?",
+    "c": [
+      "Confidence interval",
+      "Inverse function only",
+      "Fixed time slice",
+      "Set difference"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "In the module, a simulation random number is sampled from:",
+    "c": [
+      "NORMAL(0,1)",
+      "UNIFORM(0,1)",
+      "TRIANGULAR(0,0.5,1)",
+      "EXPONENTIAL(1)"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "Which condition is required of a valid probability measure?",
+    "c": [
+      "P(E) may be negative",
+      "Disjoint probabilities are multiplied",
+      "P(S)=1",
+      "P(S)=0"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "Which three components define a probability space?",
+    "c": [
+      "Entity, resource, queue",
+      "Mean, variance, standard deviation",
+      "Domain, codomain, range",
+      "Sample space, sigma algebra, probability measure"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "Interarrival times, service times, schedules, failure rates, and travel times belong primarily to:",
+    "c": [
+      "Queue discipline only",
+      "Structural modeling",
+      "Clock initialization only",
+      "Data modeling"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "A customer arrives at time 6, begins service at 9, and service lasts 4 minutes. How long does the customer spend in the system?",
+    "c": [
+      "4 minutes",
+      "7 minutes",
+      "13 minutes",
+      "3 minutes"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "Why are LCG constants and the seed selected carefully?",
+    "c": [
+      "To eliminate the modulus",
+      "To force all values to equal the mean",
+      "To make every output truly nonnumeric",
+      "To produce a long cycle before repetition"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "Which input-modeling approach stores observed sample values and reuses them directly?",
+    "c": [
+      "Analytic queueing",
+      "Direct use of sample data",
+      "Theoretical distribution",
+      "Fixed-increment advance"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "A server completes the previous customer at time 10, and the next customer begins service at time 13. What is the server idle time?",
+    "c": [
+      "3 minutes",
+      "0 minutes",
+      "23 minutes",
+      "10 minutes"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "Which combination characterizes DES in the module?",
+    "c": [
+      "Static, stochastic, continuous",
+      "Stochastic, dynamic, discrete",
+      "Deterministic, static, discrete",
+      "Static, deterministic, continuous"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "When no satisfactory theoretical distribution fits the observations, the module recommends considering:",
+    "c": [
+      "Removal of all input data",
+      "A continuous system instead",
+      "An empirical distribution",
+      "A deterministic constant only"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "Which DES component maintains an ordered list of scheduled event times?",
+    "c": [
+      "Universal set",
+      "Next-event list",
+      "Probability density",
+      "Attribute memory"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "A server is busy for 42 minutes during a 60-minute run. What is its utilization?",
+    "c": [
+      "60%",
+      "42%",
+      "30%",
+      "70%"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "A customer priority carried through the system is best represented as a(n):",
+    "c": [
+      "Clock",
+      "Attribute",
+      "Resource",
+      "Report generator"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "An LCG whose period p equals its modulus m is called a:",
+    "c": [
+      "Empirical generator",
+      "Fixed-increment generator",
+      "Density generator",
+      "Full-cycle generator"
+    ],
+    "a": 3,
+    "s": 2
+  },
+  {
+    "q": "A major limitation of direct sample-data use is that:",
+    "c": [
+      "Rare legal values absent from the sample cannot be generated",
+      "It automatically smooths sample irregularities",
+      "It creates an unlimited stream efficiently",
+      "It always generates illegal values"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "A bank has three tellers who can each serve one customer. What is the resource capacity?",
+    "c": [
+      "2",
+      "1",
+      "3",
+      "Unlimited"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "A process time can take any value from 4 to 10 minutes with all values equally likely. Which distribution is most appropriate?",
+    "c": [
+      "Exponential(4)",
+      "Uniform(4,10)",
+      "Triangular(4,10,10)",
+      "Normal(4,10)"
+    ],
+    "a": 1,
+    "s": 2
+  },
+  {
+    "q": "Why is output data analysis necessary in a stochastic simulation?",
+    "c": [
+      "It prevents random-number generation",
+      "It converts DES into a continuous model",
+      "Simulation results must be processed into useful performance information",
+      "One output value always equals the true performance"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "For a continuous random variable, P(x1 < X <= x2) is obtained by:",
+    "c": [
+      "Integrating the density from x1 to x2",
+      "Adding the endpoint values of the density",
+      "Counting the sigma-algebra events",
+      "Differentiating the sample space"
+    ],
+    "a": 0,
+    "s": 2
+  },
+  {
+    "q": "Which statement correctly describes an event?",
+    "c": [
+      "It must have probability one",
+      "It is the probability measure itself",
+      "It is a subset of the sample space",
+      "It is always one outcome only"
+    ],
+    "a": 2,
+    "s": 2
+  },
+  {
+    "q": "For a planetary-orbit model, which is the most appropriate state vector?",
+    "c": [
+      "Three-dimensional position and velocity",
+      "Only elapsed time",
+      "Planet name and color",
+      "Mass of the sun alone"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "After deriving the governing equations, what is the next strategic task?",
+    "c": [
+      "Choose an appropriate numerical implementation",
+      "Replace the outputs with text labels",
+      "Remove initial conditions",
+      "Convert the system into a discrete queue"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "In g=rx-d, increasing prey population x has what effect on predator per-capita growth g?",
+    "c": [
+      "It increases g",
+      "It removes parameter r",
+      "It decreases g",
+      "It forces g to zero"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "The particular predator-prey trajectories depend on parameters and:",
+    "c": [
+      "Initial conditions at time zero",
+      "Script filename only",
+      "MATLAB window size",
+      "Plot marker color"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "Why is \\n commonly included at the end of an fprintf format string?",
+    "c": [
+      "To multiply the output",
+      "To move output to a new line",
+      "To convert a number to a matrix",
+      "To suppress all text"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "Which sequence correctly produces a basic MATLAB function plot?",
+    "c": [
+      "Define only a title",
+      "Define x, compute y=f(x), then call plot(x,y)",
+      "Use input without a function",
+      "Call plot before defining x and y"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "A predator-prey model represents:",
+    "c": [
+      "Only the physical location of animals",
+      "Two species whose populations depend closely on each other",
+      "A single constant population",
+      "A queue with one server"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "For v = 1.0:-0.2:0.0, how many loop iterations occur?",
+    "c": [
+      "10",
+      "2",
+      "5",
+      "6"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "Why must the selected state variables be complete?",
+    "c": [
+      "They must always be directly observable",
+      "They must contain enough information to reproduce relevant system behavior",
+      "They must remain constant during a run",
+      "They must include every possible physical detail"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "A conservation law that remains constant along a predator-prey trajectory is useful because it:",
+    "c": [
+      "Characterizes allowable solution orbits",
+      "Eliminates both differential equations",
+      "Removes all parameters",
+      "Makes populations integer-valued"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "Which strategy should come first when building a continuous model?",
+    "c": [
+      "Translate the system physics into quantitative equations",
+      "Choose plot colors",
+      "Select a random queue discipline",
+      "Write a report generator"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "A loop condition never becomes false. What is the likely result?",
+    "c": [
+      "Immediate program termination",
+      "Automatic function return",
+      "An infinite loop",
+      "A syntax-free plot"
+    ],
+    "a": 2,
+    "s": 3
+  },
+  {
+    "q": "Simulating a missile trajectory is an example of continuous modeling in:",
+    "c": [
+      "Set theory",
+      "Document formatting",
+      "Military applications",
+      "Retail accounting"
+    ],
+    "a": 2,
+    "s": 3
+  },
+  {
+    "q": "Which structure is most appropriate for choosing among several mutually exclusive numeric ranges?",
+    "c": [
+      "if-elseif-else",
+      "plot only",
+      "A single disp command",
+      "A comment block"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "A continuous model script must select a smaller numerical step when estimated error is high. Which design best fits?",
+    "c": [
+      "Use disp only",
+      "Use a switch with no cases",
+      "Use a loop with an if condition that tests the error and adjusts the step",
+      "Store the error only as a plot title"
+    ],
+    "a": 2,
+    "s": 3
+  },
+  {
+    "q": "Which statement correctly distinguishes a MATLAB script from a function?",
+    "c": [
+      "A script uses workspace data, while a function can accept inputs and return outputs",
+      "A function cannot have local variables",
+      "Only scripts use the .m extension",
+      "A script must return one output"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "Which command labels the horizontal axis of a MATLAB plot?",
+    "c": [
+      "title",
+      "ylabel",
+      "xlabel",
+      "grid on"
+    ],
+    "a": 2,
+    "s": 3
+  },
+  {
+    "q": "Which command opens the MATLAB editor from the command prompt?",
+    "c": [
+      "edit",
+      "plot",
+      "input",
+      "disp"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "In f=b-py, increasing predator population y has what effect on prey per-capita growth f?",
+    "c": [
+      "It leaves f unchanged",
+      "It makes f equal to x",
+      "It decreases f",
+      "It increases f"
+    ],
+    "a": 2,
+    "s": 3
+  },
+  {
+    "q": "When no switch case matches, which block is executed?",
+    "c": [
+      "otherwise",
+      "elseif",
+      "continue",
+      "defaultcase"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "Which control structure is best when repetition should continue while a condition remains true?",
+    "c": [
+      "fprintf",
+      "switch statement",
+      "while loop",
+      "menu function"
+    ],
+    "a": 2,
+    "s": 3
+  },
+  {
+    "q": "How many times does for v = 1:10 execute its body?",
+    "c": [
+      "1",
+      "9",
+      "10",
+      "11"
+    ],
+    "a": 2,
+    "s": 3
+  },
+  {
+    "q": "Which command adds grid lines to a plot?",
+    "c": [
+      "switch",
+      "axis equal",
+      "disp",
+      "grid on"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "Which statement best explains population cycles in the predator-prey model?",
+    "c": [
+      "Only prey affects prey",
+      "Both populations are independent",
+      "Changes in each population alter the growth rate of the other",
+      "The model contains no feedback"
+    ],
+    "a": 2,
+    "s": 3
+  },
+  {
+    "q": "In the Lotka-Volterra notation from the module, x represents the:",
+    "c": [
+      "Predator population",
+      "Conservation constant",
+      "Simulation time step",
+      "Prey population"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "Which command opens the MATLAB editor from the command prompt?",
+    "c": [
+      "input",
+      "plot",
+      "disp",
+      "edit"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "What is the effect of axis equal?",
+    "c": [
+      "It creates a square matrix",
+      "It uses equal scale factors on both axes",
+      "It forces equal x and y values",
+      "It deletes axis labels"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "Variables created inside a MATLAB function are generally:",
+    "c": [
+      "Automatically global",
+      "Required to be strings",
+      "Always stored in the base workspace",
+      "Local to the function"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "Which control structure is best when the number of repetitions is known in advance?",
+    "c": [
+      "for loop",
+      "switch statement",
+      "input command",
+      "while loop only"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "What keyword closes a MATLAB if statement?",
+    "c": [
+      "end",
+      "endif only",
+      "close",
+      "stop"
+    ],
+    "a": 0,
+    "s": 3
+  },
+  {
+    "q": "What does disp(X) do?",
+    "c": [
+      "Reads X from the keyboard",
+      "Displays the value without printing the variable name",
+      "Creates a user-defined function",
+      "Saves X to a file"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "Simulating a missile trajectory is an example of continuous modeling in:",
+    "c": [
+      "Retail accounting",
+      "Military applications",
+      "Set theory",
+      "Document formatting"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "When predators overhunt prey, which sequence is most plausible?",
+    "c": [
+      "Prey declines while predators remain permanently unchanged",
+      "Prey and predators instantly become zero",
+      "Predators increase forever",
+      "Prey declines, predators later decline, then prey can recover"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "Why must the selected state variables be complete?",
+    "c": [
+      "They must remain constant during a run",
+      "They must include every possible physical detail",
+      "They must always be directly observable",
+      "They must contain enough information to reproduce relevant system behavior"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "What do state-variable equations describe?",
+    "c": [
+      "Only the initial values of outputs",
+      "How system state changes with respect to the independent variable",
+      "The file location of the model",
+      "Only the desired report format"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "Which fprintf format code is appropriate for a string?",
+    "c": [
+      "%e",
+      "%s",
+      "%d",
+      "%g"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "Compared with a basic Euler method, why might Runge-Kutta be selected?",
+    "c": [
+      "It guarantees an exact closed-form solution",
+      "It requires no function evaluations",
+      "It converts continuous variables to strings",
+      "It generally obtains better accuracy by evaluating slopes within a step"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "A MATLAB LineSpec can combine which properties?",
+    "c": [
+      "Rows, columns, and workspace",
+      "Color, line type, and marker",
+      "Loop, condition, and function",
+      "Title, filename, and input prompt"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "A loop condition never becomes false. What is the likely result?",
+    "c": [
+      "Automatic function return",
+      "An infinite loop",
+      "A syntax-free plot",
+      "Immediate program termination"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "What is the primary purpose of an output equation?",
+    "c": [
+      "To define the operating system",
+      "To replace all state equations",
+      "To select the integration step automatically",
+      "To calculate quantities required by the simulation consumer"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "Which command correctly requests string input?",
+    "c": [
+      "name = fprintf(\"Enter name: \")",
+      "name = input(\"Enter name: \",\"s\")",
+      "name = disp(\"Enter name: \",\"s\")",
+      "name = input(\"Enter name: \")"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "A dam-embankment behavior study belongs to which continuous-system application area?",
+    "c": [
+      "Inventory counting",
+      "Text processing",
+      "Queueing only",
+      "Civil engineering"
+    ],
+    "a": 3,
+    "s": 3
+  },
+  {
+    "q": "Which pair consists only of typical continuous state variables?",
+    "c": [
+      "Event number and server count",
+      "Job ID and priority code",
+      "Position and velocity",
+      "Queue length and customer count"
+    ],
+    "a": 2,
+    "s": 3
+  },
+  {
+    "q": "Which command adds grid lines to a plot?",
+    "c": [
+      "axis equal",
+      "grid on",
+      "disp",
+      "switch"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "Which extension is used for both MATLAB scripts and function files?",
+    "c": [
+      ".csv",
+      ".m",
+      ".exe",
+      ".qti"
+    ],
+    "a": 1,
+    "s": 3
+  },
+  {
+    "q": "What is the purpose of hold on when adding another curve?",
+    "c": [
+      "Close the active figure",
+      "Overwrite the data file",
+      "Rotate a 3D plot",
+      "Preserve the current axes and plot additional data"
+    ],
+    "a": 3,
+    "s": 4
+  },
+  {
+    "q": "Which function labels the third axis of a 3D plot?",
+    "c": [
+      "title",
+      "grid",
+      "zlabel",
+      "ylabel"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Which statement accurately describes a key limitation of Monte Carlo results?",
+    "c": [
+      "They approximate true values rather than guarantee exact values",
+      "They are always deterministic constants",
+      "They cannot be generated by computers",
+      "They require no sampling"
+    ],
+    "a": 0,
+    "s": 4
+  },
+  {
+    "q": "What does axis square do?",
+    "c": [
+      "Saves the figure as ASCII",
+      "Makes the plot box square",
+      "Converts a 2D plot to 3D",
+      "Makes every data value equal"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "Which is an advantage of Monte Carlo simulation?",
+    "c": [
+      "It requires no input model",
+      "It needs only one sample",
+      "It can provide approximate solutions to difficult numerical problems",
+      "It always returns an exact closed form"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Which option is most appropriate for a specially formatted ASCII report?",
+    "c": [
+      "Low-level output using fprintf",
+      "plot3 only",
+      "A random sampling rule",
+      "axis square"
+    ],
+    "a": 0,
+    "s": 4
+  },
+  {
+    "q": "Which command reads a compatible numeric text file into MATLAB?",
+    "c": [
+      "title",
+      "load",
+      "hold on",
+      "legend"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "What does axis equal do?",
+    "c": [
+      "Creates a square data matrix",
+      "Forces x and y data to be identical",
+      "Adds equal labels to every point",
+      "Uses equal scale factors on both axes"
+    ],
+    "a": 3,
+    "s": 4
+  },
+  {
+    "q": "What is the final step of the four-step Monte Carlo process?",
+    "c": [
+      "Choose only the largest input",
+      "Aggregate individual-run results",
+      "Convert every output to text",
+      "Remove random values"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "Sensitivity analysis reveals that one input has almost no effect on output. A reasonable model-improvement decision is to:",
+    "c": [
+      "Increase its complexity automatically",
+      "Delete all influential inputs",
+      "Consider simplifying its representation",
+      "Stop validating the model"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Which function plots points using x, y, and z coordinate vectors?",
+    "c": [
+      "bar",
+      "plot",
+      "plot3",
+      "dlmwrite"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Which benefit of sensitivity analysis supports model verification?",
+    "c": [
+      "It removes nonlinear behavior",
+      "It can uncover model errors",
+      "It guarantees exact simulation results",
+      "It replaces probability distributions"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "Which function creates a three-dimensional bar chart?",
+    "c": [
+      "bar",
+      "bar3",
+      "stem",
+      "plot"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "What does a MATLAB diary file record?",
+    "c": [
+      "Compiled C++ code exclusively",
+      "Only 3D coordinates",
+      "Only probability densities",
+      "Keystrokes and resulting text output"
+    ],
+    "a": 3,
+    "s": 4
+  },
+  {
+    "q": "A LineSpec may specify which combination?",
+    "c": [
+      "Filename, directory, and extension",
+      "Color, line type, and marker",
+      "Mean, variance, and distribution",
+      "Input, output, and error estimate"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "Which command displays grid lines?",
+    "c": [
+      "grid on",
+      "save -ascii",
+      "axis equal",
+      "hold off"
+    ],
+    "a": 0,
+    "s": 4
+  },
+  {
+    "q": "Which component prescribes how values are drawn from probability distributions?",
+    "c": [
+      "Scoring method",
+      "Sampling rule",
+      "File extension",
+      "Plot title"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "Why are many simulation runs often required?",
+    "c": [
+      "To turn an approximation into symbolic algebra",
+      "To reduce sampling uncertainty and stabilize estimates",
+      "To remove the need for distributions",
+      "To guarantee every input is identical"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "Which field is identified as an application area of Monte Carlo simulation?",
+    "c": [
+      "Grammar correction only",
+      "Keyboard configuration only",
+      "Finance and project management",
+      "Document pagination only"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Which command adds a title to a plot?",
+    "c": [
+      "load",
+      "plot3",
+      "dlmwrite",
+      "title"
+    ],
+    "a": 3,
+    "s": 4
+  },
+  {
+    "q": "Which MATLAB option writes a numeric array as delimited ASCII data?",
+    "c": [
+      "plot3",
+      "menu",
+      "zlabel",
+      "save with the -ascii qualifier"
+    ],
+    "a": 3,
+    "s": 4
+  },
+  {
+    "q": "Why must each line have the same number of values for the basic load approach?",
+    "c": [
+      "MATLAB requires every file to be a square",
+      "The command reads only strings",
+      "The data must form a rectangular matrix",
+      "Different rows would change the filename"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Before sampling an uncertain input, what must the modeler define?",
+    "c": [
+      "Its exact future value",
+      "A queue discipline",
+      "Its probability distribution",
+      "A 3D viewing angle"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Which problem is especially suitable for Monte Carlo simulation?",
+    "c": [
+      "Displaying one known constant",
+      "Formatting a fixed text file",
+      "Estimating risk when several inputs are uncertain",
+      "Renaming a MATLAB variable"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Why identify the inputs with the greatest influence on output?",
+    "c": [
+      "To avoid defining input bounds",
+      "To prioritize research and model refinement",
+      "To eliminate the model output",
+      "To guarantee all inputs are equally important"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "Why does Monte Carlo simulation produce a statistical description of model output?",
+    "c": [
+      "It eliminates all model uncertainty",
+      "It computes only one exact answer",
+      "Each run uses randomly sampled input values",
+      "Every run uses identical inputs"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "If 7,850 of 10,000 random points fall inside a unit quarter circle, the estimate of pi is:",
+    "c": [
+      "0.785",
+      "7.85",
+      "31.4",
+      "3.14"
+    ],
+    "a": 3,
+    "s": 4
+  },
+  {
+    "q": "Why does the geometric estimate of pi generally improve with more points?",
+    "c": [
+      "Randomness disappears completely",
+      "The square becomes smaller",
+      "The true value of pi changes",
+      "The sampled area proportion tends to stabilize"
+    ],
+    "a": 3,
+    "s": 4
+  },
+  {
+    "q": "What does error estimation describe in a Monte Carlo study?",
+    "c": [
+      "Only computer storage space",
+      "The spelling errors in source code",
+      "Statistical error as a function of run count and other parameters",
+      "The exact deterministic answer"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "A data file has rows with unequal numbers of numeric values. Based on the module, what is the best conclusion?",
+    "c": [
+      "Basic load is not suitable without restructuring the data",
+      "save -ascii will repair it during reading",
+      "plot3 should be used to read it",
+      "load will automatically invent missing values"
+    ],
+    "a": 0,
+    "s": 4
+  },
+  {
+    "q": "Which command identifies plotted data series by name?",
+    "c": [
+      "load",
+      "axis square",
+      "legend",
+      "xlabel"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Which command reads a compatible numeric text file into MATLAB?",
+    "c": [
+      "hold on",
+      "load",
+      "legend",
+      "title"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "Which MATLAB function produces a two-dimensional bar chart?",
+    "c": [
+      "bar3",
+      "zlabel",
+      "bar",
+      "plot3"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "Why is a grid helpful in a 3D visualization?",
+    "c": [
+      "It calculates simulation error",
+      "It converts the plot to ASCII",
+      "It generates random samples",
+      "It improves spatial interpretation of plotted values"
+    ],
+    "a": 3,
+    "s": 4
+  },
+  {
+    "q": "What happens when save writes to an existing file as described in the module?",
+    "c": [
+      "Only the filename changes",
+      "New data are always appended",
+      "The file is overwritten from the beginning",
+      "The old file becomes a plot"
+    ],
+    "a": 2,
+    "s": 4
+  },
+  {
+    "q": "A Monte Carlo script must save run outputs, reload them, and inspect their distribution visually. Which workflow best integrates the module skills?",
+    "c": [
+      "Save the numeric results, load the rectangular data, then create labeled 2D or 3D plots",
+      "Use axis square instead of performing simulation runs",
+      "Use zlabel to generate random numbers",
+      "Create a title, delete the outputs, then run one deterministic case"
+    ],
+    "a": 0,
+    "s": 4
+  },
+  {
+    "q": "For a nonlinear model, which plan best addresses the local nature of derivatives?",
+    "c": [
+      "Evaluate sensitivity at multiple relevant operating points",
+      "Use a derivative at one point as globally conclusive",
+      "Run only the deterministic mean case",
+      "Ignore input uncertainty"
+    ],
+    "a": 0,
+    "s": 4
+  },
+  {
+    "q": "Which MATLAB function is another way to export a numeric array as a delimited file?",
+    "c": [
+      "xlabel",
+      "dlmwrite",
+      "input",
+      "bar3"
+    ],
+    "a": 1,
+    "s": 4
+  },
+  {
+    "q": "What is a multimodel or hybrid model?",
+    "c": [
+      "A single informal paragraph only",
+      "A model containing no abstractions",
+      "A model that cannot represent phases",
+      "Several connected models that may use different model types"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "A hydraulic network emphasizes physical balancing relationships more than connection direction. Which model type is most appropriate?",
+    "c": [
+      "Constraint model",
+      "Conceptual picture",
+      "Spatial model",
+      "Declarative model"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "A model connects components directionally using equations and related variables. Which type best fits?",
+    "c": [
+      "Functional model",
+      "Concept map only",
+      "Face-validation model",
+      "Spatial model"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "What is the value of a manual code review?",
+    "c": [
+      "It computes an OR optimum",
+      "It replaces the conceptual model",
+      "Peers can critique the implementation and identify problems",
+      "It automatically proves model validity"
+    ],
+    "a": 2,
+    "s": 5
+  },
+  {
+    "q": "In a concept map, directed arcs primarily indicate:",
+    "c": [
+      "The cost of each node",
+      "The validity score of the model",
+      "The file format used",
+      "Interactions between connected elements"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "After formulating an OR problem, what comes next?",
+    "c": [
+      "Develop a mathematical model of the system",
+      "Publish the final decision",
+      "Perform hardware deployment",
+      "Remove constraints"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "Why is Simulink integration with MATLAB valuable?",
+    "c": [
+      "It removes the need for simulation",
+      "It prevents all use of MATLAB code",
+      "MATLAB algorithms can be incorporated and results exported for further analysis",
+      "It limits models to one block"
+    ],
+    "a": 2,
+    "s": 5
+  },
+  {
+    "q": "What do labels on concept-map arcs describe?",
+    "c": [
+      "The syntax of a solver",
+      "The size of the software file",
+      "The nature of the interaction",
+      "The model’s final profit"
+    ],
+    "a": 2,
+    "s": 5
+  },
+  {
+    "q": "Which notation is identified as standardized, semiformal, object-oriented, and graphical?",
+    "c": [
+      "FIFO",
+      "UML",
+      "ASCII",
+      "LCG"
+    ],
+    "a": 1,
+    "s": 5
+  },
+  {
+    "q": "Why are conceptual models often informal?",
+    "c": [
+      "They cannot use figures",
+      "They must be mathematically executable",
+      "They exist only for statistical testing",
+      "They prioritize rapid communication over detailed precision"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "Why are hybrid models valuable for complex real-world systems?",
+    "c": [
+      "They force every phase to use one notation",
+      "They support multiple perspectives and a wider variety of questions",
+      "They require no connections among submodels",
+      "They eliminate all implementation complexity"
+    ],
+    "a": 1,
+    "s": 5
+  },
+  {
+    "q": "Which is a major advantage of formal models?",
+    "c": [
+      "They support unambiguous representation and rigorous analysis",
+      "They eliminate the need for requirements",
+      "They require no mathematical knowledge",
+      "They are always faster and easier to design"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "Which other stochastic OR method is identified?",
+    "c": [
+      "Formal debugging",
+      "Sequence diagramming",
+      "Queuing theory",
+      "ASCII export"
+    ],
+    "a": 2,
+    "s": 5
+  },
+  {
+    "q": "What does model validation primarily ask?",
+    "c": [
+      "Is every input at a boundary?",
+      "Is the model a sufficiently close approximation of the target system for its purpose?",
+      "Does the code compile with no syntax errors?",
+      "Are all UML arrows labeled?"
+    ],
+    "a": 1,
+    "s": 5
+  },
+  {
+    "q": "Which model type in Fishwick’s perspective is primarily state-event focused?",
+    "c": [
+      "Constraint model",
+      "Functional model",
+      "Declarative model",
+      "Spatial model"
+    ],
+    "a": 2,
+    "s": 5
+  },
+  {
+    "q": "A safety-critical controller requires precise analysis of properties, limits, and constraints. Which approach is most defensible?",
+    "c": [
+      "An unlabeled picture only",
+      "Face validation without a model",
+      "A purely informal paragraph",
+      "Formal modeling"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "What role do inequality constraints play in linear programming?",
+    "c": [
+      "They limit feasible values of system variables",
+      "They create random outputs",
+      "They label concept-map arcs",
+      "They identify syntax errors"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "Which of the following is a stochastic OR method mentioned in the module?",
+    "c": [
+      "Manual code review",
+      "UML class modeling",
+      "Linear programming only",
+      "Markov chains"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "A team wants to compare several controller designs before building hardware. Which tool use best matches the module?",
+    "c": [
+      "Develop only a conceptual paragraph",
+      "Use face validation without simulation",
+      "Model and simulate the alternatives in Simulink",
+      "Run a queueing model in a class diagram"
+    ],
+    "a": 2,
+    "s": 5
+  },
+  {
+    "q": "What is face validation?",
+    "c": [
+      "Formal proof that all outputs are exact",
+      "A stress test at maximum input only",
+      "Automated calculation of syntax errors",
+      "Subjective assessment of model output by knowledgeable experts"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "Which distinction best separates constraint models from functional models?",
+    "c": [
+      "Constraint models emphasize physics-based relationships and balancing more than direction",
+      "Functional models cannot connect components",
+      "Functional models are always informal pictures",
+      "Constraint models contain no mathematics"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "Which question should a useful conceptual model help answer?",
+    "c": [
+      "What is the exact optimum of every objective?",
+      "What is every line of executable code?",
+      "Which compiler produced the model?",
+      "What is the system and what does it do?"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "What is a modeling formalism?",
+    "c": [
+      "A validation opinion only",
+      "A methodology with precise rules for modeling and simulation",
+      "An entirely unstructured sketch",
+      "A list of hardware devices"
+    ],
+    "a": 1,
+    "s": 5
+  },
+  {
+    "q": "A model is run with minimum and maximum boundary inputs. This is a:",
+    "c": [
+      "Model stress test",
+      "Concept map",
+      "Face validation",
+      "Class diagram"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "What does Simulink provide for dynamic-system modeling?",
+    "c": [
+      "A graphical editor, block libraries, and solvers",
+      "Only spreadsheet export",
+      "Only UML diagrams",
+      "Only a text editor with no solver"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "Which UML tool is most suitable for describing how a system changes among states?",
+    "c": [
+      "Code review",
+      "Statechart",
+      "Use case",
+      "Class diagram"
+    ],
+    "a": 1,
+    "s": 5
+  },
+  {
+    "q": "What trade-off characterizes semiformal modeling?",
+    "c": [
+      "No notation and no analysis",
+      "Exact optimization with no model",
+      "Maximum rigor with no usability",
+      "Greater ease of use with less unambiguity but some analytic capability"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "Which method directly supports objective validation when target-system output exists?",
+    "c": [
+      "Manual syntax review only",
+      "Drawing a concept map",
+      "Renaming model blocks",
+      "Statistical testing of differences between model and target outputs"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "What is the simplest form of a conceptual model identified in the module?",
+    "c": [
+      "A picture of the system",
+      "A linear-programming tableau",
+      "A full Simulink solver",
+      "A stress-test report"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "A model runs without errors but produces unrealistic behavior. Which conclusion is strongest?",
+    "c": [
+      "It requires only a new filename",
+      "It is validated but not executable",
+      "It may be verified but not validated",
+      "It is automatically optimal"
+    ],
+    "a": 2,
+    "s": 5
+  },
+  {
+    "q": "What is the first stated step in an OR study?",
+    "c": [
+      "Perform face validation",
+      "Select a UML diagram",
+      "Run Simulink immediately",
+      "Formulate the problem"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "A system has physical-flow, software-control, and spatial phases. Which strategy is best?",
+    "c": [
+      "Connect suitable model types in a hybrid model",
+      "Use validation instead of modeling",
+      "Ignore phases that require different representations",
+      "Use one informal picture for all analyses"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "Which activity is primarily a verification technique?",
+    "c": [
+      "Comparing real and model output statistically",
+      "Automated debugging",
+      "Expert judgment about realism",
+      "Estimating customer demand"
+    ],
+    "a": 1,
+    "s": 5
+  },
+  {
+    "q": "A team’s concept map has arrows but no labels. What important information is missing?",
+    "c": [
+      "The presence of a graph",
+      "The existence of system elements",
+      "The meaning of each interaction",
+      "The use of rectangles or circles"
+    ],
+    "a": 2,
+    "s": 5
+  },
+  {
+    "q": "A model represents rooms as elements and tracks entities inside them. It is best classified as:",
+    "c": [
+      "Functional only",
+      "Linear programming",
+      "Spatial",
+      "Declarative"
+    ],
+    "a": 2,
+    "s": 5
+  },
+  {
+    "q": "What is the primary goal of operations research?",
+    "c": [
+      "Optimize system performance to support decisions such as maximizing profit or minimizing cost",
+      "Remove mathematical models from decisions",
+      "Validate software syntax",
+      "Create only informal pictures"
+    ],
+    "a": 0,
+    "s": 5
+  },
+  {
+    "q": "In a concept map, nodes represent:",
+    "c": [
+      "Objective-function coefficients only",
+      "Simulation run times only",
+      "Only mathematical errors",
+      "System concepts or elements"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "A project team needs a one-page overview for stakeholders before detailed modeling. Which product is best?",
+    "c": [
+      "A complete formal model",
+      "A code debugger",
+      "An objective function only",
+      "A conceptual model"
+    ],
+    "a": 3,
+    "s": 5
+  },
+  {
+    "q": "What does a conceptual model document?",
+    "c": [
+      "Only the accreditation decision",
+      "Only final simulation results",
+      "Only compiled program code",
+      "What aspects, assumptions, interactions, and parameters will be represented or omitted"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "Why is texture mapping computationally valuable?",
+    "c": [
+      "It eliminates digital images",
+      "It replaces lighting and shading completely",
+      "It increases polygon count for every surface detail",
+      "It enriches appearance without greatly increasing geometric complexity"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "Which set contains only shading models named in the module?",
+    "c": [
+      "Perspective, parallel, and oblique",
+      "Flat, smooth, and Phong",
+      "Translation, rotation, and scaling",
+      "Ambient, point, and spotlight"
+    ],
+    "a": 1,
+    "s": 6
+  },
+  {
+    "q": "Which graphics API was developed by Microsoft for Windows and Xbox?",
+    "c": [
+      "Direct3D",
+      "Java 3D",
+      "OpenSceneGraph",
+      "OpenGL"
+    ],
+    "a": 0,
+    "s": 6
+  },
+  {
+    "q": "Why are world coordinates converted to camera coordinates?",
+    "c": [
+      "To eliminate the viewing plane",
+      "To express objects relative to the camera for projection",
+      "To validate the simuland",
+      "To calculate accreditation risk"
+    ],
+    "a": 1,
+    "s": 6
+  },
+  {
+    "q": "A team must explain rapidly changing aircraft positions during training. Which representation is most suitable?",
+    "c": [
+      "A long static paragraph",
+      "Audio only",
+      "An unformatted data dump",
+      "Animation"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "A light emits equally in all directions from a specified location and weakens with distance. It is a:",
+    "c": [
+      "Point light",
+      "Ambient light",
+      "Projection plane",
+      "Directional light"
+    ],
+    "a": 0,
+    "s": 6
+  },
+  {
+    "q": "Why do sophisticated realistic graphics require significant computing resources?",
+    "c": [
+      "They use complex algorithms and large amounts of data",
+      "They require no memory",
+      "They avoid matrix operations",
+      "They contain only one point"
+    ],
+    "a": 0,
+    "s": 6
+  },
+  {
+    "q": "What property is preserved by affine transformations?",
+    "c": [
+      "Object color under all lights",
+      "Perspective depth",
+      "All absolute distances in every direction",
+      "Collinearity and ratios of distances along a line"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "Verification primarily examines:",
+    "c": [
+      "Representational accuracy against the simuland only",
+      "Official permission to use a model",
+      "Only the visual quality of results",
+      "Transformational accuracy from requirements to conceptual and executable models"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "Why is visualization essential in modeling and simulation?",
+    "c": [
+      "It eliminates the need for any model",
+      "It makes large and time-varying information easier to understand",
+      "It guarantees model accreditation",
+      "It converts every simulation into text"
+    ],
+    "a": 1,
+    "s": 6
+  },
+  {
+    "q": "Which statement best defines computer graphics?",
+    "c": [
+      "The exclusive storage of numerical tables",
+      "The execution of statistical hypothesis tests",
+      "The generation or manipulation of images using computer hardware and software",
+      "The certification of simulation models"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "What is a Type III VV&A error?",
+    "c": [
+      "An invalid model is correctly rejected",
+      "A model valid for another purpose is used for an inappropriate application",
+      "A valid model is not used",
+      "A model is verified before validation"
+    ],
+    "a": 1,
+    "s": 6
+  },
+  {
+    "q": "Which light is specified by location, direction, and cutoff angle?",
+    "c": [
+      "Directional light",
+      "Texture map",
+      "Ambient light",
+      "Spotlight"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "What is the purpose of a reflection model?",
+    "c": [
+      "Store compressed images",
+      "Transform world coordinates to camera coordinates",
+      "Represent interactions between light and objects that make surfaces visible",
+      "Define accreditation authority"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "How does a vector differ from a point?",
+    "c": [
+      "A vector must represent color",
+      "A vector always has four polygons",
+      "A vector has location but no direction",
+      "A vector has direction and length but no fixed location"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "A one-time exercise uses existing models for a specific objective. This is a:",
+    "c": [
+      "Simulation event",
+      "Conceptual-model inspection",
+      "Formal proof",
+      "Simulation software development project"
+    ],
+    "a": 0,
+    "s": 6
+  },
+  {
+    "q": "Which method statically compares executable-model data definitions and operations with the conceptual model?",
+    "c": [
+      "Predictive validation",
+      "Sensitivity analysis",
+      "Comparison testing",
+      "Data analysis"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "Which graphics API is cross-platform and widely used for professional high-performance graphics?",
+    "c": [
+      "Direct3D only",
+      "Flash",
+      "XNA Game Studio",
+      "OpenGL"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "Why are matrix operations important in computer graphics?",
+    "c": [
+      "They replace all images with text",
+      "They certify model usability",
+      "They efficiently represent and combine transformations",
+      "They remove coordinate systems"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "Which cells are primarily responsible for color vision?",
+    "c": [
+      "Rods",
+      "Projectors",
+      "Polygons",
+      "Cones"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "What is the referent?",
+    "c": [
+      "The output produced during execution",
+      "The authority granting accreditation",
+      "The developers’ body of knowledge about the simuland",
+      "The graphics pipeline"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "What characterizes parallel projection?",
+    "c": [
+      "It requires a finite center of projection",
+      "It cannot use clipping planes",
+      "It always makes distant objects smaller",
+      "It uses a direction of projection with the camera considered at infinity"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "A complex high-risk model has limited data and several possible failure modes. Which V&V strategy is strongest?",
+    "c": [
+      "Combine suitable inspection, static, dynamic, statistical, and expert methods",
+      "Use exactly one method regardless of context",
+      "Accredit first and validate later",
+      "Rely only on attractive visualization"
+    ],
+    "a": 0,
+    "s": 6
+  },
+  {
+    "q": "Why establish bounds of validity?",
+    "c": [
+      "To guarantee accreditation for every purpose",
+      "To identify the input and operating ranges over which results are credible",
+      "To remove the need for requirements",
+      "To claim universal model accuracy"
+    ],
+    "a": 1,
+    "s": 6
+  },
+  {
+    "q": "What primarily drives model requirements?",
+    "c": [
+      "The number of developers",
+      "The preferred graphics color",
+      "The intended application",
+      "The file extension"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "Which light best models sunlight?",
+    "c": [
+      "Point light at the object",
+      "Spotlight with a narrow cone",
+      "Directional light",
+      "Ambient light only"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "In VV&A terminology, what is the simuland?",
+    "c": [
+      "The official certification decision",
+      "The executable program only",
+      "The real-world object, process, or phenomenon being simulated",
+      "The model output format"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "Accreditation is best described as:",
+    "c": [
+      "A technical method for debugging code",
+      "Official certification that a model is acceptable for a specific purpose",
+      "A graphics transformation",
+      "A comparison of source files"
+    ],
+    "a": 1,
+    "s": 6
+  },
+  {
+    "q": "What is a Type I VV&A error?",
+    "c": [
+      "A verified model is documented",
+      "An invalid model is used",
+      "A valid model is not used",
+      "A model valid elsewhere is misapplied"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "Why is orthographic projection useful in CAD and architecture?",
+    "c": [
+      "It exaggerates perspective depth",
+      "It requires cone-shaped light",
+      "It removes accurate measurement",
+      "It preserves distances and directions along the projection plane"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "Which transformation changes an object’s orientation?",
+    "c": [
+      "Rotation",
+      "Texture mapping",
+      "Clipping",
+      "Translation"
+    ],
+    "a": 0,
+    "s": 6
+  },
+  {
+    "q": "Why are convex polygonal meshes widely used for 3D objects?",
+    "c": [
+      "They make every object two-dimensional",
+      "Convexity simplifies graphics computations and suits modern hardware",
+      "They represent only text",
+      "They remove the need for coordinates"
+    ],
+    "a": 1,
+    "s": 6
+  },
+  {
+    "q": "Which project type primarily seeks insight into the simuland rather than reusable software?",
+    "c": [
+      "Simulation software development",
+      "Graphics-library project",
+      "Simulation study",
+      "Simulation event"
+    ],
+    "a": 2,
+    "s": 6
+  },
+  {
+    "q": "Which advanced tool is an industry standard for 3D modeling, animation, effects, and rendering?",
+    "c": [
+      "Predicate calculus",
+      "Maya",
+      "OpenSceneGraph",
+      "MATLAB"
+    ],
+    "a": 1,
+    "s": 6
+  },
+  {
+    "q": "Which transformation changes an object’s location without necessarily changing its size?",
+    "c": [
+      "Translation",
+      "Projection",
+      "Shading",
+      "Scaling"
+    ],
+    "a": 0,
+    "s": 6
+  },
+  {
+    "q": "In 3D graphics, a mathematical point represents:",
+    "c": [
+      "Direction and length without location",
+      "A color with intensity",
+      "A polygon surface only",
+      "A location with no size or shape"
+    ],
+    "a": 3,
+    "s": 6
+  },
+  {
+    "q": "Which camera parameter specifies where the camera is looking?",
+    "c": [
+      "Near clipping color",
+      "Pixel shader",
+      "Camera up direction only",
+      "Object or target location"
+    ],
+    "a": 3,
+    "s": 6
+  }
+];
+
+const CONFIG={
+  code:"MODSIM",
+  title:"Modeling and Simulation Reviewer",
+  subtitle:"Final review · Modules 1–6",
+  description:"Practice all questions, each one once."
+};
+const KEYS=["A","B","C","D","E","F","G","H","I"];
+const stage=document.getElementById("stage");
+let opts={set:"all",shuffleQ:true,shuffleC:true,autoAdvance:false},deck=[],at=0,autoTimer=null;
+const pool=()=>opts.set==="all"?BANK.slice():BANK.filter(q=>q.s===+opts.set);
+function shuffled(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function buildDeck(list){
+  const qs=opts.shuffleQ?shuffled(list):list.slice();
+  deck=qs.map(q=>({ref:q,order:opts.shuffleC?shuffled(q.c.map((_,i)=>i)):q.c.map((_,i)=>i),
+    picked:null,skipped:false,tempPicks:[]}));at=0}
+const isMulti=q=>Array.isArray(q.a);
+const isRightIdx=(q,i)=>isMulti(q)?q.a.includes(i):i===q.a;
+const sameSet=(a,b)=>a.length===b.length&&[...a].sort().every((v,i)=>v===[...b].sort()[i]);
+const isCorrectPick=(q,p)=>p===null?false:isMulti(q)?sameSet(p,q.a):isRightIdx(q,p);
+const answered=it=>it.picked!==null;
+const stateOf=it=>answered(it)?(isCorrectPick(it.ref,it.picked)?"ok":"no"):(it.skipped?"sk":"");
+const pendingIdx=()=>deck.map((_,i)=>i).filter(i=>!answered(deck[i]));
+function nextPending(f){for(let k=1;k<=deck.length;k++){const i=(f+k)%deck.length;if(!answered(deck[i]))return i}return -1}
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function formatQtext(t){return String(t).split("```").map((p,i)=>i%2?`<pre class="code">${esc(p.trim())}</pre>`:p.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<p>${esc(x).replace(/\n/g,"<br>")}</p>`).join("")).join("")}
+const qCompact=t=>esc(String(t).replace(/```([\s\S]*?)```/g,(m,c)=>" "+c.trim().replace(/\n+/g," ")+" ").replace(/\s+/g," ").trim());
+function correctLabel(q){
+  return isMulti(q)?q.a.map(i=>esc(q.c[i])).join(" &middot; "):esc(q.c[q.a])}
+const pickedLabel=d=>isMulti(d.ref)?d.picked.map(i=>esc(d.ref.c[i])).join(" &middot; "):esc(d.ref.c[d.picked]);
+
+function renderSetup(){
+  clearTimeout(autoTimer);
+  stage.innerHTML=`<div class="field"><p class="lede">${esc(CONFIG.title)} &middot; ${esc(CONFIG.subtitle)}</p><p class="hint">${esc(CONFIG.description)} ${BANK.length} question${BANK.length===1?"":"s"}.</p></div>
+  <div class="field"><p class="lede">Shuffling</p>
+  <label class="switch"><input type="checkbox" id="sq" ${opts.shuffleQ?"checked":""}><span>Shuffle the questions<small>New order every run, so you don't memorize positions.</small></span></label>
+  <label class="switch"><input type="checkbox" id="sc" ${opts.shuffleC?"checked":""}><span>Shuffle the choices<small>Stops you from remembering "the third one".</small></span></label>
+  <label class="switch"><input type="checkbox" id="auto" ${opts.autoAdvance?"checked":""}><span>Move on after a correct answer<small>Waits briefly so you can see the result. Wrong answers stay on screen.</small></span></label></div>
+  <div class="btnrow"><button class="btn" id="go" ${BANK.length?"":"disabled"}>Start reviewing</button></div>${BANK.length?"":'<p class="pending">Add questions to BANK to begin.</p>'}`;
+  stage.querySelector("#sq").addEventListener("change",e=>opts.shuffleQ=e.target.checked);
+  stage.querySelector("#sc").addEventListener("change",e=>opts.shuffleC=e.target.checked);
+  stage.querySelector("#auto").addEventListener("change",e=>opts.autoAdvance=e.target.checked);
+  stage.querySelector("#go").addEventListener("click",()=>{buildDeck(pool());renderQuestion()});
+}
+
+function afterAnswer(){
+  const sk=stage.querySelector("#skip");if(sk)sk.remove();
+  const n=stage.querySelector("#next");n.textContent=(at===deck.length-1&&pendingIdx().length===0)?"See your score":"Next \u25B6";
+  n.focus();
+}
+
+function renderQuestion(){
+  clearTimeout(autoTimer);
+  const it=deck[at],q=it.ref,done=answered(it);
+  const right=deck.filter(d=>stateOf(d)==="ok").length,pend=pendingIdx().length;
+  const meter=deck.map((d,i)=>`<i class="${i===at?"now":stateOf(d)}"></i>`).join("");
+  const jumps=deck.map((d,i)=>`<button class="jump ${stateOf(d)} ${i===at?"now":""}" type="button" data-i="${i}" aria-label="Go to question ${i+1}">${i+1}</button>`).join("");
+  stage.innerHTML=`<div class="meter">${meter}</div>
+  <div class="qhead"><span>Question ${at+1} / ${deck.length}</span><span>${right} correct &middot; ${deck.filter(answered).length} answered</span></div>
+  <div class="grid" id="grid">${jumps}<div class="legend"><s><b style="background:var(--right)"></b>correct</s><s><b style="background:var(--wrong)"></b>wrong</s><s><b style="background:var(--skip)"></b>skipped</s><s><b style="background:var(--rule)"></b>not seen</s></div></div>
+  <h2 class="qtext">${formatQtext(q.q)}${isMulti(q)?`<span class="multinote">choose ${q.a.length}</span>`:""}</h2>
+${q.img ? `<div class="qimg" style="margin: 0 0 1.2rem; text-align: center;"><img src="${esc(q.img)}" alt="Exhibit" style="max-width: 100%; border-radius: 5px; border: 1px solid var(--rule);"></div>` : ""}
+  <div class="choices">${it.order.map((orig,pos)=>{const pk=!done&&isMulti(q)&&it.tempPicks.includes(orig);
+    return `<button class="choice${pk?" picked":""}" type="button" data-orig="${orig}" ${done?"disabled":""} ${isMulti(q)?`aria-pressed="${pk}"`:""}><span class="key">${KEYS[pos]}</span><span class="txt">${esc(q.c[orig])}</span></button>`}).join("")}</div>
+  ${(!done&&isMulti(q))?`<div class="btnrow"><button class="btn sm" id="submitMulti" ${it.tempPicks.length!==q.a.length?"disabled":""}>Submit answer</button><span class="pending">${it.tempPicks.length} of ${q.a.length} selected</span></div>`:""}
+  <div class="verdict" id="verdict"></div>
+  <div class="nav"><button class="btn quiet sm" id="prev" ${at===0?"disabled":""}>&#9664; Previous</button>${done?"":`<button class="btn quiet sm" id="skip">Skip for now</button>`}<span class="spacer"></span><button class="btn sm" id="next">Next &#9654;</button><button class="btn ghost sm" id="finish">Finish &amp; score</button>${pend?`<span class="pending" style="width:100%">${pend} question${pend>1?"s":""} still unanswered</span>`:""}</div>`;
+  const g=stage.querySelector("#grid"),nw=g.querySelector(".jump.now");
+  if(nw&&g.scrollHeight>g.clientHeight+2)g.scrollTop=nw.offsetTop-(g.clientHeight-nw.offsetHeight)/2;
+  stage.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>{at=+b.dataset.i;renderQuestion();toTop()}));
+  stage.querySelector("#prev").addEventListener("click",()=>{if(at>0){at--;renderQuestion();toTop()}});
+  const sk=stage.querySelector("#skip");if(sk)sk.addEventListener("click",()=>{deck[at].skipped=true;goNext()});
+  stage.querySelector("#next").addEventListener("click",goNext);
+  stage.querySelector("#finish").addEventListener("click",renderScore);
+  if(done)reveal(false);
+  else{stage.querySelectorAll(".choice").forEach(b=>{const o=+b.dataset.orig;b.addEventListener("click",()=>isMulti(q)?toggleChoice(o):answer(o))});
+    const sm=stage.querySelector("#submitMulti");if(sm)sm.addEventListener("click",submitMulti)}
+}
+function toggleChoice(o){const it=deck[at],q=it.ref,i=it.tempPicks.indexOf(o);if(i>-1)it.tempPicks.splice(i,1);else if(it.tempPicks.length<q.a.length)it.tempPicks.push(o);renderQuestion()}
+function submitMulti(){const it=deck[at],q=it.ref;if(it.tempPicks.length!==q.a.length)return;it.picked=it.tempPicks.slice();it.skipped=false;reveal(true)}
+function toTop(){if(stage.getBoundingClientRect().top<0)stage.scrollIntoView({block:"start"})}
+function goNext(){if(at<deck.length-1){at++;renderQuestion();toTop();return}const np=nextPending(at);if(np>-1){at=np;renderQuestion();toTop()}else renderScore()}
+function reveal(fresh){
+  const it=deck[at],q=it.ref,ok=isCorrectPick(q,it.picked);
+  stage.querySelectorAll(".choice").forEach(b=>{const o=+b.dataset.orig;b.disabled=true;
+    const was=isMulti(q)?it.picked.includes(o):o===it.picked;
+    if(isRightIdx(q,o)){b.classList.add("right");b.insertAdjacentHTML("beforeend",`<span class="mark">correct</span>`)}
+    else if(was){b.classList.add("wrong");b.insertAdjacentHTML("beforeend",`<span class="mark">your answer</span>`)}
+    else b.classList.add("dim")});
+  const v=stage.querySelector("#verdict");v.className="verdict show "+(ok?"hit":"miss");
+  v.innerHTML=ok?`<b>Correct.</b>`:`<b>Not quite.</b><p>The answer is ${correctLabel(q)}.</p>`;
+  if(fresh){
+    afterAnswer();
+    if(ok&&opts.autoAdvance){
+      const current=at;
+      autoTimer=setTimeout(()=>{if(at===current&&document.getElementById("next"))goNext()},850);
+    }
+  }
+}
+function answer(o){const it=deck[at];if(answered(it))return;it.picked=o;it.skipped=false;reveal(true)}
+
+function reviewItem(d){
+  const q=d.ref,ok=answered(d)&&isCorrectPick(q,d.picked);
+  let body=ok?`<p class="ok">Correct: ${correctLabel(q)}</p>`:(answered(d)?`<p class="yours">You chose: ${pickedLabel(d)}</p>`:`<p class="none">Left unanswered</p>`);
+  if(!ok)body+=`<p class="truth">Answer: ${correctLabel(q)}</p>`;
+  return `<div class="miss ${ok?"hit":(answered(d)?"":"unans")}"><p>${qCompact(q.q)}</p>${body}</div>`;
+}
+function renderScore(){
+  clearTimeout(autoTimer);
+  const done=deck.filter(answered),right=done.filter(d=>isCorrectPick(d.ref,d.picked)).length;
+  const misses=done.filter(d=>!isCorrectPick(d.ref,d.picked)),unans=deck.filter(d=>!answered(d));
+  const pct=deck.length?Math.round(right/deck.length*100):0;
+  const line=unans.length?`Scored out of all ${deck.length} questions \u2014 ${unans.length} left unanswered count as missed.`:pct===100?"Clean run. Shuffle it and see if it holds.":pct>=80?"Solid. Run the missed ones until they're automatic.":pct>=60?"Getting there. The retry below drills only what you missed.":"Worth another pass. Retry the misses first, then the full set.";
+  const redo=[...misses.map(d=>d.ref),...unans.map(d=>d.ref)];
+  stage.innerHTML=`<p class="score"><b>${right}/${deck.length}</b><span>${pct}% correct</span></p>
+  <p class="scoreline">${line}</p>
+  <div class="btnrow"><button class="btn" id="again">Repeat this set</button>${unans.length?`<button class="btn ghost" id="back">Go back and answer ${unans.length}</button>`:""}${redo.length?`<button class="btn ghost" id="redo">Drill the ${redo.length} missed</button>`:""}<button class="btn quiet" id="home">Change settings</button></div>
+  <div class="review"><h2>All ${deck.length} questions \u2014 ${right} correct, ${redo.length} to review</h2>${[...misses,...unans,...done.filter(d=>isCorrectPick(d.ref,d.picked))].map(reviewItem).join("")}</div>`;
+  stage.querySelector("#again").addEventListener("click",()=>{buildDeck(deck.map(d=>d.ref));renderQuestion()});
+  stage.querySelector("#home").addEventListener("click",renderSetup);
+  const bk=stage.querySelector("#back");if(bk)bk.addEventListener("click",()=>{at=pendingIdx()[0];renderQuestion()});
+  const rd=stage.querySelector("#redo");if(rd)rd.addEventListener("click",()=>{buildDeck(redo);renderQuestion()});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.target&&["INPUT","TEXTAREA","SELECT"].includes(e.target.tagName))return;
+  if(e.key==="?"||e.key.toLowerCase()==="d"){
+    e.preventDefault();
+    (e.key==="?"?document.getElementById("help-toggle"):document.getElementById("theme-toggle")).click();
+    return;
+  }
+  if(!deck.length||!document.getElementById("next"))return;
+  const it=deck[at],btns=[...document.querySelectorAll(".choice")];
+  if(e.key.toLowerCase()==="f"){e.preventDefault();document.getElementById("finish").click();return}
+  if(e.key==="ArrowLeft"||e.key.toLowerCase()==="p"){const p=document.getElementById("prev");if(p&&!p.disabled){e.preventDefault();p.click()}return}
+  if(e.key==="Enter"){const sm=document.getElementById("submitMulti");if(sm&&!sm.disabled){e.preventDefault();sm.click();return}}
+  if(e.key==="ArrowRight"||e.key==="Enter"||e.key.toLowerCase()==="n"){const n=document.getElementById("next");if(n){e.preventDefault();n.click()}return}
+  if(e.key.toLowerCase()==="s"){const s=document.getElementById("skip");if(s){e.preventDefault();s.click()}return}
+  if(answered(it)||!btns.length)return;
+  let i=/^[1-9]$/.test(e.key)?+e.key-1:KEYS.indexOf(e.key.toUpperCase());
+  if(i>-1&&btns[i]){e.preventDefault();btns[i].click()}
+});
+function applyTheme(theme){
+  document.documentElement.dataset.theme=theme;
+  const button=document.getElementById("theme-toggle");
+  button.textContent=theme==="dark"?"Light mode":"Dark mode";
+  button.setAttribute("aria-label",`Switch to ${theme==="dark"?"light":"dark"} mode`);
+}
+const savedTheme=(()=>{try{return localStorage.getItem("reviewer-theme")}catch{return null}})();
+applyTheme(savedTheme==="dark"?"dark":"light");
+document.getElementById("theme-toggle").addEventListener("click",()=>{
+  const theme=document.documentElement.dataset.theme==="dark"?"light":"dark";
+  applyTheme(theme);
+  try{localStorage.setItem("reviewer-theme",theme)}catch{}
+});
+document.getElementById("help-toggle").addEventListener("click",()=>{
+  const help=document.getElementById("shortcut-help"),show=help.hidden;
+  help.hidden=!show;
+  document.getElementById("help-toggle").setAttribute("aria-expanded",String(show));
+});
+document.title=CONFIG.title;
+document.getElementById("subject-code").textContent=CONFIG.code;
+document.getElementById("subject-title").textContent=CONFIG.title;
+document.getElementById("subject-subtitle").textContent=CONFIG.subtitle;
+document.getElementById("question-count").textContent=`${BANK.length} question${BANK.length===1?"":"s"}, all multiple choice.`;
+renderSetup();
+document.getElementById("offline-download").addEventListener("click", function(e) {
+  e.preventDefault();
+  if (typeof downloadFile === "function") {
+    downloadFile(window.location.href, "AaronV-Modsim_Final_Reviewer.html");
+    return;
+  }
+  const blob = new Blob(["<!DOCTYPE html>\n" + document.documentElement.outerHTML], { type: "text/html;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "AaronV-Modsim_Final_Reviewer.html";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+
+</script>
+<script src="script.js"> </script>
+</body>
+</html>
